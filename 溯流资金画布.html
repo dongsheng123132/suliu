@@ -1,0 +1,1422 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>溯流资金画布</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap"></noscript>
+<style>
+/* 布局：三栏工作台。左＝案件卡，中＝按跳数分列的无限画布 + 时间轴，右＝检查器与卡点；窄屏时画布在上、面板依次堆叠 */
+:root{
+  --bg:#eef1f0; --surface:#ffffff; --surface-2:#f5f7f6; --ink:#16201d; --muted:#5a6662; --line:#d2dad7; --grid:#d9e0dd; --edge:#97a39f;
+  --accent:#2552c4; --accent-soft:rgba(37,82,196,.10); --on-accent:#ffffff; --scrim:rgba(12,18,16,.45);
+  --t-victim:#56708f; --t-attacker:#c2362b; --t-relay:#6a7672; --t-dex:#2d6fd3; --t-bridge:#7a4ec6; --t-compliant:#a8558f;
+  --t-cex:#d27a14; --t-mixer:#3b4341; --t-otc:#8c9290; --t-frozen:#2b8a55; --t-hypo:#9a7412; --t-dust:#a3aaa7;
+  --sev-urgent:#c62828; --sev-high:#b46400; --sev-mid:#50629a; --sev-info:#7a8481;
+  --font-ui:"IBM Plex Sans","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#101615; --surface:#182120; --surface-2:#141b1a; --ink:#e2eae7; --muted:#93a19c; --line:#2b3735; --grid:#26322f; --edge:#62706c;
+  --accent:#86a8ff; --accent-soft:rgba(134,168,255,.14); --on-accent:#0c1422; --scrim:rgba(0,0,0,.6);
+  --t-victim:#8aa3c4; --t-attacker:#ff6b5e; --t-relay:#9aa7a3; --t-dex:#6ea4ff; --t-bridge:#b28cff; --t-compliant:#e08cc4;
+  --t-cex:#f0a24a; --t-mixer:#c3cbc8; --t-otc:#8d9794; --t-frozen:#52c285; --t-hypo:#d9b04a; --t-dust:#5d6865;
+  --sev-urgent:#ff6b6b; --sev-high:#f0a24a; --sev-mid:#93a6e0; --sev-info:#8d9794; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#101615; --surface:#182120; --surface-2:#141b1a; --ink:#e2eae7; --muted:#93a19c; --line:#2b3735; --grid:#26322f; --edge:#62706c;
+  --accent:#86a8ff; --accent-soft:rgba(134,168,255,.14); --on-accent:#0c1422; --scrim:rgba(0,0,0,.6);
+  --t-victim:#8aa3c4; --t-attacker:#ff6b5e; --t-relay:#9aa7a3; --t-dex:#6ea4ff; --t-bridge:#b28cff; --t-compliant:#e08cc4;
+  --t-cex:#f0a24a; --t-mixer:#c3cbc8; --t-otc:#8d9794; --t-frozen:#52c285; --t-hypo:#d9b04a; --t-dust:#5d6865;
+  --sev-urgent:#ff6b6b; --sev-high:#f0a24a; --sev-mid:#93a6e0; --sev-info:#8d9794; color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-ui);font-size:14px;line-height:1.5;display:flex;flex-direction:column;overflow:hidden}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 24px;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;gap:10px;min-width:0}
+.mark{font-weight:600;font-size:20px;letter-spacing:.06em}
+.mark small{font-family:var(--font-mono);font-size:11px;font-weight:500;color:var(--muted);letter-spacing:.02em;margin-left:6px}
+.brand .sub{color:var(--muted);font-size:13px}
+.cases{display:flex;flex-wrap:wrap;gap:6px}
+.case-btn{border:1px solid var(--line);background:var(--surface-2);padding:4px 12px;border-radius:999px;font-size:13px;cursor:pointer;display:inline-flex;gap:6px;align-items:baseline}
+.case-btn .k{font-size:11px;color:var(--muted)}
+.case-btn[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.case-btn[aria-selected="true"] .k{color:var(--surface);opacity:.75}
+.top .spacer{flex:1}
+
+.app{flex:1;min-height:0;display:grid;grid-template-columns:292px minmax(0,1fr) 348px;grid-template-areas:"left canvas right"}
+.panel{min-height:0;overflow:auto;padding:14px 16px 28px;display:flex;flex-direction:column;gap:20px;background:var(--surface-2)}
+.left{grid-area:left;border-right:1px solid var(--line)}
+.right{grid-area:right;border-left:1px solid var(--line)}
+.panel h3{margin:0 0 8px;font-size:12px;font-weight:600;letter-spacing:.08em;color:var(--muted);display:flex;align-items:center;gap:8px}
+.panel h3 .n{font-family:var(--font-mono);letter-spacing:0;color:var(--ink)}
+.hint{margin:6px 0 0;font-size:12px;color:var(--muted)}
+
+.work{grid-area:canvas;display:flex;flex-direction:column;min-width:0;min-height:0}
+.tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);border-bottom:1px solid var(--line)}
+.tools .grp{display:flex;gap:4px;align-items:center;margin-left:auto}
+.chk{display:inline-flex;gap:6px;align-items:center;font-size:12.5px;color:var(--muted);cursor:pointer;user-select:none}
+.chk input{accent-color:var(--accent)}
+.btn{border:1px solid var(--line);background:var(--surface);padding:4px 10px;border-radius:7px;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.icon{width:30px;padding:4px 0;text-align:center;font-family:var(--font-mono)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+
+.canvas{position:relative;flex:1;min-height:0;overflow:hidden;background-color:var(--bg);background-image:radial-gradient(var(--grid) 1.2px,transparent 1.3px);background-size:24px 24px;touch-action:none;cursor:grab}
+.canvas.dragging{cursor:grabbing}
+#svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.banner{position:absolute;top:10px;left:12px;right:12px;display:flex;flex-wrap:wrap;gap:6px;pointer-events:none}
+.banner span{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:12px;color:var(--muted)}
+.banner span b{color:var(--ink);font-weight:600}
+.legend{position:absolute;left:12px;bottom:12px;max-width:calc(100% - 24px);display:flex;flex-wrap:wrap;gap:4px 12px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:11.5px;color:var(--muted)}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c);margin-right:5px;vertical-align:1px}
+.legend i.hollow{background:none;border:1.5px dashed var(--c)}
+
+.timeline{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);border-top:1px solid var(--line)}
+.timeline input[type=range]{flex:1;min-width:0;accent-color:var(--accent)}
+.timeline .now{font-size:12.5px;min-width:190px;text-align:right}
+.timeline .now small{color:var(--muted);display:block;font-size:11px}
+
+/* SVG */
+.t-victim{--c:var(--t-victim)} .t-attacker{--c:var(--t-attacker)} .t-relay{--c:var(--t-relay)} .t-dex{--c:var(--t-dex)} .t-bridge{--c:var(--t-bridge)}
+.t-compliant{--c:var(--t-compliant)} .t-cex{--c:var(--t-cex)} .t-mixer{--c:var(--t-mixer)} .t-otc{--c:var(--t-otc)} .t-frozen{--c:var(--t-frozen)}
+.t-hypo{--c:var(--t-hypo)} .t-dust{--c:var(--t-dust)}
+.nd{cursor:pointer}
+.nd .box{fill:var(--surface);stroke:var(--c);stroke-width:1.4}
+.nd .stk{fill:var(--surface);stroke:var(--line);stroke-width:1}
+.nd.hypo .box{stroke-dasharray:6 4;fill:var(--surface-2)}
+.nd.dust .box{stroke-dasharray:2 3}
+.nd.inferred .box{stroke-dasharray:6 4;fill:var(--surface-2)}
+.nd.sel .box{stroke:var(--accent);stroke-width:2.6}
+.nd .dot{fill:var(--c)}
+.nd .ty{font-size:10.5px;fill:var(--muted);letter-spacing:.04em}
+.nd .lb{font-size:13.5px;font-weight:600;fill:var(--ink)}
+.nd .ad{font-family:var(--font-mono);font-size:11px;fill:var(--muted)}
+.nd .rt{font-family:var(--font-mono);font-size:10.5px;fill:var(--ink)}
+.nd .rt.warn{fill:var(--t-cex);font-weight:600}
+.nd .rt.ok{fill:var(--t-frozen);font-weight:600}
+.ring{fill:none;stroke-width:2.5}
+.ring.u{stroke:var(--sev-urgent)} .ring.h{stroke:var(--sev-high)}
+.ring.new{animation:pulse 1.3s ease-out 3}
+@keyframes pulse{0%{stroke-width:2.5;stroke-opacity:1}50%{stroke-width:8;stroke-opacity:.2}100%{stroke-width:2.5;stroke-opacity:1}}
+.eg .ln{fill:none;stroke:var(--edge)}
+.eg.u .ln{stroke:var(--sev-urgent)} .eg.h .ln{stroke:var(--sev-high)} .eg.sel .ln{stroke:var(--accent)}
+.eg.dash .ln{stroke-dasharray:6 5} .eg.dust .ln{stroke:var(--t-dust);stroke-dasharray:1.5 4}
+.eg.new .ln{stroke-dasharray:10 6;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-32}}
+.eg .hit{fill:none;stroke:transparent;stroke-width:14;cursor:pointer}
+.eg .lbg{fill:var(--bg);stroke:var(--line);stroke-width:.8}
+.eg .lt{font-family:var(--font-mono);font-size:10.5px;fill:var(--muted)}
+.eg.u .lt{fill:var(--sev-urgent)} .eg.h .lt{fill:var(--sev-high)}
+.col-lb{font-size:11px;fill:var(--muted);letter-spacing:.08em}
+.col-ln{stroke:var(--line);stroke-dasharray:2 6}
+.ah{fill:var(--edge)} .ah-u{fill:var(--sev-urgent)} .ah-h{fill:var(--sev-high)} .ah-a{fill:var(--accent)} .ah-d{fill:var(--t-dust)}
+@media (prefers-reduced-motion: reduce){ .ring.new,.eg.new .ln{animation:none} }
+
+/* 左栏 */
+.case-card .title{font-size:16px;font-weight:600;text-wrap:balance;margin:0}
+.case-card .kind{display:inline-block;margin:6px 0 10px;font-size:11.5px;padding:1px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.case-card .kind.real{color:var(--t-attacker);border-color:currentColor}
+dl.facts{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:13px}
+dl.facts dt{color:var(--muted);font-size:12px;padding-top:1px}
+dl.facts dd{margin:0;min-width:0}
+.counts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
+.counts div{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.counts b{display:block;font-family:var(--font-mono);font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+.counts span{font-size:11.5px;color:var(--muted)}
+.counts .prio b{color:var(--sev-urgent)}
+
+
+.pill{display:inline-flex;align-items:center;gap:4px;padding:0 7px;border-radius:999px;font-size:11px;line-height:18px;border:1px solid currentColor;white-space:nowrap}
+.sev-urgent{color:var(--sev-urgent)} .sev-high{color:var(--sev-high)} .sev-mid{color:var(--sev-mid)} .sev-info{color:var(--sev-info)}
+.pill.fill.sev-urgent{background:var(--sev-urgent);border-color:var(--sev-urgent);color:var(--surface)}
+.pill.fill.sev-high{background:var(--sev-high);border-color:var(--sev-high);color:var(--surface)}
+
+/* 右栏 */
+.insp{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.insp .head{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.insp .head .nm{font-weight:600;font-size:15px}
+.tchip{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;padding:0 8px;border-radius:999px;border:1px solid var(--c);color:var(--ink);line-height:20px}
+.tchip::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--c)}
+.addr{font-family:var(--font-mono);font-size:12px;word-break:break-all;background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+.row-btns{display:flex;flex-wrap:wrap;gap:6px}
+.insp dl{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;margin:0;font-size:12.5px}
+.insp dt{color:var(--muted)} .insp dd{margin:0;min-width:0;word-break:break-word}
+.note{font-size:12.5px;color:var(--muted);margin:0}
+.warnbox{border:1px solid var(--sev-urgent);border-radius:8px;padding:8px 10px;font-size:12.5px}
+.warnbox b{color:var(--sev-urgent)}
+.okbox{border:1px solid var(--t-frozen);border-radius:8px;padding:8px 10px;font-size:12.5px}
+.diff{font-family:var(--font-mono);font-size:11.5px;word-break:break-all;display:block;margin-top:4px}
+.diff .x{color:var(--sev-urgent);font-weight:600;text-decoration:underline}
+.diff .s{color:var(--muted)}
+table.txs{width:100%;border-collapse:collapse;font-size:12px}
+table.txs th{font-weight:500;color:var(--muted);text-align:left;padding:3px 4px;border-bottom:1px solid var(--line)}
+table.txs td{padding:4px;border-bottom:1px solid var(--line);vertical-align:top}
+table.txs td.mono{white-space:nowrap}
+.txwrap{overflow-x:auto}
+a{color:var(--accent)}
+a.btn{color:var(--ink);text-decoration:none;display:inline-block}
+.lbl{font-size:12px;color:var(--muted);display:block;margin-bottom:3px}
+
+ul.alerts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+ul.alerts li{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:4px}
+ul.alerts li.isnew{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+ul.alerts .a1{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+ul.alerts .a1 .rn{font-weight:600;font-size:13px}
+ul.alerts .a1 .tm{margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+ul.alerts .a2{font-size:12.5px;color:var(--ink);word-break:break-word}
+ul.alerts .a3{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+ul.alerts .a3 .how{font-size:11.5px;color:var(--muted);margin-right:auto}
+.empty{font-size:12.5px;color:var(--muted);border:1px dashed var(--line);border-radius:10px;padding:10px 12px;margin:0}
+
+.modal{position:fixed;inset:0;background:var(--scrim);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
+.modal-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;width:100%;max-width:760px;max-height:88vh;display:flex;flex-direction:column}
+.modal-card header{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.modal-card header h2{margin:0;font-size:15px;font-weight:600}
+.modal-card header .grow{flex:1}
+.modal-card .body{padding:12px 16px 16px;overflow:auto}
+.modal-card pre{margin:0;white-space:pre-wrap;word-break:break-all;font-family:var(--font-mono);font-size:12.5px;line-height:1.6;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:12px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:6px 14px;border-radius:18px;font-size:13px;line-height:1.5;text-align:center;max-width:min(92vw,960px);z-index:30}
+
+/* 官方名单（静态快照）：画布标记、核对卡片 */
+.nd .of{font-size:10px;font-weight:600}
+.nd .of.warn{fill:var(--t-cex)} .nd .of.mute{fill:var(--muted);font-weight:400}
+.offbox{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12.5px;display:flex;flex-direction:column;gap:4px}
+.offbox b,.okbox b,.warnbox b{font-weight:600}
+.offbox .kv{color:var(--muted)} .offbox .kv .mono{color:var(--ink)}
+.offbox .rtxt{color:var(--muted);word-break:break-word}
+.warnbox .rtxt,.okbox .rtxt{color:var(--muted);word-break:break-word}
+.warnbox.inline{margin-top:6px}
+
+/* 官方数据视图 */
+
+/* 追踪地址：案件标签上的 ✕、被截断提示、对话框 */
+.case-grp{display:inline-flex}
+.case-grp .case-btn{border-radius:999px 0 0 999px}
+.case-x{border:1px solid var(--line);border-left:0;background:var(--surface-2);color:var(--muted);padding:4px 10px 4px 8px;border-radius:0 999px 999px 0;font-size:12px;line-height:1.5;cursor:pointer}
+.case-x:hover{color:var(--sev-urgent);border-color:var(--sev-urgent)}
+.case-x.sel{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.case-x.armed{color:var(--sev-urgent);border-color:var(--sev-urgent);background:var(--surface)}
+.banner span.trunc{border-color:var(--sev-high);color:var(--sev-high)}
+.tr-body{display:flex;flex-direction:column;gap:12px}
+.tr-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px 12px;align-items:end}
+.tr-grid .tr-wide{grid-column:1 / -1}
+.tr-body input[type=text],.tr-body input[type=password],.tr-body input[type=number]{width:100%;border:1px solid var(--line);border-radius:6px;background:var(--surface-2);padding:5px 8px;font-size:13px;font-family:var(--font-mono)}
+.tr-body input:disabled{opacity:.55}
+.tr-prog{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:6px 10px;word-break:break-word}
+#trMsg{font-size:12.5px;word-break:break-word}
+.tr-body textarea{width:100%;min-height:84px;resize:vertical;border:1px solid var(--line);border-radius:6px;background:var(--surface-2);padding:5px 8px;font-size:13px;font-family:var(--font-ui);line-height:1.5}
+#rpMsg{font-size:12.5px;word-break:break-word}
+/* 报案指引对话框：内容来自 lib/guide.js（与报告第 9 节附录同一份） */
+.guide-body h3{margin:16px 0 6px;font-size:14px;font-weight:600}
+.guide-body h3:first-of-type{margin-top:4px}
+.guide-body p{margin:0 0 6px}
+.guide-body ul,.guide-body ol{margin:0 0 8px;padding-left:20px}
+.guide-body li{margin-bottom:3px}
+.guide-body table{width:100%;border-collapse:collapse;font-size:12.5px;margin:0 0 8px}
+.guide-body th,.guide-body td{border:1px solid var(--line);padding:4px 6px;vertical-align:top;text-align:left}
+.guide-body th{background:var(--surface-2);font-weight:600}
+.guide-body blockquote{margin:0 0 8px;padding:6px 12px;border-left:3px solid var(--line);background:var(--surface-2);line-height:2.1}
+.guide-body blockquote p{margin:0 0 4px}
+.guide-body .blank{display:inline-block;min-width:56px;border-bottom:1px solid var(--muted);color:transparent;line-height:1.1}
+.guide-body .blank.wide{min-width:200px}
+.brandfoot{padding:6px 16px;background:var(--surface);border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+@media (max-width: 640px){ .tr-grid{grid-template-columns:repeat(2,minmax(0,1fr))} }
+
+@media (max-width: 1080px){
+  body{overflow:auto;height:auto;min-height:100%}
+  html{height:auto}
+  .app{display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"canvas" "right" "left"}
+  .canvas{flex:none;height:62vh;min-height:360px}
+  .panel{overflow:visible}
+  .left,.right{border:0;border-top:1px solid var(--line)}
+  .timeline .now{min-width:0}
+}
+</style>
+
+<header class="top">
+  <div class="brand"><span class="mark"><span id="brandName">溯流</span><small>v0.3</small></span><span class="sub" id="brandTag">被盗资金证据报告</span></div>
+  <nav class="cases" role="tablist" aria-label="案件" id="cases"></nav>
+  <span class="spacer"></span>
+  <button class="btn" id="traceBtn" type="button" title="填入自己的 Etherscan API key，输入一个以太坊地址，自动展开几跳画到画布上">追踪地址</button>
+  <button class="btn" id="guideBtn" type="button" title="被盗之后去哪里报案、带什么材料、怎么联系交易所（只读，同报告第 9 节附录）">报案指引</button>
+  <button class="btn primary" id="reportBtn" type="button" title="把当前案件整理成一份可打印的证据报告（浏览器里按 Ctrl+P 打印或另存为 PDF）">生成报告</button>
+</header>
+
+<main class="app">
+  <aside class="panel left" aria-label="案件">
+    <section class="case-card" id="caseCard"></section>
+  </aside>
+
+  <section class="work" aria-label="画布">
+    <div class="tools">
+      <label class="chk"><input type="checkbox" id="dustChk"> <span id="dustLbl">显示投毒粉尘</span></label>
+      <div class="grp">
+        <button class="btn icon" id="zOut" type="button" aria-label="缩小">−</button>
+        <button class="btn icon" id="zIn" type="button" aria-label="放大">+</button>
+        <button class="btn" id="fitBtn" type="button">适应画面</button>
+      </div>
+    </div>
+    <div class="canvas" id="canvas">
+      <svg id="svg" role="application" aria-label="资金流向画布，拖动平移，滚轮缩放，点击节点查看详情">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah"/></marker>
+          <marker id="ah-u" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah-u"/></marker>
+          <marker id="ah-h" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah-h"/></marker>
+          <marker id="ah-a" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah-a"/></marker>
+          <marker id="ah-d" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah-d"/></marker>
+        </defs>
+        <g id="world"></g>
+      </svg>
+      <div class="banner" id="banner"></div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="timeline">
+      <button class="btn icon" id="prevBtn" type="button" aria-label="上一步">‹</button>
+      <button class="btn" id="playBtn" type="button">▶ 回放</button>
+      <button class="btn icon" id="nextBtn" type="button" aria-label="下一步">›</button>
+      <input type="range" id="range" min="0" max="0" value="0" aria-label="时间轴">
+      <div class="now mono" id="nowLbl"></div>
+    </div>
+  </section>
+
+  <aside class="panel right" aria-label="详情与卡点">
+    <section id="inspector"></section>
+    <section>
+      <h3>卡点 <span class="n" id="alertCount"></span></h3>
+      <ul class="alerts" id="alerts"></ul>
+    </section>
+  </aside>
+</main>
+<footer class="brandfoot" id="brandFoot" hidden></footer>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <header><h2 id="modalTitle">举报文本预览</h2><span class="grow"></span><button class="btn" id="modalCopy" type="button">复制全文</button><button class="btn" id="modalClose" type="button">关闭</button></header>
+    <div class="body"><p class="note" id="modalNote" style="margin-bottom:8px"></p><pre id="modalPre"></pre></div>
+  </div>
+</div>
+<div class="modal" id="traceModal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="trTitle">
+    <header><h2 id="trTitle">追踪地址</h2><span class="grow"></span><button class="btn" id="trClose" type="button">关闭</button></header>
+    <div class="body tr-body">
+      <p class="warnbox" id="trLibNote" hidden>追踪模块未加载（缺少 lib/trace-eth.js），暂时不能开始追踪；下面的「导出」和「载入」仍可使用。</p>
+      <div class="tr-grid">
+        <div class="tr-wide"><label class="lbl" for="trAddr">以太坊地址（0x 开头，40 位十六进制）</label><input type="text" id="trAddr" placeholder="0x…" autocomplete="off" spellcheck="false"></div>
+        <div><label class="lbl" for="trStart">起始区块（可选，空 = 0）</label><input type="text" id="trStart" inputmode="numeric" placeholder="0" autocomplete="off"></div>
+        <div><label class="lbl" for="trHops">跳数（1–5）</label><input type="number" id="trHops" min="1" max="5" step="1" value="3"></div>
+        <div><label class="lbl" for="trTopK">每跳前 K 笔（1–10）</label><input type="number" id="trTopK" min="1" max="10" step="1" value="5"></div>
+        <div><label class="lbl" for="trCalls">API 调用上限（20–300）</label><input type="number" id="trCalls" min="20" max="300" step="1" value="80"></div>
+        <div class="tr-wide"><label class="lbl" for="trKey">Etherscan API Key</label><input type="password" id="trKey" autocomplete="new-password" spellcheck="false" placeholder="粘贴你自己的 key"></div>
+        <label class="chk tr-wide" for="trRemember"><input type="checkbox" id="trRemember"> <span>记住在本机浏览器</span></label>
+        <p class="hint tr-wide" style="margin:0">key 只存在你自己的浏览器里，只发给 Etherscan，不会上传到别处。没有 key？在 <a href="https://etherscan.io/myapikey" target="_blank" rel="noopener">https://etherscan.io/myapikey</a> 免费申请。</p>
+      </div>
+      <div class="row-btns"><button class="btn primary" id="trGo" type="button">开始追踪</button><button class="btn" id="trStop" type="button" disabled>停止</button></div>
+      <div class="tr-prog mono" id="trProg" role="status" aria-live="polite" hidden></div>
+      <div id="trMsg" role="status" aria-live="polite" hidden></div>
+      <div class="row-btns"><button class="btn" id="trExport" type="button">导出当前追踪结果（JSON）</button><button class="btn" id="trImport" type="button">载入追踪结果</button><input type="file" id="trFile" accept=".json,application/json" hidden></div>
+      <p class="hint" style="margin:0">自动结果可能漏判或误判，提交举报前请人工复核；只向官方渠道报告。</p>
+    </div>
+  </div>
+</div>
+<div class="modal" id="reportModal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="rpTitle">
+    <header><h2 id="rpTitle">生成证据报告</h2><span class="grow"></span><button class="btn" id="rpClose" type="button">关闭</button></header>
+    <div class="body tr-body">
+      <p class="warnbox" id="rpLibNote" hidden>报告模块未加载（缺少 lib/report.js），暂时不能生成报告；页面其余功能不受影响，但此时也不会标出卡点。</p>
+      <p class="note">把当前案件整理成一份可打印的报告，在新窗口打开后按 Ctrl+P（Mac 为 ⌘P）打印或另存为 PDF。下面的信息都可以留空。<b>这些信息只写进报告文件，不会保存或上传。</b></p>
+      <div class="tr-grid">
+        <div class="tr-wide"><label class="lbl" for="rpParty">报案人或单位（可选）</label><input type="text" id="rpParty" maxlength="300" autocomplete="off" spellcheck="false"></div>
+        <div class="tr-wide"><label class="lbl" for="rpContact">联系方式（可选）</label><input type="text" id="rpContact" maxlength="300" autocomplete="off" spellcheck="false"></div>
+        <div class="tr-wide"><label class="lbl" for="rpTheft">被盗交易哈希（可选，0x 加 64 位十六进制）</label><input type="text" id="rpTheft" maxlength="80" placeholder="0x…" autocomplete="off" spellcheck="false"></div>
+        <div class="tr-wide"><label class="lbl" for="rpStory">被盗经过（可选）</label><textarea id="rpStory" rows="4" maxlength="4000" spellcheck="false"></textarea></div>
+      </div>
+      <div class="row-btns"><button class="btn primary" id="rpGo" type="button">生成</button></div>
+      <div id="rpMsg" role="status" aria-live="polite" hidden></div>
+      <p class="hint" style="margin:0">报告基于当前画布上的案件；自动结果可能漏判或误判，提交前请人工复核。溯流不会替你向任何机构提交报告。</p>
+    </div>
+  </div>
+</div>
+<div class="modal" id="guideModal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="gdTitle">
+    <header><h2 id="gdTitle">报案指引</h2><span class="grow"></span><button class="btn" id="gdClose" type="button">关闭</button></header>
+    <div class="body guide-body">
+      <p class="warnbox" id="gdLibNote" hidden>指引模块未加载（缺少 lib/guide.js），暂时看不到报案指引；页面其余功能不受影响。</p>
+      <p class="note" id="gdVer"></p>
+      <div id="gdBody"></div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="data/official-snapshot.js"></script>
+<script src="lib/official-data.js"></script>
+<script src="lib/trace-eth.js"></script>
+<script src="lib/report.js"></script>
+<script src="lib/guide.js"></script>
+<script src="lib/brand.js"></script>
+<script>
+(function(){
+'use strict';
+const W = 216, H = 68, COL = 340;
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const TYPES = {
+  victim:{name:'受害方'}, attacker:{name:'攻击者'}, relay:{name:'中转'}, dex:{name:'DEX 兑换'},
+  bridge:{name:'跨链 / 兑换服务'}, compliant:{name:'可拦截通道'}, cex:{name:'中心化交易所'}, mixer:{name:'混币器'},
+  otc:{name:'OTC / 失去踪迹'}, frozen:{name:'已冻结'}, hypo:{name:'推演节点'}, dust:{name:'投毒粉尘'}
+};
+/* 卡点规则（RULES）、严重程度（SEV）、卡点判定（rulesOf）、卡点文案（HEADLINE / ACTION）的唯一来源是 lib/report.js（window.SuliuReport），页面只调用、不再各写一份。
+   缺这个文件时页面照常显示地址与转账，但不标卡点、不能生成报告，并在卡点栏明确提示（不会悄悄当成「没有卡点」）。 */
+const RPT0 = window.SuliuReport || null;
+const RPT = RPT0 && typeof RPT0.build === 'function' && typeof RPT0.rulesOf === 'function' && RPT0.RULES && RPT0.SEV && RPT0.HEADLINE && RPT0.ACTION ? RPT0 : null;
+const SEV = RPT ? RPT.SEV : {};
+const RULES = RPT ? RPT.RULES : [];
+const RULE = Object.fromEntries(RULES.map(r => [r.id, r]));
+
+function T(from, to, t, amt, eth, o){ return Object.assign({from, to, t, amt, eth}, o || {}); }
+
+/* ---------- 案件数据 ---------- */
+const CASES = [
+{
+  id:'bitget', focus:'n04', tab:'Bitget 2026', tabK:'真实链路', kind:'real', unit:'block',
+  offFilled:['bg6', 'e9', 'r511', 'raab', 'rf7b', 'r58'],   /* 地址本身是按官方名单补全 / 更正的节点（见 facts「数据」一行），官方名单核对的命中数含这部分，自证成分要注明 */
+  title:'Bitget 被盗案 · 以太坊部分', short:'Bitget 案', en:'Bitget exploit (2026-09-24)',
+  facts:[['金额','约 3.875 亿美元，8 条链'],['归因','受害方与分析机构判断，执法机关尚未确认'],['已冻结','约 63 万美元（约 0.16%，Bitget 作战室 09-30 数据）'],['数据','Etherscan 地址页快照，2026-09-30；区块号为准；6 个截断或笔误地址按 Bitget 官方接口补全（2026-09-30）；USDT 去向按 Etherscan API 补查（2026-10-01、10-05）']],
+  banner:['<b>真实链路</b> · 本次巡查抓到的以太坊部分','Exploiter 4 余额为页面快照，可能滞后'],
+  channels:'Bitget 官方举报页 https://trace.bgblockchain.xyz/report ；稳定币冻结由受害方或执法机关对接 Tether / Circle',
+  nodes:[
+    {id:'bg6', type:'victim', label:'Bitget 6（热钱包）', addr:'0x1ab4973a48dc892cd9971ece8e01dcc7688f8f23', x:0, y:220, note:'v0.1 记作 0x1AB49730…，官方 /api/victims 里没有这个前缀；按唯一以 0x1ab4973 开头的官方受害钱包（victims.eth[0]）更正，视为抄写笔误。Etherscan 标签 Bitget 6。Bitget 另有多个被盗热钱包 / 温钱包，这里只画与本次巡查相关的一个。地址按官方 /api/victims 核对。'},
+    {id:'e1', type:'attacker', label:'Bitget Exploiter 1', addr:'0x770b10b273fc44fe9197d6bf20f145c2e98463ee', bal:'0.0089 ETH', blk:26078291, x:280, y:40, note:'监控基线记为 4,373 ETH，但页面显示它早在区块 26050061 已把 4,590 ETH 转给 Exploiter 9，基线可能记错。'},
+    {id:'e9', type:'attacker', label:'Bitget Exploiter 9', addr:'0xdc2901f741b4003e32b8b752e97b8c4c1891dc63', x:560, y:40, note:'完整地址按官方 /api/holdings 前缀唯一匹配补全。建议补进监控列表。'},
+    {id:'e4', type:'attacker', label:'Bitget Exploiter 4', addr:'0x600cfeDc6Bd65Fa79B604dC44964f419e45784b2', bal:'3,133.08 ETH', blk:26081089, x:280, y:400, note:'页面余额与最新交易停在区块 26081089，但中转A 显示区块 26081472 仍有它转入的 159.63 ETH，页面可能是旧快照。'},
+    {id:'r511', type:'relay', label:'中转 0x5119', addr:'0x51190be1bac64a48f28043598f4c16c564e84e6c', x:560, y:170, note:'完整地址按官方 /api/holdings 前缀和后缀唯一匹配补全。'},
+    {id:'raab', type:'relay', label:'中转 0xAabC', addr:'0xaabc969707b2a5d1d39d3ba24c60a0cd79dbe451', x:560, y:270, note:'完整地址按官方 /api/holdings 前缀和后缀唯一匹配补全。'},
+    {id:'thor', type:'bridge', label:'THORChain Router', x:840, y:220, excluded:true, note:'去中心化跨链兑换，无法冻结。服务合约，已核查、不是攻击者。'},
+    {id:'rf7b', type:'relay', label:'未标注 0xf7bC', addr:'0xf7bc92103f23ef312658cd9b81dc2713f7b396c3', x:560, y:450, note:'尚未展开下一层。完整地址按官方 /api/holdings 前缀唯一匹配补全。'},
+    {id:'ra', type:'relay', label:'中转A', addr:'0x5648b985f91616470EDF7bBa8775a3a5f7cAf70C', bal:'160.10 ETH', blk:26081472, x:560, y:560, note:'Exploiter 4 每次约 160 ETH 转入，随即转给汇集B。'},
+    {id:'rb', type:'relay', label:'汇集B', addr:'0xA04620Dc5D0aAc18aF64363847bE9Ab762f608bf', bal:'446.96 ETH', blk:26081719, x:840, y:560, note:'无标签。以 200 / 200 / 300 ETH 的整数额向下一跳扇出。'},
+    {id:'n04', type:'relay', label:'下一跳 0x0406', addr:'0x04065CcF52929dCE58D9c7659dE6dDAc2316E84E', bal:'≈0 ETH', blk:26086219, x:1120, y:440, note:'已通过 EIP-7702 委托给 MetaMask Delegator。在 Uniswap 把 ETH 换成 USDT / USDC 后分批转出。Chainflip 金库在同一时段向它转回约 160 万 USDT（8 笔，像是兑换退款），待人工核实。'},
+    {id:'n4f', type:'relay', label:'下一跳 0x4F1d', addr:'0x4F1d3DF2C94b2CA6943eDB8be34C83E899087D23', bal:'0.008 ETH', blk:26081629, x:1120, y:700, note:'收到 300 ETH 后分 5 笔存入 Across 跨链桥。'},
+    {id:'uni', type:'dex', label:'Uniswap Universal Router', addr:'0x23617e59A5925b2A4Bf75d73ff6711cD0b29De85', x:1400, y:190, excluded:true, note:'DEX 路由合约，已核查、不是攻击者。'},
+    {id:'u61', type:'relay', label:'USDT 接收 0x6101', addr:'0x6101B936FA0F7aE9A49B7260CB59b56AA31d7126', bal:'≈0（已转出）', blk:26081411, x:1400, y:290, note:'只有 2 笔以太坊本币交易：先收 0.001 ETH 手续费，再在下一个区块把 USDT 转走。USDT 转给了 Chainflip 充值通道；之后出现的大量 USDT 转出是假代币（符号仿 USDT）和投毒刷屏，不是真钱。'},
+    {id:'u22', type:'relay', label:'USDT 接收 0x2279', addr:'0x2279e1a93f66Bf97833B76d5897734FF0B0cA520', bal:'≈0（已转出）', blk:26081427, x:1400, y:390, note:'只有 2 笔以太坊本币交易：先收 0.001 ETH 手续费，9 个区块后把 USDT 转走。USDT 转给了 Chainflip 充值通道；之后出现的大量 USDT 转出是假代币（符号仿 USDT）和投毒刷屏，不是真钱。'},
+    {id:'ch1', type:'relay', label:'Chainflip 充值通道 0xec00', addr:'0xec008786a6a966f10f0fa01a6511517c4c05e079', inferred:true, x:1680, y:290, note:'推断为 Chainflip 一次性充值地址：历史上收过很多不相关来源的 USDT，每笔约 15 个区块内归集到 Chainflip 金库。未经确认。Etherscan API 实测 2026-10-01。'},
+    {id:'ch2', type:'relay', label:'Chainflip 充值通道 0x39dd', addr:'0x39ddab7ed57f837e50366f5f6199eba43ba44424', inferred:true, x:1680, y:390, note:'推断为 Chainflip 一次性充值地址：历史上收过很多不相关来源的 USDT，每笔约 15 个区块内归集到 Chainflip 金库。未经确认。Etherscan API 实测 2026-10-01。'},
+    {id:'cfv', type:'compliant', label:'Chainflip 以太坊金库', addr:'0xf5e10380213880111522dd0efd3dbb45b9f62bcc', excluded:true, x:1960, y:340, note:'Bitget 官方 reviewed 标注：Chainflip 以太坊 Vault（协议公共金库，不是攻击者地址）。资金在这里兑换后去了哪条链、哪个地址，要用 Chainflip 浏览器继续查。'},
+    {id:'r58', type:'relay', label:'未标注 0x5889', addr:'0x5889433b754324089d4b6f168840fe5b13fe25df', x:1400, y:690, note:'尚未展开下一层。完整地址按官方 /api/holdings 前缀唯一匹配补全。'},
+    {id:'across', type:'bridge', label:'Across SpokePool V2', addr:'0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5', x:1400, y:790, excluded:true, note:'跨链桥。需要在目标链继续追踪。服务合约，已核查、不是攻击者。'},
+    {id:'r_c51c', type:'relay', label:'下一跳 0xc51c', addr:'0xc51c568be036cc5383575d23884beefbd7070db5', x:1400, y:490, note:'在 Bitget 官方攻击者名单中；下一跳待查。Etherscan API 实测 2026-10-05。'},
+    {id:'r_3e6f', type:'relay', label:'下一跳 0x3e6f', addr:'0x3e6fc6fb04989e7e5bf2b844e841246feb6b8db2', x:1400, y:590, note:'在 Bitget 官方攻击者名单中；下一跳待查。Etherscan API 实测 2026-10-05。'},
+    {id:'d1', type:'dust', label:'仿冒 0x5648…', addr:'0x56484e1d14a2…', mimic:'ra', x:0, y:480},
+    {id:'d2', type:'dust', label:'仿冒 0x4f1D…7D23', addr:'0x4f1D1e46d3d6fd6AdF21562D2B02D146a18A7D23', mimic:'n4f', x:560, y:670},
+    {id:'d3', type:'dust', label:'仿冒 0x0406…84e', addr:'0x0406E4cea183A14B6579158D07bB9874c686e84e', mimic:'n04', x:560, y:770}
+  ],
+  txs:[
+    T('bg6','e1',26049971,'223.2 ETH',223.2,{note:'页面上能看到的一笔转入，其余被盗转入未逐笔抓取'}),
+    T('bg6','e4',26049971,null,null,{unknown:true,note:'被盗转入的明细未抓取'}),
+    T('e1','e9',26050061,'4,590 ETH',4590),
+    T('e1','e9',26050615,'6.47 ETH',6.47),
+    T('e4','r511',26080955,'223.70 ETH',223.7),
+    T('r511','thor',26080955,null,null,{approx:true,note:'已存入 THORChain Router，逐笔金额未核对'}),
+    T('e4','ra',26081021,'159.86 ETH',159.86),
+    T('e4','raab',26081028,'11.22 ETH',11.22),
+    T('raab','thor',26081028,null,null,{approx:true,note:'已存入 THORChain Router，逐笔金额未核对'}),
+    T('d1','e4',26081049,'0.000000001 ETH',0),
+    T('e4','rf7b',26081060,'63.98 ETH',63.98),
+    T('e4','ra',26081063,'159.87 ETH',159.87),
+    T('ra','rb',26081068,'159.4 ETH',159.4),
+    T('e4','ra',26081206,'160.13 ETH',160.13),
+    T('ra','rb',26081209,'159.66 ETH',159.66),
+    T('rb','n04',26081301,'200 ETH',200),
+    T('d3','rb',26081317,'0.000000001 ETH',0),
+    T('e4','ra',26081334,'159.82 ETH',159.82),
+    T('ra','rb',26081341,'159.35 ETH',159.35),
+    T('n04','uni',26081391,'70 ETH → USDT/USDC',70,{flags:['freeze'],hash:'0x7c012f2cab98bdeb18f09572cdebe09b191f4a83f7786ca758689ef64f2a7a1f',note:'经 Uniswap 把 ETH 换成 USDT 和 USDC'}),
+    T('rb','n04',26081403,'200 ETH',200),
+    T('n04','u61',26081410,'200,000 USDT',75,{flags:['freeze'],hash:'0xa28255f172dbfd4208147be07a79e4cef775c62c565f9a777fcaec7bfc9345fa'}),
+    T('u61','ch1',26081411,'200,000 USDT',75,{flags:['freeze'],hash:'0x0dc715c3587859215be48b48f153997c214fc8e8766c727f4fd97b3fb4dbc569'}),
+    T('n04','u22',26081418,'200,000 USDT',75,{flags:['freeze'],hash:'0x26dbe07ec0c1da81640e76fd0f786d387d6293fc83626dcb245a23f49e7e1c5f'}),
+    T('ch1','cfv',26081427,'200,000 USDT',75,{flags:['freeze'],hash:'0xfcb7dfd6037a7156ad5930fef6e58ac1e5a4b7fd99b72e6986d1fc0cb7673243'}),
+    T('u22','ch2',26081427,'200,000 USDT',75,{flags:['freeze'],hash:'0x63097baed07012392851662f23622239012b6b573a32f83141233bf8ad405e8a'}),
+    T('ch2','cfv',26081437,'200,000 USDT',75,{flags:['freeze'],hash:'0x53f6ef0332b60f2533e37952e546a580750cb06c5810b63274b9658b129527a5'}),
+    T('n04','r_c51c',26081466,'200,000 USDT',75,{flags:['freeze'],hash:'0x8524a4da206ce85d7bc11252ff98fec61fd97c46af6368936a3a10b5ac61afee'}),
+    T('e4','ra',26081472,'159.63 ETH',159.63),
+    T('ra','rb',26081476,'159.16 ETH',159.16),
+    T('n04','r_3e6f',26081482,'200,000 USDT',75,{flags:['freeze'],hash:'0x9b3a450a544fa2abd1d063a659cd82a1c32f8b605be535cc5075ee49c36111a8'}),
+    T('rb','n4f',26081490,'300 ETH',300,{hash:'0x0a695565799ce901c8f77bf059375b23102aaf3101550f8390e1f7e3e00a6fc1'}),
+    T('n4f','across',26081494,'100 ETH',100,{hash:'0x7b17e287a5195c9e0a7ba98084c1b934e7ceea2c043de29820c9f1cc3ccf3fd9'}),
+    T('n04','r58',26081496,'425,959.08 USDT',160,{flags:['freeze'],hash:'0x0786f257eed8a29e45b2d5f310a7f5e57651db13be4106831dd72d1503baf0b2'}),
+    T('n04','r58',26081502,'120.41 ETH',120.41),
+    T('ra','rb',26081572,'158.67 ETH',158.67),
+    T('d2','rb',26081584,'0.000000001 ETH',0),
+    T('n4f','across',26081588,'50 ETH',50,{hash:'0x8d2d5c777fd39300efd65c67c3d27705a7a3515ddb68cfc18852c516d13becb9'}),
+    T('n4f','across',26081623,'50 ETH',50,{hash:'0xf51be7e9944f5a6f63ce7c4eafbcf13f40f3fe9c74f53cde175f7604aaf6d562'}),
+    T('n4f','across',26081625,'50 ETH',50,{hash:'0x47d81db01f8abee54173aa21c11364446f8a3aee65b0df19188e370dede804e8'}),
+    T('n4f','across',26081629,'50 ETH',50,{hash:'0xacbf8b07d0c91751a5cb2fe6deb5bfb13f7ce012e8fe8446ebc5d34edb444d53'}),
+    T('ra','rb',26081719,'158.3 ETH',158.3)
+  ]
+}
+];
+
+CASES.forEach(c => c.nodes.forEach(n => { n.x = Math.round(n.x / 280) * COL; }));
+
+/* ---------- 状态 ---------- */
+const S = { ci:0, ti:0, k:1, x:0, y:0, sel:null, dust:false, timer:null };
+let C, N, TIMES = [];
+const canvas = $('#canvas'), svg = $('#svg'), world = $('#world');
+
+function indexCase(){ N = {}; C.nodes.forEach(n => { N[n.id] = n; }); }
+function computeTimes(keepT){
+  TIMES = [...new Set(C.txs.filter(tx => S.dust || N[tx.from].type !== 'dust').map(tx => tx.t))].sort((a,b) => a - b);
+  if (keepT == null) { S.ti = TIMES.length - 1; return; }
+  let i = TIMES.length - 1; while (i > 0 && TIMES[i] > keepT) i--; S.ti = i;
+}
+const cur = () => TIMES[S.ti];
+
+/* ---------- 工具函数 ---------- */
+function textW(s, size){ let w = 0; for (const ch of String(s)) w += /[⺀-鿿＀-￯　-〿]/.test(ch) ? size : size * 0.6; return w; }
+function clip(s, maxW, size){ s = String(s || ''); if (textW(s, size) <= maxW) return s; let out = ''; for (const ch of s){ if (textW(out + ch + '…', size) > maxW) break; out += ch; } return out + '…'; }
+const isFull = a => /^0x[0-9a-fA-F]{40}$/.test(a || '');
+const isHash = h => /^0x[0-9a-fA-F]{64}$/.test(h || '');
+function shortA(a){ if (!a) return ''; return isFull(a) ? a.slice(0, 8) + '…' + a.slice(-6) : a; }
+function fmtT(t){ return t == null ? '—' : '区块 ' + t; }
+function fmtNum(n){ return n.toLocaleString('en-US', {maximumFractionDigits:2}); }
+/* 多条消息合并显示（不互相覆盖）：还没过期的消息用「 · 」连在一起，新消息追加在后；同一条文字重复出现只刷新它的过期时间 */
+const TOASTS = [];
+function toastRender(){
+  const now = Date.now(), el = $('#toast');
+  for (let i = TOASTS.length - 1; i >= 0; i--) if (TOASTS[i].until <= now) TOASTS.splice(i, 1);
+  clearTimeout(toast._t);
+  if (!TOASTS.length){ el.hidden = true; el.textContent = ''; return; }
+  el.textContent = TOASTS.map(x => x.text).join(' · '); el.hidden = false;
+  toast._t = setTimeout(toastRender, Math.max(30, Math.min.apply(null, TOASTS.map(x => x.until)) - now));
+}
+function toast(msg, ms){
+  const until = Date.now() + (ms || 1800), ex = TOASTS.find(x => x.text === msg);
+  if (ex) ex.until = until; else TOASTS.push({text: msg, until});
+  toastRender();
+}
+function copyText(text){
+  const done = () => toast('已复制');
+  const fallback = () => { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (e) {} ta.remove(); toast(ok ? '已复制' : '复制失败，请手动选中文本复制'); };
+  try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback); else fallback(); } catch (e) { fallback(); }
+}
+
+/* ---------- 可见数据与告警 ---------- */
+function visTx(){ const c = cur(); return C.txs.filter(tx => tx.t <= c && (S.dust || N[tx.from].type !== 'dust')); }
+function visNodes(vtx){
+  const ids = new Set(C.nodes.filter(n => n.type === 'victim').map(n => n.id));
+  vtx.forEach(tx => { ids.add(tx.from); ids.add(tx.to); });
+  return C.nodes.filter(n => ids.has(n.id));
+}
+/* 卡点判定：lib/report.js 的 rulesOf（投毒粉尘不算卡点等规则都在那里）；模块缺失时返回空（卡点栏会提示未加载） */
+function txRules(tx, f, to){ return RPT ? RPT.rulesOf(tx, f, to) : []; }
+function computeAlerts(vtx){
+  const m = new Map();
+  for (const tx of vtx){
+    const f = N[tx.from], to = N[tx.to]; if (!f || !to) continue;
+    for (const r of txRules(tx, f, to)){
+      const key = r + '|' + tx.from + '|' + tx.to;
+      let a = m.get(key);
+      if (!a){ a = {key, rule:r, sev:RULE[r].sev, from:tx.from, to:tx.to, txs:[], t:tx.t}; m.set(key, a); }
+      a.txs.push(tx);
+    }
+  }
+  const c = cur();
+  const list = [...m.values()];
+  list.forEach(a => { a.isNew = a.txs.some(x => x.t === c); a.last = a.txs[a.txs.length - 1].t; });
+  return list.sort((a, b) => ((SEV[b.sev].prio ? 1 : 0) - (SEV[a.sev].prio ? 1 : 0)) || (b.last - a.last) || (SEV[a.sev].rank - SEV[b.sev].rank));
+}
+/* 同一对地址之间的金额合计：全部是「数字 币种」格式时按币种分别求和（ETH、USDT 混在一起也不会只显示最后一笔），否则退回「N 笔 · 最后一笔」 */
+function amtSummary(txs){
+  const sums = new Map(); let ok = txs.length > 0;
+  for (const x of txs){
+    const m = /^([\d,.]+) ([A-Za-z]+)$/.exec(x.amt || '');
+    if (!m){ ok = false; break; }
+    sums.set(m[2], (sums.get(m[2]) || 0) + parseFloat(m[1].replace(/,/g, '')));
+  }
+  if (ok) return (txs.length > 1 ? txs.length + ' 笔 · ' : '') + [...sums].map(p => fmtNum(p[1]) + ' ' + p[0]).join(' + ');
+  const w = txs.filter(x => x.amt);
+  const last = w.length ? w[w.length - 1].amt : '金额未核对';
+  return txs.length > 1 ? txs.length + ' 笔 · ' + last : last;
+}
+function edgeLabel(e){
+  const txs = e.txs, f = N[e.from];
+  if (f.type === 'dust') return '粉尘 ' + txs.length + ' 笔';
+  if (txs.every(x => x.hypo && !x.amt)) return '待查';
+  if (txs.length === 1 && !txs[0].amt) return txs[0].approx ? '已存入 · 金额未核对' : '明细未抓取';
+  return amtSummary(txs);
+}
+
+/* ---------- 画布渲染 ---------- */
+function applyT(){
+  world.setAttribute('transform', 'translate(' + S.x + ',' + S.y + ') scale(' + S.k + ')');
+  canvas.style.backgroundSize = (24 * S.k) + 'px ' + (24 * S.k) + 'px';
+  canvas.style.backgroundPosition = S.x + 'px ' + S.y + 'px';
+}
+function renderCanvas(ctx){
+  const {vtx, vnodes, alerts} = ctx;
+  const c = cur();
+  const ring = {}, esev = {};
+  alerts.forEach(a => {
+    if (!SEV[a.sev].prio) return;
+    const s = a.sev === 'urgent' ? 'u' : 'h';
+    if (ring[a.to] !== 'u') ring[a.to] = s;
+    const ek = a.from + '|' + a.to; if (esev[ek] !== 'u') esev[ek] = s;
+  });
+  const newNodes = new Set();
+  alerts.forEach(a => { if (a.isNew && SEV[a.sev].prio) newNodes.add(a.to); });
+  // 分列标题（第 N 跳）
+  let out = '';
+  if (vnodes.length){
+    const cols = [...new Set(vnodes.map(n => Math.round(n.x / COL)))].sort((a, b) => a - b);
+    const y0 = Math.min(...vnodes.map(n => n.y)) - 36, y1 = Math.max(...vnodes.map(n => n.y)) + H + 16;
+    cols.forEach(ci => {
+      const x = ci * COL;
+      out += '<line class="col-ln" x1="' + (x - 32) + '" x2="' + (x - 32) + '" y1="' + (y0 - 8) + '" y2="' + y1 + '"/>';
+      out += '<text class="col-lb" x="' + x + '" y="' + y0 + '">' + (ci === 0 ? '源头' : '第 ' + ci + ' 跳') + '</text>';
+    });
+  }
+  // 边
+  const edges = new Map();
+  vtx.forEach(tx => { const k = tx.from + '|' + tx.to; let e = edges.get(k); if (!e){ e = {key:k, from:tx.from, to:tx.to, txs:[]}; edges.set(k, e); } e.txs.push(tx); });
+  let eOut = '', lOut = '';
+  edges.forEach(e => {
+    const f = N[e.from], t = N[e.to];
+    const sx = f.x + W, sy = f.y + H / 2, ex = t.x - 2, ey = t.y + H / 2;
+    const cc = Math.max(60, (ex - sx) / 2);
+    const d = 'M' + sx + ' ' + sy + 'C' + (sx + cc) + ' ' + sy + ' ' + (ex - cc) + ' ' + ey + ' ' + ex + ' ' + ey;
+    const mx = (sx + 3 * (sx + cc) + 3 * (ex - cc) + ex) / 8, my = (sy + ey) / 2;
+    const sumEth = e.txs.reduce((a, x) => a + (x.eth || 0), 0);
+    const w = f.type === 'dust' ? 1 : (1.2 + Math.min(6, Math.log10(1 + sumEth) * 1.1));
+    const cls = ['eg'];
+    const sel = S.sel && S.sel.kind === 'edge' && S.sel.id === e.key;
+    const sv = esev[e.key];
+    if (sel) cls.push('sel'); else if (sv) cls.push(sv);
+    if (f.type === 'dust') cls.push('dust'); else if (e.txs.every(x => x.hypo || x.unknown)) cls.push('dash');
+    if (e.txs.some(x => x.t === c) && f.type !== 'dust') cls.push('new');
+    const mk = sel ? 'ah-a' : sv ? 'ah-' + sv : f.type === 'dust' ? 'ah-d' : 'ah';
+    eOut += '<g class="' + cls.join(' ') + '" data-edge="' + esc(e.key) + '"><path class="hit" d="' + d + '"/><path class="ln" d="' + d + '" stroke-width="' + w.toFixed(2) + '" marker-end="url(#' + mk + ')"/></g>';
+    const full = edgeLabel(e), lb = clip(full, 112, 10.5);
+    if (lb){ const lw = textW(lb, 10.5) + 12; lOut += '<g class="' + cls.join(' ') + '" data-edge="' + esc(e.key) + '"><title>' + esc(full) + '</title><rect class="lbg" x="' + (mx - lw / 2) + '" y="' + (my - 9) + '" width="' + lw + '" height="17" rx="4"/><text class="lt" x="' + mx + '" y="' + (my + 3.5) + '" text-anchor="middle">' + esc(lb) + '</text></g>'; }
+  });
+  // 节点
+  let nOut = '';
+  vnodes.forEach(n => {
+    const cls = ['nd', 't-' + n.type];
+    if (n.type === 'hypo') cls.push('hypo');
+    if (n.type === 'dust') cls.push('dust');
+    else if (RPT && (RPT.isInferred(n) || RPT.isPending(n))) cls.push('inferred');   // 虚线＝推断或待核实（报告图注同此说法）
+    const sel = S.sel && S.sel.kind === 'node' && S.sel.id === n.id;
+    if (sel) cls.push('sel');
+    let s = '<g class="' + cls.join(' ') + '" data-node="' + esc(n.id) + '" transform="translate(' + n.x + ',' + n.y + ')">';
+    if (n.group) s += '<rect class="stk" x="7" y="7" width="' + W + '" height="' + H + '" rx="10"/><rect class="stk" x="3.5" y="3.5" width="' + W + '" height="' + H + '" rx="10"/>';
+    if (ring[n.id]) s += '<rect class="ring ' + ring[n.id] + (newNodes.has(n.id) ? ' new' : '') + '" x="-5" y="-5" width="' + (W + 10) + '" height="' + (H + 10) + '" rx="14"/>';
+    s += '<rect class="box" width="' + W + '" height="' + H + '" rx="10"/>';
+    s += '<circle class="dot" cx="14" cy="17" r="4"/>';
+    s += '<text class="ty" x="24" y="21">' + esc(TYPES[n.type].name) + '</text>';
+    let rt = '', rc = '';
+    if (n.bal) rt = n.bal;
+    else if (n.type === 'frozen') { rt = '已冻结'; rc = 'ok'; }
+    else if (n.type === 'cex' || n.type === 'compliant') { rt = '可冻结 / 可拦截'; rc = 'warn'; }
+    else if (n.type === 'hypo') rt = '置信：' + (n.conf || '待查');
+    else if (n.type === 'dust') { rt = '仿冒'; rc = 'warn'; }
+    else if (n.excluded) rt = '已排除';
+    if (rt) s += '<text class="rt ' + rc + '" x="' + (W - 12) + '" y="21" text-anchor="end">' + esc(clip(rt, 110, 10.5)) + '</text>';
+    s += '<text class="lb" x="12" y="41">' + esc(clip(n.label, W - 24, 13.5)) + '</text>';
+    const l3 = n.addr ? shortA(n.addr) : (n.sub || '');
+    const mk = nodeMark(n);
+    if (l3) s += '<text class="ad" x="12" y="58">' + esc(clip(l3, W - 24 - (mk ? textW(mk.txt, 10) + 8 : 0), 11)) + '</text>';
+    if (mk) s += '<text class="of ' + mk.cls + '" x="' + (W - 10) + '" y="58" text-anchor="end">' + esc(mk.txt) + '<title>' + esc(mk.tip) + '</title></text>';
+    s += '</g>';
+    nOut += s;
+  });
+  world.innerHTML = out + eOut + nOut + lOut;
+  applyT();
+}
+
+/* ---------- 面板渲染 ---------- */
+function renderCases(){
+  $('#cases').innerHTML = CASES.map((c, i) => {
+    const sel = i === S.ci;
+    const b = '<button class="case-btn" role="tab" type="button" data-case="' + i + '" aria-selected="' + sel + '">' + esc(c.tab) + '<span class="k">' + esc(c.tabK) + '</span></button>';
+    if (!c._tr) return b;   // 追踪案件（_tr）带 ✕：第一次点击先变成「确认删除？」，3 秒内再点才删
+    const armed = DELARM.id === c.id;
+    return '<span class="case-grp" role="presentation">' + b + '<button class="case-x' + (sel ? ' sel' : '') + (armed ? ' armed' : '') + '" type="button" data-delcase="' + esc(c.id) + '" aria-label="删除追踪案件：' + esc(c.tab) + '" title="' + (armed ? '再点一次确认删除' : '删除这个追踪案件') + '">' + (armed ? '确认删除？' : '✕') + '</button></span>';
+  }).join('');
+}
+function renderCaseCard(ctx){
+  const prio = ctx.alerts.filter(a => SEV[a.sev].prio).length;
+  const trunc = C._tr ? truncText(C._meta) : null;
+  $('#caseCard').innerHTML = '<p class="title">' + esc(C.title) + '</p><span class="kind real">真实链路</span>' +
+    '<dl class="facts">' + C.facts.map(f => '<dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd>').join('') + offCaseLine() + '</dl>' +
+    '<div class="counts"><div><b>' + ctx.vnodes.length + '</b><span>可见地址</span></div><div><b>' + ctx.alerts.length + '</b><span>卡点</span></div><div class="prio"><b>' + prio + '</b><span>紧急 / 高</span></div></div>' +
+    (trunc ? '<div class="warnbox inline">结果被截断：' + esc(trunc) + '</div>' : '');
+  /* 只有页面内置案件的 banner 允许带 <b>；追踪 / 载入的案件（_tr）一律当纯文本 */
+  $('#banner').innerHTML = C.banner.map(b => '<span>' + (C._tr ? esc(b) : b) + '</span>').join('') + (trunc ? '<span class="trunc">结果被截断：' + esc(trunc) + '</span>' : '');
+}
+function renderLegend(vnodes){
+  const types = [...new Set(vnodes.map(n => n.type))];
+  $('#legend').innerHTML = types.map(t => '<span class="t-' + t + '"><i class="' + (t === 'hypo' ? 'hollow' : '') + '"></i>' + esc(TYPES[t].name) + '</span>').join('');
+  const nd = C.txs.filter(tx => N[tx.from].type === 'dust').length;
+  $('#dustChk').disabled = nd === 0;
+  $('#dustLbl').textContent = nd ? '显示投毒粉尘（' + nd + ' 笔）' : '本案无投毒粉尘';
+}
+function renderTimeline(){
+  const r = $('#range'); r.max = TIMES.length - 1; r.value = S.ti;
+  $('#nowLbl').innerHTML = esc(fmtT(cur())) + '<small>第 ' + (S.ti + 1) + ' / ' + TIMES.length + ' 步</small>';
+  $('#playBtn').textContent = S.timer ? '❚❚ 暂停' : '▶ 回放';
+}
+function nodeRef(id){ const n = N[id]; return esc(n.label); }
+function renderAlerts(alerts){
+  const prio = alerts.filter(a => SEV[a.sev].prio).length;
+  $('#alertCount').textContent = alerts.length ? alerts.length + ' 条 · ' + prio + ' 条紧急 / 高' : '';
+  if (!RPT){ $('#alerts').innerHTML = '<li class="empty">卡点识别模块未加载（缺少 lib/report.js），本页不会标出卡点。这不代表资金没有进入交易所或可冻结点；请把 lib 文件夹和页面放在一起再打开。</li>'; return; }
+  if (!alerts.length){ $('#alerts').innerHTML = '<li class="empty">当前时间点还没有识别到卡点（交易所、可冻结稳定币、可拦截通道等）。拖动时间轴看后面的步骤。</li>'; return; }
+  $('#alerts').innerHTML = alerts.map(a => {
+    const sv = SEV[a.sev], r = RULE[a.rule];
+    return '<li class="' + (a.isNew ? 'isnew' : '') + '"><div class="a1"><span class="pill ' + (sv.prio ? 'fill ' : '') + 'sev-' + a.sev + '">' + sv.name + '</span><span class="rn">' + esc(r.name) + '</span><span class="tm">' + esc(a.txs.length > 1 ? '最近 ' + fmtT(a.last) : fmtT(a.t)) + '</span></div>' +
+      '<div class="a2">' + nodeRef(a.from) + ' → ' + nodeRef(a.to) + ' · ' + esc(amtSummary(a.txs)) + '</div>' +
+      '<div class="a3"><span class="how">' + (a.isNew ? '本步新增' : '') + '</span><button class="btn" type="button" data-act="locate" data-id="' + esc(a.to) + '">定位</button>' + (sv.prio ? '<button class="btn" type="button" data-act="report" data-key="' + esc(a.key) + '">举报文本预览</button>' : '') + '</div></li>';
+  }).join('');
+}
+function diffHTML(a, b){
+  // 标出 a 相对 b 不同的字符
+  let s = '';
+  for (let i = 0; i < a.length; i++){ const same = b[i] && a[i].toLowerCase() === b[i].toLowerCase(); s += '<span class="' + (same ? 's' : 'x') + '">' + esc(a[i]) + '</span>'; }
+  return s;
+}
+function renderInspector(ctx){
+  const el = $('#inspector');
+  if (!S.sel){
+    el.innerHTML = '<h3>详情</h3><div class="insp"><p class="note">点击节点或连线查看详情。拖动画布平移，滚轮或双指缩放，节点可以拖动调整位置。红框表示紧急卡点，橙框表示高级别卡点。</p></div>';
+    return;
+  }
+  if (S.sel.kind === 'node'){
+    const n = N[S.sel.id]; if (!n){ S.sel = null; return renderInspector(ctx); }
+    const inTx = ctx.vtx.filter(x => x.to === n.id), outTx = ctx.vtx.filter(x => x.from === n.id);
+    let h = '<h3>节点详情</h3><div class="insp"><div class="head"><span class="tchip t-' + n.type + '">' + esc(TYPES[n.type].name) + '</span>' + (n.excluded ? '<span class="pill sev-info">已核查 · 非攻击者</span>' : '') + '</div>';
+    h += '<div class="nm" style="font-weight:600;font-size:15px">' + esc(n.label) + '</div>';
+    if (n.addr){
+      h += '<div class="addr">' + esc(n.addr) + '</div><div class="row-btns">' + (isFull(n.addr) ? '<button class="btn" type="button" data-act="copy" data-text="' + esc(n.addr) + '">复制地址</button><a class="btn" href="https://etherscan.io/address/' + esc(n.addr) + '" target="_blank" rel="noopener">在 Etherscan 查看</a>' : '<span class="note">地址未完整抓取</span>') + '</div>';
+    }
+    if (n.type === 'dust' && n.mimic && N[n.mimic]){
+      const m = N[n.mimic];
+      h += '<div class="warnbox"><b>仿冒地址</b>：模仿 ' + esc(m.label) + '，首尾相同、中间不同。转账时如果从历史记录里复制地址，很容易误复制这个。<span class="diff">' + diffHTML(n.addr, m.addr) + '</span><span class="diff">' + esc(m.addr) + '（真实）</span></div>';
+    }
+    h += '<dl>';
+    if (n.bal) h += '<dt>余额</dt><dd class="mono">' + esc(n.bal) + '</dd>';
+    if (n.blk) h += '<dt>页面最新区块</dt><dd class="mono">' + esc(n.blk) + '</dd>';
+    if (n.sub) h += '<dt>说明</dt><dd>' + esc(n.sub) + '</dd>';
+    h += '<dt>流入 / 流出</dt><dd>' + inTx.length + ' 笔 / ' + outTx.length + ' 笔（截至当前时间点）</dd></dl>';
+    if (n.note) h += '<p class="note">' + esc(n.note) + '</p>';
+    if (n.addr && isFull(n.addr)) h += '<div><span class="lbl">' + offLabel() + '</span>' + offCard(offNodeRes(n), {links:true, mark:nodeMark(n)}) + '</div>';
+    h += '<div class="row-btns"><button class="btn" type="button" data-act="center" data-id="' + esc(n.id) + '">居中</button></div></div>';
+    el.innerHTML = h;
+    return;
+  }
+  // 连线
+  const [from, to] = S.sel.id.split('|');
+  const txs = ctx.vtx.filter(x => x.from === from && x.to === to);
+  if (!txs.length){ S.sel = null; return renderInspector(ctx); }
+  const rules = [...new Set(txs.flatMap(tx => txRules(tx, N[from], N[to])))];
+  let h = '<h3>转账详情</h3><div class="insp"><div class="nm" style="font-weight:600">' + nodeRef(from) + ' → ' + nodeRef(to) + '</div>';
+  if (rules.length) h += '<div class="row-btns">' + rules.map(r => '<span class="pill sev-' + RULE[r].sev + '">' + esc(RULE[r].name) + '</span>').join('') + '</div>';
+  h += '<div class="txwrap"><table class="txs"><thead><tr><th>时间</th><th>金额</th><th>交易</th></tr></thead><tbody>' + txs.map(tx => '<tr><td class="mono">' + esc(fmtT(tx.t)) + (tx.approx ? '（约）' : '') + '</td><td>' + esc(tx.amt || (tx.approx ? '未核对' : '未抓取')) + (tx.note ? '<div class="note">' + esc(tx.note) + '</div>' : '') + '</td><td class="mono">' + (isHash(tx.hash) ? '<a href="https://etherscan.io/tx/' + tx.hash + '" target="_blank" rel="noopener">' + tx.hash.slice(0, 10) + '…</a>' : '—') + '</td></tr>').join('') + '</tbody></table></div></div>';
+  el.innerHTML = h;
+}
+function renderAll(){
+  const vtx = visTx(), vnodes = visNodes(vtx), alerts = computeAlerts(vtx);
+  const ctx = {vtx, vnodes, alerts};
+  renderCanvas(ctx); renderCaseCard(ctx); renderAlerts(alerts); renderInspector(ctx); renderLegend(vnodes); renderTimeline();
+  return ctx;
+}
+
+/* ---------- 视图 ---------- */
+function fitTo(nodes){
+  if (!nodes.length) return;
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  nodes.forEach(n => { x0 = Math.min(x0, n.x); y0 = Math.min(y0, n.y - 40); x1 = Math.max(x1, n.x + W); y1 = Math.max(y1, n.y + H); });
+  const r = canvas.getBoundingClientRect(); const padX = 40, padTop = 56, padBottom = 64;
+  const k = Math.min((r.width - padX * 2) / (x1 - x0), (r.height - padTop - padBottom) / (y1 - y0), 1.15);
+  S.k = Math.max(0.12, k);
+  S.x = (r.width - (x1 - x0) * S.k) / 2 - x0 * S.k;
+  S.y = padTop + ((r.height - padTop - padBottom) - (y1 - y0) * S.k) / 2 - y0 * S.k;
+  applyT();
+}
+function fitAll(){ fitTo(C.nodes.filter(n => S.dust || n.type !== 'dust')); }
+/* 初始视图：整张图适应画面（Bitget 案要能看到最右侧的 Chainflip 金库）；字小了可以放大或点节点看详情 */
+function initialView(){ fitAll(); }
+function follow(){
+  // 播放时，如果本步新出现的节点不在视野内，就把视野移过去
+  const c = cur(), ids = new Set(); C.txs.forEach(tx => { if (tx.t === c) ids.add(tx.to); });
+  const ns = [...ids].map(id => N[id]).filter(Boolean); if (!ns.length) return;
+  const r = canvas.getBoundingClientRect();
+  const out = ns.some(n => { const sx = n.x * S.k + S.x, sy = n.y * S.k + S.y; return sx < 0 || sy < 40 || sx + W * S.k > r.width || sy + H * S.k > r.height - 60; });
+  if (!out) return;
+  const cx = ns.reduce((a, n) => a + n.x, 0) / ns.length + W / 2, cy = ns.reduce((a, n) => a + n.y, 0) / ns.length + H / 2;
+  S.x = r.width * 0.62 - cx * S.k; S.y = r.height / 2 - cy * S.k; applyT();
+}
+function fitVisible(){ fitTo(visNodes(visTx())); }
+function centerOn(id){ const n = N[id]; if (!n) return; const r = canvas.getBoundingClientRect(); S.x = r.width / 2 - (n.x + W / 2) * S.k; S.y = r.height / 2 - (n.y + H / 2) * S.k; applyT(); }
+function zoomAt(f, mx, my){ const k2 = Math.min(2.5, Math.max(0.12, S.k * f)); S.x = mx - (mx - S.x) * (k2 / S.k); S.y = my - (my - S.y) * (k2 / S.k); S.k = k2; applyT(); }
+function zoomCenter(f){ const r = canvas.getBoundingClientRect(); zoomAt(f, r.width / 2, r.height / 2); }
+
+function loadCase(i){
+  stopPlay(); S.ci = i; C = CASES[i]; indexCase(); computeTimes(null); S.sel = null;
+  renderCases(); renderAll(); initialView();
+}
+
+/* ---------- 交互：平移、缩放、拖动 ---------- */
+const ptrs = new Map(); let drag = null, pinch = null;
+svg.addEventListener('pointerdown', e => {
+  ptrs.set(e.pointerId, {x:e.clientX, y:e.clientY});
+  try { svg.setPointerCapture(e.pointerId); } catch (err) {}
+  if (ptrs.size === 2){ drag = null; pinch = null; return; }
+  const nd = e.target.closest('[data-node]'), eg = e.target.closest('[data-edge]');
+  const n = nd ? N[nd.getAttribute('data-node')] : null;
+  drag = {node:n, edge:eg ? eg.getAttribute('data-edge') : null, sx:e.clientX, sy:e.clientY, ox:n ? n.x : S.x, oy:n ? n.y : S.y, moved:false};
+  if (!n) canvas.classList.add('dragging');
+});
+svg.addEventListener('pointermove', e => {
+  if (!ptrs.has(e.pointerId)) return;
+  ptrs.set(e.pointerId, {x:e.clientX, y:e.clientY});
+  if (ptrs.size === 2){
+    const [a, b] = [...ptrs.values()]; const dist = Math.hypot(a.x - b.x, a.y - b.y); const mid = {x:(a.x + b.x) / 2, y:(a.y + b.y) / 2};
+    const r = svg.getBoundingClientRect();
+    if (!pinch){ pinch = {d:dist, k:S.k, x:S.x, y:S.y, m:mid}; return; }
+    const k2 = Math.min(2.5, Math.max(0.12, pinch.k * dist / pinch.d));
+    const mx = pinch.m.x - r.left, my = pinch.m.y - r.top;
+    S.k = k2; S.x = mx - (mx - pinch.x) * (k2 / pinch.k) + (mid.x - pinch.m.x); S.y = my - (my - pinch.y) * (k2 / pinch.k) + (mid.y - pinch.m.y);
+    applyT(); return;
+  }
+  if (!drag) return;
+  const dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;
+  if (!drag.moved && Math.hypot(dx, dy) > 4) drag.moved = true;
+  if (!drag.moved) return;
+  if (drag.node){ drag.node.x = Math.round(drag.ox + dx / S.k); drag.node.y = Math.round(drag.oy + dy / S.k); const vtx = visTx(); renderCanvas({vtx, vnodes:visNodes(vtx), alerts:computeAlerts(vtx)}); }
+  else { S.x = drag.ox + dx; S.y = drag.oy + dy; applyT(); }
+});
+function endPtr(e){
+  ptrs.delete(e.pointerId);
+  if (ptrs.size < 2) pinch = null;
+  canvas.classList.remove('dragging');
+  if (drag && !drag.moved && e.type === 'pointerup'){
+    if (drag.node) S.sel = {kind:'node', id:drag.node.id};
+    else if (drag.edge) S.sel = {kind:'edge', id:drag.edge};
+    else S.sel = null;
+    renderAll();
+  }
+  drag = null;
+}
+svg.addEventListener('pointerup', endPtr);
+svg.addEventListener('pointercancel', endPtr);
+svg.addEventListener('wheel', e => { e.preventDefault(); const r = svg.getBoundingClientRect(); zoomAt(Math.exp(-e.deltaY * 0.0015), e.clientX - r.left, e.clientY - r.top); }, {passive:false});
+$('#zIn').onclick = () => zoomCenter(1.25);
+$('#zOut').onclick = () => zoomCenter(0.8);
+$('#fitBtn').onclick = fitVisible;
+
+/* ---------- 时间轴 ---------- */
+function stopPlay(){ if (S.timer){ clearInterval(S.timer); S.timer = null; } }
+$('#range').addEventListener('input', e => { stopPlay(); S.ti = +e.target.value; renderAll(); });
+$('#prevBtn').onclick = () => { stopPlay(); if (S.ti > 0){ S.ti--; renderAll(); } };
+$('#nextBtn').onclick = () => { stopPlay(); if (S.ti < TIMES.length - 1){ S.ti++; renderAll(); follow(); } };
+$('#playBtn').onclick = () => {
+  if (S.timer){ stopPlay(); renderTimeline(); return; }
+  if (S.ti >= TIMES.length - 1){ S.ti = 0; initialView(); }
+  S.timer = setInterval(() => { if (S.ti >= TIMES.length - 1){ stopPlay(); renderTimeline(); return; } S.ti++; renderAll(); follow(); }, 1100);
+  renderAll();
+};
+
+/* ---------- 案件切换 / 粉尘 ---------- */
+$('#cases').addEventListener('click', e => { const x = e.target.closest('[data-delcase]'); if (x){ trDelClick(x.getAttribute('data-delcase')); return; } const b = e.target.closest('[data-case]'); if (!b) return; loadCase(+b.getAttribute('data-case')); });
+$('#dustChk').addEventListener('change', e => { const t = cur(); S.dust = e.target.checked; computeTimes(t); renderAll(); });
+
+/* ---------- 右栏按钮 ---------- */
+document.querySelector('.right').addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const act = b.getAttribute('data-act'), id = b.getAttribute('data-id');
+  if (act === 'copy') copyText(b.getAttribute('data-text'));
+  else if (act === 'center') centerOn(id);
+  else if (act === 'locate'){ S.sel = {kind:'node', id}; renderAll(); centerOn(id); }
+  else if (act === 'report') openReportText(b.getAttribute('data-key'));
+});
+/* ---------- 举报文本预览（文案来自 lib/report.js；完整的可打印报告见「生成报告」）---------- */
+function openModal(title, note, text){
+  $('#modalTitle').textContent = title; $('#modalNote').textContent = note; $('#modalPre').textContent = text;
+  $('#modal').hidden = false; $('#modalClose').focus();
+}
+function openReportText(key){
+  const a = computeAlerts(visTx()).find(x => x.key === key); if (!a) return;
+  const f = N[a.from], to = N[a.to], r = RULE[a.rule], sv = SEV[a.sev];
+  const hashes = a.txs.filter(x => isHash(x.hash)).map(x => x.hash);
+  const amounts = a.txs.map(x => '  ' + fmtT(x.t) + '：' + (x.amt || '金额未核对')).join('\n');
+  let t = '主题：【' + sv.name + '】' + C.short + '：' + r.name + ' · ' + to.label + ' · ' + fmtT(a.t) + '\n\n';
+  t += RPT.HEADLINE[a.rule] + '\n\n';
+  t += '案件：' + C.title + '\n卡点类型：' + r.name + '（' + sv.name + '）\n首次出现：' + fmtT(a.t) + (a.txs.length > 1 ? '（共 ' + a.txs.length + ' 笔，已合并）' : '') + '\n';
+  t += '发送方：' + (f.addr || '—') + '（' + f.label + '）\n接收方：' + (to.addr || '—') + '（' + to.label + '）\n';
+  t += '金额：\n' + amounts + '\n';
+  t += '交易哈希：\n' + (hashes.length ? hashes.map(h => '  ' + h).join('\n') : '  （本笔哈希未抓取，请到接收方地址页核对）') + '\n\n';
+  t += '下一步：' + RPT.ACTION[a.rule] + '\n报告渠道：' + C.channels + '\n';
+  t += '\n可直接粘贴的举报文本（英文）：\n';
+  t += 'Funds linked to the ' + C.en + ' moved from ' + (f.addr || 'an attacker-controlled address') + ' to ' + (to.addr || 'a recipient not yet identified') + ' (' + a.txs.map(x => (x.amt && /^[\x20-\x7E→]+$/.test(x.amt)) ? x.amt.replace('→', 'to') : 'amount unverified').join('; ') + ') at block ' + a.t + '. Tx: ' + (hashes.join(', ') || 'see recipient address page') + '. Source: public on-chain data (Etherscan). Please review and consider a freeze.\n';
+  t += '\n合规提示：只向受害方官方渠道、交易所合规团队和执法机关报告；不联系、不付费给洗钱方。归因以执法机关结论为准。';
+  openModal('举报文本预览', '这只是一份文本草稿，页面不会替你发送任何东西。提交前请人工核对地址、哈希和金额，只向官方渠道报告。', t);
+}
+$('#modalClose').onclick = () => { $('#modal').hidden = true; };
+$('#modalCopy').onclick = () => copyText($('#modalPre').textContent);
+$('#modal').addEventListener('click', e => { if (e.target.id === 'modal') $('#modal').hidden = true; });
+document.addEventListener('keydown', e => { if (e.key === 'Escape'){ $('#modal').hidden = true; $('#traceModal').hidden = true; $('#reportModal').hidden = true; $('#guideModal').hidden = true; } });
+
+/* ---------- 静态官方标签（data/official-snapshot.js + lib/official-data.js；只读，不联网）----------
+   页面启动时用 window.SULIU_OFFICIAL_SNAPSHOT 建一次索引（SuliuOfficial.buildIndex），之后只查表：节点标记、节点详情里的「官方名单（静态快照 <label>）」、案件卡「官方名单核对」。
+   勘误移除之类的文案只能来自 lib 的 describeGone + goneText，页面不自写；缺 lib 或数据文件就按「官方数据未加载」处理。 */
+const LIB0 = window.SuliuOfficial || null;
+const LIB = LIB0 && ['buildIndex', 'lookup', 'normAddr', 'describeGone', 'goneText'].every(k => typeof LIB0[k] === 'function') ? LIB0 : null;
+const OFF = {snap:null, index:null};
+function offInit(){
+  const snap = window.SULIU_OFFICIAL_SNAPSHOT;
+  try {
+    if (!LIB || !snap || !snap.holdings || typeof snap.holdings !== 'object') return;
+    if (LIB.validateHoldings && !LIB.validateHoldings(snap.holdings)) return;
+    OFF.index = LIB.buildIndex(snap); OFF.snap = snap;
+  } catch (e) { OFF.index = null; OFF.snap = null; }
+}
+/* 官方数据里的 category / status 都是数据，不是对象属性名：映射表用无原型对象，查表前先 hasOwnProperty，避免 "__proto__"、"constructor" 之类的键 */
+const dict = o => Object.assign(Object.create(null), o);
+const own = (o, k) => o != null && Object.prototype.hasOwnProperty.call(o, k);
+const CAT = dict({vault:'协议金库', cex:'交易所', arb:'套利者', user:'无关用户', poison:'投毒', attacker:'攻击者相关'});
+const ST = dict({
+  attacker:{s:'攻击者名单'}, reviewed_attacker_related:{s:'核查·攻击者相关'}, conflict:{s:'冲突'},
+  spoof:{s:'疑似仿冒'}, victim:{s:'受害钱包'}, retracted:{s:'勘误已移除'},
+  reviewed_not_attacker:{s:'核查·非攻击者'}, none:{s:'未命中'}, invalid:{s:'无效'}
+});
+const CARD = dict({
+  attacker:['warnbox', '在官方攻击者名单中'], victim:['offbox', '在官方受害钱包名单中'],
+  reviewed_attacker_related:['warnbox', '官方已核查：攻击者相关（不在持有名单中）'], reviewed_not_attacker:['offbox', '官方已核查：非攻击者'],
+  retracted:['offbox', '官方勘误涉及该地址'], spoof:['warnbox', '疑似仿冒官方名单中的地址（首 4 位与末 4 位相同，中间不同）'],
+  conflict:['warnbox', '官方数据冲突：同时在攻击者名单和「非攻击者」核查里'], none:['offbox', '不在官方名单中。未命中不等于资金干净。'], invalid:['offbox', '地址格式无效']
+});
+const stInfo = s => own(ST, s) ? ST[s] : {s:String(s)};
+const cardOf = s => own(CARD, s) ? CARD[s] : CARD.none;
+const catName = c => own(CAT, c) ? CAT[c] : (c == null ? '' : String(c));
+const ls = {
+  get(k){ try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v){ try { localStorage.setItem(k, v); return true; } catch (e) { return false; } },
+  del(k){ try { localStorage.removeItem(k); return true; } catch (e) { return false; } }
+};
+const jparse = s => { try { return s ? JSON.parse(s) : null; } catch (e) { return null; } };
+const fmtTs = ts => (LIB && LIB0.formatTs && ts != null) ? LIB0.formatTs(ts) : '—';
+const safeUrl = u => (typeof u === 'string' && /^https:\/\//.test(u)) ? u : null;
+/* 显示「所在链」：holdings / victims 命中时用官方链键；只在核查 / 勘误里命中时用 lookup 给的 listChain（官方原始写法） */
+function resChains(res){
+  const c = ((res && res.chains) || []).map(x => String(x).toUpperCase());
+  if (c.length) return c;
+  return res && res.listChain ? [String(res.listChain).toUpperCase()] : [];
+}
+function linkA(url, text, cls){ url = safeUrl(url); return url ? '<a' + (cls ? ' class="' + cls + '"' : '') + ' href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(text) + '</a>' : ''; }
+function offLookup(q){ if (!OFF.index) return null; try { return LIB.lookup(OFF.index, q); } catch (e) { return null; } }
+/* 一个地址「现在是什么情况」的文案（勘误移除 / 核查为非攻击者 / 移到受害钱包 / 改列 / 原因不明）：统一 lib.describeGone + lib.goneText，页面不自写；找不到返回 '' */
+function goneInfoOf(addr){ if (!OFF.index) return null; try { return LIB.describeGone(OFF.index, LIB.normAddr(addr)); } catch (e) { return null; } }
+function goneNote(res){ if (!res) return ''; const i = goneInfoOf(res.norm != null ? res.norm : res.input); try { return i ? LIB.goneText(i) : ''; } catch (e) { return ''; } }
+/* 节点的官方查表结果缓存在 n._off（索引是静态的，查一次就够；下划线字段导出和存盘时不带） */
+function offNodeRes(n){ if (!OFF.index) return null; if (!('_off' in n)) n._off = offLookup(n.addr); return n._off; }
+/* 节点详情里那一行的标题：「官方名单（静态快照 <label>）」；label 来自数据文件，进 HTML 前 esc */
+function offLabel(){ return '官方名单（静态快照 ' + esc(OFF.snap ? (OFF.snap.label || OFF.snap.fetched_at || '时间未记录') : '未加载') + '）'; }
+
+/* 画布节点与官方名单的对照：返回 {txt, cls, tip, card, mismatch} 或 null。
+   命中名单只说「在名单里」，不说「已确认 / 通过 / 安全」——官方名单只是官方的判断，画布节点是否正确要另看。cls：mute＝中性，warn＝需要注意 */
+function nodeMark(n){
+  if (!n.addr || !isFull(n.addr)) return null;
+  const r = offNodeRes(n); if (!r || r.status === 'invalid') return null;
+  const s = r.status, ty = n.type, lab = stInfo(s).s;
+  const mute = (txt, tip, card) => ({txt, cls:'mute', tip, card:!!card});
+  const bad = what => ({txt:'⚠ 与官方不符', cls:'warn', tip:what + '，但官方状态是「' + lab + '」', card:true, mismatch:true});
+  if (s === 'conflict') return {txt:'⚠ 与官方不符', cls:'warn', tip:'该地址同时在官方攻击者名单和「非攻击者」核查里，请以官方看板为准', card:true, mismatch:true};
+  if (n.excluded || ty === 'dust'){
+    const what = ty === 'dust' ? '画布上标为投毒粉尘地址' : '画布上标为已核查的服务合约（已排除）';
+    if (s === 'none') return mute('非名单', what + '，不在官方攻击者名单中，与画布标注一致', true);
+    if (s === 'reviewed_not_attacker') return mute('已核查', what + '，官方核查为非攻击者，与画布标注一致', true);
+    if (s === 'spoof' && ty === 'dust') return {txt:'仿冒', cls:'warn', tip:'与官方名单里的地址首尾相同，与画布上的投毒仿冒标注一致', card:true};
+    return bad(what);
+  }
+  const listed = () => {
+    if (s === 'attacker') return mute('官方名单', '在官方攻击者名单中');
+    if (s === 'victim') return mute('官方受害钱包', '在官方受害钱包名单中');
+    if (s === 'reviewed_attacker_related') return mute('核查·攻击者相关', '官方已核查，判定为攻击者相关（不在持有名单中）');
+    return null;
+  };
+  /* 推断的节点（n.inferred，如推断为 Chainflip 一次性充值地址）：不在官方名单里是常态，不算「与官方不符」 */
+  if (n.inferred && s === 'none') return null;
+  /* 追踪案件（_tr）的节点类型是自动推断的：不在官方名单里是常态，不算「与官方不符」；这里只如实标出命中了名单的哪一类（冲突和已排除节点的不符仍按上面的规则报） */
+  if (C._tr){
+    if (s === 'none') return null;
+    if (s === 'spoof') return {txt:'疑似仿冒', cls:'warn', tip:'与官方名单里的地址首尾相同、中间不同，请逐位核对', card:true};
+    if (s === 'reviewed_not_attacker') return mute('已核查', '官方核查为非攻击者');
+    if (s === 'retracted') return mute('官方勘误', '官方勘误涉及该地址');
+    return listed();
+  }
+  if (ty === 'attacker' || ty === 'relay') return (s === 'attacker' || s === 'reviewed_attacker_related') ? listed() : bad('画布上标为「' + TYPES[ty].name + '」');
+  if (ty === 'victim') return s === 'victim' ? listed() : bad('画布上标为受害方');
+  return listed();
+}
+function offCaseLine(){
+  const nodes = C.nodes.filter(n => n.addr && isFull(n.addr));
+  if (!OFF.index) return '<dt>官方名单核对</dt><dd>' + esc(LIB ? '官方数据暂不可用' : '官方数据未加载') + '</dd>';
+  let hit = 0, bad = 0, filled = 0;   // filled＝补全的地址里同时命中官方名单的个数（补全数与命中数取交集）：这部分地址本来就是照官方名单补全的，命中它们不能算独立印证
+  nodes.forEach(n => {
+    const r = offNodeRes(n), m = nodeMark(n), isHit = !!(r && ['attacker', 'victim', 'reviewed_attacker_related', 'conflict'].includes(r.status));
+    if (isHit){ hit++; if (Array.isArray(C.offFilled) && C.offFilled.includes(n.id)) filled++; }
+    if (m && m.mismatch) bad++;
+  });
+  return '<dt>官方名单核对</dt><dd>命中 ' + hit + ' / 完整地址 ' + nodes.length + (filled ? '<br><span class="note" style="font-size:11.5px" title="这些地址是按官方名单前缀 / 后缀匹配补全的，所以它们命中官方名单不算独立印证">（其中 ' + filled + ' 个按官方名单补全，命中数含这部分）</span>' : '') + (bad ? '<br><span style="color:var(--t-cex)">⚠ ' + bad + ' 处与官方不符</span>' : '') + '</dd>';
+}
+/* 单个地址的官方核对卡片（节点详情用）。o: {links, mark} */
+function offCard(res, o){
+  o = o || {};
+  if (!res) return '<div class="offbox"><span class="rtxt">' + esc(LIB ? '官方数据暂不可用，无法核对。' : '官方数据未加载（缺少 lib/official-data.js 或数据文件），无法核对。') + '</span></div>';
+  const st = res.status, cd = cardOf(st), e = res.entry, rv = e && e.reviewed, co = e && e.correction;
+  const chains = resChains(res).join('、'), inList = !!(e && ((e.holdings && e.holdings.length) || (e.victims && e.victims.length)));
+  let head = st === 'invalid' && res.bad0x ? '不是完整的以太坊地址（0x 加 40 位十六进制）' : cd[1];
+  if (st === 'retracted') head = goneNote(res) || head;   // 已被勘误移除的地址：文案统一走 lib.goneText
+  let h = '<div class="' + cd[0] + '"><b>' + esc(head) + '</b>';
+  if (chains && st !== 'none' && st !== 'invalid') h += '<div class="kv">' + (inList ? '所在链' : '相关链') + '：<span class="mono">' + esc(chains) + '</span></div>';
+  if (rv) h += '<div class="kv">核查：<b>' + esc(rv.name || '—') + '</b>（' + esc(catName(rv.category)) + '，' + esc(fmtTs(rv.reviewed_ts)) + '）</div>' + (rv.note ? '<div class="rtxt">' + esc(rv.note) + '</div>' : '');
+  if (co) h += '<div class="kv">勘误 <span class="mono">' + esc(co.id) + '</span>：误列 ' + esc((co.listed_from || '—') + ' → ' + (co.listed_until || '—')) + '</div>' + (co.reason ? '<div class="rtxt">' + esc(co.reason) + '</div>' : '');
+  if (st === 'spoof' && res.spoofOf) h += '<div class="kv">与官方' + esc(res.spoofOf.source === 'victims' ? '受害钱包' : '攻击者名单') + '里的地址首尾相同：</div><span class="diff">' + diffHTML(String(res.input), res.spoofOf.norm) + '</span><span class="diff">' + esc(res.spoofOf.norm) + '（官方）</span>';
+  if (o.mark && (o.mark.cls === 'warn' || o.mark.card)) h += '<div class="rtxt">' + (o.mark.mismatch ? '⚠ 与画布预期不符：' : '') + esc(o.mark.tip) + '</div>';
+  if (o.links && st !== 'invalid' && LIB0 && typeof LIB0.officialUrl === 'function'){ let u = null; try { u = LIB0.officialUrl(res.input); } catch (er) {} const a = linkA(u, '在官方看板查看', 'btn'); if (a) h += '<div class="row-btns">' + a + '</div>'; }
+  return h + '</div>';
+}
+
+/* ---------- 追踪地址（lib/trace-eth.js → window.SuliuTrace）----------
+   用户在对话框里填自己的 Etherscan key，输入一个以太坊地址，自动展开几跳画到画布上。
+   key 只做三件事：放在密码输入框里、（勾选「记住」时）存 localStorage 'suliu.etherscan.key'、交给 SuliuTrace.createClient 发给 Etherscan；
+   不写进 DOM 文本、console、导出文件或别的存储；错误文字、进度文字和导出 / 存盘文本里出现 key 一律替换成 ***。
+   追踪案件带 _tr 标记：_ts＝加入时间，_meta＝trace() 返回的 meta；下划线开头的字段（含节点上的 _off 官方查表缓存）导出和存盘时都不带。
+   来自 API / 文件的数据一律先过 normTrace：只保留白名单字段、检查类型和引用，字符串进 innerHTML 前仍然 esc()。 */
+const TRK = {key:'suliu.etherscan.key', traces:'suliu.traces.v1'};
+const TR_MAX = 5, TR_MAX_NODES = 2000, TR_MAX_TXS = 20000, TR_MAX_FILE = 8 * 1024 * 1024, TR_KEY_RE = /^[A-Za-z0-9]{16,64}$/;
+const TR = {busy:false, ac:null, key:''};
+const DELARM = {id:null, timer:null};
+const isNum = v => typeof v === 'number' && isFinite(v);
+const isStr = v => typeof v === 'string';
+const isObj = o => o !== null && typeof o === 'object' && !Array.isArray(o);
+const clipS = (s, n) => String(s == null ? '' : s).slice(0, n);
+const noPriv = (k, v) => (typeof k === 'string' && k.charAt(0) === '_') ? undefined : v;
+function trLib(){ const T = window.SuliuTrace; return T && typeof T.createClient === 'function' && typeof T.trace === 'function' ? T : null; }
+function scrub(s){
+  s = String(s == null ? '' : s);
+  [TR.key, $('#trKey').value.trim()].forEach(k => { if (k && k.length >= 8) s = s.split(k).join('***'); });
+  return s.replace(/(api_?key=)[^&\s"'<>]+/gi, '$1***');
+}
+function truncText(meta){
+  if (!isObj(meta) || !meta.truncated) return null;
+  if (isStr(meta.truncated)) return clipS(meta.truncated, 200);
+  if (Array.isArray(meta.truncatedReasons)){ const rs = meta.truncatedReasons.filter(x => isStr(x) && x).join('；'); if (rs) return clipS(rs, 300); }   // lib/trace-eth.js 的写法
+  for (const k of ['truncatedReason', 'truncated_reason', 'reason', 'why']) if (isStr(meta[k]) && meta[k]) return clipS(meta[k], 200);
+  return '原因未说明';
+}
+/* 校验并清洗一份 {case, meta}（也接受只有 case 内容的对象）：返回 {c, meta}，不合格就 throw Error(原因)。
+   节点 / 转账只保留已知字段；id 唯一、type 在 TYPES 里、x/y/t 是数字、转账两端都存在；kind 只能是 real、unit 只能是 block */
+function normTrace(raw){
+  const bad = m => { throw new Error(m); };
+  if (!isObj(raw)) bad('内容不是 JSON 对象（应为 {case, meta}）');
+  const src = isObj(raw.case) ? raw.case : Array.isArray(raw.nodes) ? raw : bad('缺少 case 对象（应为 {case, meta}）');
+  const meta = src !== raw && isObj(raw.meta) ? raw.meta : {};
+  if (!Array.isArray(src.nodes)) bad('case.nodes 不是数组');
+  if (!Array.isArray(src.txs)) bad('case.txs 不是数组');
+  if (!src.nodes.length) bad('case.nodes 是空的');
+  if (src.nodes.length > TR_MAX_NODES) bad('节点太多：' + src.nodes.length + ' 个，上限 ' + TR_MAX_NODES);
+  if (src.txs.length > TR_MAX_TXS) bad('转账太多：' + src.txs.length + ' 笔，上限 ' + TR_MAX_TXS);
+  if (src.kind != null && src.kind !== 'real') bad('case.kind 必须是 "real"');
+  if (src.unit != null && src.unit !== 'block') bad('case.unit 必须是 "block"（以区块号为时间轴）');
+  if (!isStr(src.id) || !src.id || src.id.length > 100) bad('case.id 缺失或不合法（需要 1–100 个字符的字符串）');
+  let metaLen = 0; try { metaLen = JSON.stringify(meta).length; } catch (e) { metaLen = 0; }
+  if (metaLen > 200000) bad('meta 太大（超过 200 KB）');
+  const ids = new Set(), nodes = [];
+  src.nodes.forEach((n, i) => {
+    const at = '节点 #' + (i + 1);
+    if (!isObj(n)) bad(at + ' 不是对象');
+    if (!isStr(n.id) || !n.id || n.id.length > 100 || n.id.indexOf('|') >= 0 || n.id === '__proto__') bad(at + ' 的 id 不合法（需要 1–100 个字符的字符串，不含 | ）');
+    if (ids.has(n.id)) bad('节点 id 重复：' + clipS(n.id, 40));
+    ids.add(n.id);
+    const nm = '节点 ' + clipS(n.id, 40);
+    if (!isStr(n.type) || !own(TYPES, n.type)) bad(nm + ' 的 type 不在已有类型里：' + clipS(n.type, 30));
+    if (!isNum(n.x) || !isNum(n.y)) bad(nm + ' 的 x / y 必须是数字');
+    if (n.label != null && !isStr(n.label)) bad(nm + ' 的 label 不是字符串');
+    const o = {id:n.id, type:n.type, label:clipS(n.label != null ? n.label : n.id, 120), x:n.x, y:n.y};
+    if (n.addr != null){ if (!isStr(n.addr)) bad(nm + ' 的 addr 不是字符串'); o.addr = clipS(n.addr, 100); }
+    ['note', 'sub', 'bal', 'conf'].forEach(k => { if (n[k] != null){ if (!isStr(n[k])) bad(nm + ' 的 ' + k + ' 不是字符串'); o[k] = clipS(n[k], 1500); } });
+    if (n.blk != null){ if (!isNum(n.blk)) bad(nm + ' 的 blk 不是数字'); o.blk = n.blk; }
+    ['excluded', 'group', 'inferred'].forEach(k => { if (n[k] === true) o[k] = true; });
+    if (isStr(n.mimic)) o.mimic = clipS(n.mimic, 100);
+    nodes.push(o);
+  });
+  nodes.forEach(o => { if (o.mimic && !ids.has(o.mimic)) delete o.mimic; });
+  const txs = [];
+  src.txs.forEach((t, i) => {
+    const at = '转账 #' + (i + 1);
+    if (!isObj(t)) bad(at + ' 不是对象');
+    if (!isStr(t.from) || !ids.has(t.from)) bad(at + ' 的 from 不是已有节点：' + clipS(t.from, 40));
+    if (!isStr(t.to) || !ids.has(t.to)) bad(at + ' 的 to 不是已有节点：' + clipS(t.to, 40));
+    if (!isNum(t.t)) bad(at + ' 的 t（区块号）必须是数字');
+    if (t.amt != null && !isStr(t.amt)) bad(at + ' 的 amt 必须是字符串或 null');
+    if (t.eth != null && !isNum(t.eth)) bad(at + ' 的 eth 必须是数字或 null');
+    if (t.ts != null && !isNum(t.ts)) bad(at + ' 的 ts（Unix 秒）必须是数字或 null');
+    const o = {from:t.from, to:t.to, t:t.t, amt:t.amt == null ? null : clipS(t.amt, 200), eth:t.eth == null ? null : t.eth};
+    if (isNum(t.ts) && t.ts > 0) o.ts = Math.trunc(t.ts);   // 区块时间（Unix 秒），报告里按 UTC+8 显示；旧文件没有就不带
+    if (t.hash != null){ if (!isStr(t.hash) || !isHash(t.hash)) bad(at + ' 的 hash 格式不对（应为 0x 加 64 位十六进制）'); o.hash = t.hash; }
+    if (t.flags != null){ if (!Array.isArray(t.flags) || t.flags.some(f => !isStr(f))) bad(at + ' 的 flags 必须是字符串数组'); o.flags = t.flags.slice(0, 10).map(f => clipS(f, 20)); }
+    if (t.note != null){ if (!isStr(t.note)) bad(at + ' 的 note 不是字符串'); o.note = clipS(t.note, 1500); }
+    ['hypo', 'unknown', 'approx'].forEach(k => { if (t[k] === true) o[k] = true; });
+    txs.push(o);
+  });
+  txs.sort((a, b) => a.t - b.t);   // 时间轴和告警合并都按区块升序；sort 是稳定的
+  const tab = isStr(src.tab) && src.tab ? clipS(src.tab, 40) : '追踪 ' + clipS(src.id, 24);
+  const c = {
+    id:src.id, focus:isStr(src.focus) && ids.has(src.focus) ? src.focus : nodes[0].id, tab, tabK:isStr(src.tabK) && src.tabK ? clipS(src.tabK, 20) : '自动追踪', kind:'real', unit:'block',
+    title:isStr(src.title) && src.title ? clipS(src.title, 200) : '链上追踪 ' + clipS(src.id, 60), short:isStr(src.short) && src.short ? clipS(src.short, 60) : tab,
+    en:isStr(src.en) && src.en ? clipS(src.en, 200) : 'incident under investigation',
+    facts:(Array.isArray(src.facts) ? src.facts : []).filter(f => Array.isArray(f) && f.length >= 2).slice(0, 30).map(f => [clipS(f[0], 60), clipS(f[1], 600)]),
+    banner:(Array.isArray(src.banner) ? src.banner : []).slice(0, 10).map(b => clipS(String(b == null ? '' : b).replace(/<\/?b>/gi, ''), 300)),   // 追踪 / 载入案件的 banner 一律纯文本：只去掉 lib 习惯带的 <b></b> 标签，其余由 esc() 转义显示
+    channels:isStr(src.channels) && src.channels ? clipS(src.channels, 500) : '受害方官方渠道；相关交易所合规团队；执法机关',
+    nodes, txs
+  };
+  return {c, meta};
+}
+/* 校验后加入 CASES（同 id 的追踪案件原位替换；与内置案件同 id 的拒绝）；超过 TR_MAX 个就移除最早加入的；返回 {c, dropped}，不合格 throw Error */
+function acceptTrace(raw){
+  const r = normTrace(raw), c = r.c;
+  if (CASES.some(x => x.id === c.id && !x._tr)) throw new Error('case.id「' + clipS(c.id, 40) + '」与内置案件重名，已拒绝');
+  c._tr = true; c._ts = Date.now(); c._meta = r.meta;
+  const i = CASES.findIndex(x => x.id === c.id);
+  if (i >= 0) CASES[i] = c; else CASES.push(c);
+  let dropped = 0;
+  while (CASES.filter(x => x._tr).length > TR_MAX){
+    const old = CASES.filter(x => x._tr && x !== c).sort((a, b) => a._ts - b._ts)[0];
+    CASES.splice(CASES.indexOf(old), 1); dropped++;
+  }
+  return {c, dropped};
+}
+function persistTraces(quiet){
+  let ok = false;
+  try {
+    const items = CASES.filter(c => c._tr).sort((a, b) => a._ts - b._ts).map(c => ({ts:c._ts, case:JSON.parse(JSON.stringify(c, noPriv)), meta:c._meta || {}}));
+    ok = items.length ? ls.set(TRK.traces, scrub(JSON.stringify({v:1, items}))) : ls.del(TRK.traces);
+  } catch (e) { ok = false; }
+  if (!ok && !quiet) toast('追踪结果没能保存到本机浏览器（存储空间不足或被禁用），刷新后会丢失；可以用「导出」另存', 5000);
+  return ok;
+}
+function restoreTraces(){
+  const d = jparse(ls.get(TRK.traces)); if (!isObj(d) || !Array.isArray(d.items)) return;
+  d.items.slice(-TR_MAX).forEach(it => {
+    try {
+      if (!isObj(it)) return;
+      const r = normTrace({case:it.case, meta:it.meta});
+      if (CASES.some(x => x.id === r.c.id)) return;   // 与内置案件（或存盘里前面那份）同 id：忽略
+      r.c._tr = true; r.c._ts = isNum(it.ts) ? it.ts : Date.now(); r.c._meta = r.meta; CASES.push(r.c);
+    } catch (e) {}
+  });
+}
+function showTrace(c){ loadCase(CASES.indexOf(c)); }
+const trSummary = c => c.nodes.length + ' 个地址、' + c.txs.length + ' 笔转账';
+function trDelClick(id){
+  const c = CASES.find(x => x._tr && x.id === id); if (!c) return;
+  if (DELARM.id !== id){
+    DELARM.id = id; clearTimeout(DELARM.timer);
+    DELARM.timer = setTimeout(() => { DELARM.id = null; renderCases(); }, 3000);
+    renderCases(); return;
+  }
+  clearTimeout(DELARM.timer); DELARM.id = null;
+  const i = CASES.indexOf(c), wasCur = i === S.ci;
+  CASES.splice(i, 1);
+  persistTraces();
+  if (wasCur){ loadCase(0); } else { if (S.ci > i) S.ci--; renderCases(); }
+  toast('已删除追踪案件「' + c.tab + '」');
+}
+
+/* ----- 对话框 ----- */
+function trMsg(kind, text){
+  const el = $('#trMsg');
+  if (!text){ el.hidden = true; el.textContent = ''; el.className = ''; return; }
+  el.className = kind === 'ok' ? 'okbox' : kind === 'err' ? 'warnbox' : 'offbox';
+  el.textContent = text; el.hidden = false;
+}
+function trProgText(t){ const el = $('#trProg'); el.textContent = t; el.hidden = !t; }
+function trProgress(p, maxCalls){
+  if (!isObj(p)) return;
+  const cnt = v => isNum(v) ? v : Array.isArray(v) ? v.length : (v && typeof v.size === 'number') ? v.size : null;
+  const parts = [];
+  if (isNum(p.calls)) parts.push('API 调用 ' + p.calls + ' / ' + (isNum(p.maxCalls) ? p.maxCalls : maxCalls));
+  const vs = [p.visited, p.visitedCount, p.addresses].map(cnt).find(x => x != null);
+  if (vs != null) parts.push('已访问地址 ' + vs);
+  if (p.msg != null && p.msg !== '') parts.push(scrub(p.msg));
+  if (parts.length) trProgText(parts.join(' · '));
+}
+function trUI(){
+  const T = trLib(), busy = TR.busy;
+  const go = $('#trGo'); go.disabled = busy || !T; go.textContent = busy ? '追踪中…' : '开始追踪';
+  go.title = T ? '' : '追踪模块未加载（缺少 lib/trace-eth.js）';
+  $('#trStop').disabled = !busy;
+  $('#trImport').disabled = busy;
+  ['#trAddr', '#trStart', '#trHops', '#trTopK', '#trCalls', '#trKey', '#trRemember'].forEach(s => { $(s).disabled = busy; });
+  $('#trLibNote').hidden = !!T;
+}
+function trOpen(){
+  const k = ls.get(TRK.key);
+  if (k && !$('#trKey').value){ $('#trKey').value = k; $('#trRemember').checked = true; }
+  trUI(); $('#traceModal').hidden = false; $('#trAddr').focus();
+}
+function trClose(){ $('#traceModal').hidden = true; $('#traceBtn').focus(); }
+/* 勾选「记住」才存 key；取消勾选立即删除 */
+function persistKey(){
+  if (!$('#trRemember').checked){ ls.del(TRK.key); return; }
+  const v = $('#trKey').value.trim();
+  if (TR_KEY_RE.test(v)) ls.set(TRK.key, v);
+}
+function trParams(){
+  const addr = $('#trAddr').value.trim();
+  if (!isFull(addr)) return '地址格式不对：需要 0x 开头加 40 位十六进制字符';
+  const sb = $('#trStart').value.trim();
+  let startBlock = 0;
+  if (sb){ if (!/^\d{1,10}$/.test(sb)) return '起始区块只能填非负整数（留空 = 0）'; startBlock = +sb; }
+  const ival = (sel, lo, hi, nm) => { const s = $(sel).value.trim(); if (!/^\d{1,6}$/.test(s)) return nm + '要填 ' + lo + '–' + hi + ' 的整数'; const v = +s; return v < lo || v > hi ? nm + '要在 ' + lo + '–' + hi + ' 之间' : v; };
+  const hops = ival('#trHops', 1, 5, '跳数'); if (isStr(hops)) return hops;
+  const topK = ival('#trTopK', 1, 10, '每跳前 K 笔'); if (isStr(topK)) return topK;
+  const maxCalls = ival('#trCalls', 20, 300, 'API 调用上限'); if (isStr(maxCalls)) return maxCalls;
+  const key = $('#trKey').value.trim();
+  if (!key) return '请先填 Etherscan API Key（没有的话点上面的链接免费申请）';
+  if (!TR_KEY_RE.test(key)) return 'API Key 格式不对：应为 16–64 位字母和数字，不要带空格或其他符号';
+  return {start:addr.toLowerCase(), startBlock, hops, topK, maxCalls, key};
+}
+function trErrText(e, hasResult){
+  const m = scrub(e && e.message != null ? e.message : e);
+  if (e && e.code === 'BUDGET') return hasResult ? 'API 调用次数用完，已显示部分结果' : 'API 调用次数用完，没有可显示的部分结果（可以调大「API 调用上限」再试）';
+  if (e && (e.name === 'AbortError' || e.code === 'ABORT' || e.code === 'ABORTED')) return '已停止';
+  if (e && (e.code === 'NETWORK' || (/failed to fetch|networkerror|network request failed|load failed/i.test(m) || /ERR_[A-Z_]+/.test(m)))) return '连不上 Etherscan（国内网络可能需要代理）';
+  return m || '未知错误';
+}
+async function trRun(){
+  if (TR.busy) return;
+  const T = trLib();
+  if (!T){ trMsg('err', '追踪模块未加载（缺少 lib/trace-eth.js）'); return; }
+  const p = trParams();
+  if (isStr(p)){ trMsg('err', p); return; }
+  TR.key = p.key; persistKey();
+  trMsg('', ''); trProgText('准备中…');
+  const ac = new AbortController();
+  TR.busy = true; TR.ac = ac; trUI();
+  let res = null, err = null;
+  try {
+    const client = T.createClient({key:p.key, maxCalls:p.maxCalls});
+    res = await T.trace({client, start:p.start, startBlock:p.startBlock, maxHops:p.hops, topK:p.topK, official:OFF.snap || null, signal:ac.signal, onProgress:pr => trProgress(pr, p.maxCalls)});
+  } catch (e) { err = e; }
+  TR.busy = false; TR.ac = null; trUI();
+  const out = isObj(res) ? res : (err && isObj(err.partial) ? err.partial : null);
+  let shown = null, why = null;
+  if (out){ try { shown = acceptTrace(out); } catch (e) { why = scrub(e.message); } }
+  if (shown){
+    persistTraces(); showTrace(shown.c);
+    const sum = trSummary(shown.c) + (shown.dropped ? '；最多保留 ' + TR_MAX + ' 个追踪结果，已移除最早的 ' + shown.dropped + ' 个' : '');
+    if (err){ trMsg('err', trErrText(err, true) + '（' + sum + '）'); return; }
+    trProgText('');
+    trClose();
+    toast((ac.signal.aborted ? '已停止，已显示已得到的部分结果：' : shown.c.txs.length ? '追踪完成：' : '追踪完成，没有找到可展开的转出记录：') + sum + (truncText(shown.c._meta) ? '（结果被截断，见画布上方提示）' : ''), 5000);
+    return;
+  }
+  trProgText('');
+  if (err) trMsg('err', trErrText(err, false) + (why ? '；部分结果无法显示：' + why : ''));
+  else trMsg('err', why ? '追踪模块返回的结果无法显示：' + why : '追踪模块没有返回结果');
+}
+function trDownload(name, text){
+  try {
+    const url = URL.createObjectURL(new Blob([text], {type:'application/json'})), a = document.createElement('a');
+    a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    return true;
+  } catch (e) { return false; }
+}
+function trExport(){
+  const c = C && C._tr ? C : CASES.filter(x => x._tr).sort((a, b) => b._ts - a._ts)[0];
+  if (!c){ trMsg('err', '还没有追踪结果可导出（先追踪一个地址，或先载入一个 JSON）'); return; }
+  const meta = c._meta || {};
+  const focus = c.nodes.find(n => n.id === c.focus) || {};
+  const am = [meta.start, meta.address, meta.addr, focus.addr].map(x => isStr(x) ? /0x[0-9a-fA-F]{40}/.exec(x) : null).find(Boolean);
+  const d = new Date(), pad = n => String(n).padStart(2, '0');
+  const stamp = d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '-' + pad(d.getHours()) + pad(d.getMinutes()) + pad(d.getSeconds());
+  const name = 'suliu-trace-' + (am ? am[0].toLowerCase() : 'unknown') + '-' + stamp + '.json';
+  const text = scrub(JSON.stringify({case:JSON.parse(JSON.stringify(c, noPriv)), meta}, null, 2));
+  if (trDownload(name, text)) trMsg('ok', '已导出：' + name); else trMsg('err', '导出失败（浏览器不允许下载）');
+}
+function trImport(file){
+  if (file.size > TR_MAX_FILE){ trMsg('err', '载入失败：文件太大（' + Math.round(file.size / 1048576) + ' MB，上限 ' + Math.round(TR_MAX_FILE / 1048576) + ' MB）'); return; }
+  file.text().then(txt => {
+    let raw; try { raw = JSON.parse(txt); } catch (e) { throw new Error('不是有效的 JSON 文件'); }
+    const r = acceptTrace(raw);
+    persistTraces(); showTrace(r.c); trMsg('', ''); trClose();
+    toast('已载入追踪结果：' + trSummary(r.c) + (r.dropped ? '；最多保留 ' + TR_MAX + ' 个追踪结果，已移除最早的 ' + r.dropped + ' 个' : ''), 4000);
+  }).catch(e => trMsg('err', '载入失败：' + scrub(e && e.message ? e.message : '读取文件出错')));
+}
+$('#traceBtn').onclick = trOpen;
+$('#trClose').onclick = trClose;
+$('#traceModal').addEventListener('click', e => { if (e.target.id === 'traceModal') trClose(); });
+$('#trGo').onclick = trRun;
+$('#trStop').onclick = () => { if (TR.ac){ TR.ac.abort(); $('#trStop').disabled = true; trProgText('正在停止，马上返回已得到的部分结果…'); } };
+$('#trExport').onclick = trExport;
+$('#trImport').onclick = () => $('#trFile').click();
+$('#trFile').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (f) trImport(f); });
+$('#trRemember').addEventListener('change', persistKey);
+$('#trKey').addEventListener('change', persistKey);
+['#trAddr', '#trStart', '#trHops', '#trTopK', '#trCalls', '#trKey'].forEach(s => $(s).addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); trRun(); } }));
+
+/* ---------- 生成证据报告（lib/report.js → window.SuliuReport）----------
+   报告是一份独立的 HTML 文件（内联样式、不含脚本、不联网），在新窗口打开后用浏览器的打印功能存成 PDF。
+   去向图取自当前画布：临时显示全部时间步与全部节点、视图复位为 1:1，把 #svg 的 viewBox 设成内容的包围盒后取 outerHTML，随后恢复现场。
+   填写的报案人 / 联系方式 / 被盗经过 / 被盗交易哈希只传给 SuliuReport.build，不存 localStorage、不上传。 */
+function rpMsg(kind, text){
+  const el = $('#rpMsg');
+  if (!text){ el.hidden = true; el.textContent = ''; el.className = ''; return; }
+  el.className = kind === 'ok' ? 'okbox' : kind === 'err' ? 'warnbox' : 'offbox';
+  el.textContent = text; el.hidden = false;
+}
+function rpUI(){
+  $('#rpGo').disabled = !RPT;
+  $('#rpLibNote').hidden = !!RPT;
+  $('#reportBtn').disabled = !RPT;
+  $('#reportBtn').title = RPT ? '把当前案件整理成一份可打印的证据报告（浏览器里按 Ctrl+P 打印或另存为 PDF）' : '报告模块未加载（缺少 lib/report.js）';
+}
+function rpOpen(){ rpMsg('', ''); rpUI(); $('#reportModal').hidden = false; $('#rpParty').focus(); }
+function rpClose(){ $('#reportModal').hidden = true; $('#reportBtn').focus(); }
+function rpSvg(){
+  const keep = {t:cur(), k:S.k, x:S.x, y:S.y, dust:S.dust, sel:S.sel, role:svg.getAttribute('role'), label:svg.getAttribute('aria-label')};
+  stopPlay();
+  let out = '';
+  try {
+    S.dust = true; computeTimes(null); S.sel = null; S.k = 1; S.x = 0; S.y = 0;
+    renderAll();
+    svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', '资金去向图');
+    const bb = world.getBBox(), m = 16;
+    if (bb && bb.width > 0 && bb.height > 0) svg.setAttribute('viewBox', [bb.x - m, bb.y - m, bb.width + 2 * m, bb.height + 2 * m].map(v => Math.round(v * 100) / 100).join(' '));
+    out = svg.outerHTML;
+  } finally {
+    svg.removeAttribute('viewBox');
+    if (keep.role != null) svg.setAttribute('role', keep.role); else svg.removeAttribute('role');
+    if (keep.label != null) svg.setAttribute('aria-label', keep.label); else svg.removeAttribute('aria-label');
+    S.dust = keep.dust; computeTimes(keep.t); S.sel = keep.sel; S.k = keep.k; S.x = keep.x; S.y = keep.y;
+    renderAll();
+  }
+  return out;
+}
+/* 新窗口打开；被浏览器拦截时改为下载 .html 文件。返回 'window' | 'download' | null */
+function rpDeliver(html, name){
+  let url = null;
+  try { url = URL.createObjectURL(new Blob([html], {type:'text/html;charset=utf-8'})); } catch (e) { url = null; }
+  if (!url) return null;
+  let w = null;
+  try { w = window.open(url, '_blank'); } catch (e) { w = null; }
+  if (w){ setTimeout(() => URL.revokeObjectURL(url), 300000); return 'window'; }
+  try {
+    const a = document.createElement('a');
+    a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    return 'download';
+  } catch (e) { return null; }
+}
+function rpGenerate(){
+  if (!RPT){ rpMsg('err', '报告模块未加载（缺少 lib/report.js）'); return; }
+  const info = {party:$('#rpParty').value.trim(), contact:$('#rpContact').value.trim(), story:$('#rpStory').value.trim(), theftTx:$('#rpTheft').value.trim()};
+  if (info.theftTx && !isHash(info.theftTx)){ rpMsg('err', '被盗交易哈希格式不对：需要 0x 开头加 64 位十六进制字符（可以留空）'); return; }
+  let html = '';
+  const now = new Date();
+  try {
+    const svgText = rpSvg();
+    html = RPT.build({case:C, meta:C._meta || {}, generatedAt:now.toISOString(), official:OFF.index || null, officialLabel:OFF.snap ? String(OFF.snap.label || OFF.snap.fetched_at || '') : '', svg:svgText, info, guide:GD, brand:BR0});
+  } catch (e) { rpMsg('err', '生成失败：' + scrub(e && e.message ? e.message : e)); return; }
+  const pad = n => String(n).padStart(2, '0');
+  const name = 'suliu-report-' + String(C.id).replace(/[^A-Za-z0-9._-]/g, '_').slice(0, 60) + '-' + now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate()) + '-' + pad(now.getHours()) + pad(now.getMinutes()) + pad(now.getSeconds()) + '.html';
+  const how = rpDeliver(html, name);
+  if (!how){ rpMsg('err', '报告已生成，但浏览器不允许打开新窗口或下载文件'); return; }
+  rpMsg('', ''); rpClose();
+  toast(how === 'window' ? '报告已在新窗口打开：按 Ctrl+P（Mac 为 ⌘P）打印或另存为 PDF' : '浏览器拦截了新窗口，已改为下载：' + name, 5000);
+}
+$('#reportBtn').onclick = rpOpen;
+$('#rpClose').onclick = rpClose;
+$('#rpGo').onclick = rpGenerate;
+$('#reportModal').addEventListener('click', e => { if (e.target.id === 'reportModal') rpClose(); });
+['#rpParty', '#rpContact', '#rpTheft'].forEach(s => $(s).addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); rpGenerate(); } }));
+
+/* ---------- 报案指引（lib/guide.js → window.SuliuGuide）----------
+   只读对话框，和报告第 9 节附录读的是同一份 SuliuGuide；缺这个文件时按钮置灰，报告照常生成、只是没有附录。 */
+const GD = window.SuliuGuide && Array.isArray(window.SuliuGuide.sections) && window.SuliuGuide.sections.length ? window.SuliuGuide : null;
+function gdUI(){
+  $('#guideBtn').disabled = !GD;
+  if (!GD) $('#guideBtn').title = '指引模块未加载（缺少 lib/guide.js）';
+}
+function gdRender(){
+  const box = $('#gdBody');
+  box.textContent = '';
+  $('#gdLibNote').hidden = !!GD;
+  $('#gdVer').textContent = GD ? '指引版本 ' + String(GD.version || '') + '；与证据报告第 9 节附录是同一份内容。' : '';
+  if (!GD) return;
+  GD.sections.forEach(s => {
+    const h = document.createElement('h3'); h.textContent = String(s.title || '');
+    const d = document.createElement('div');
+    d.innerHTML = RPT0 && typeof RPT0.sanitizeFragment === 'function' ? RPT0.sanitizeFragment(String(s.html || '')) : String(s.html || '');
+    box.appendChild(h); box.appendChild(d);
+  });
+  if (GD.note){ const n = document.createElement('p'); const em = document.createElement('em'); em.textContent = String(GD.note); n.appendChild(em); box.appendChild(n); }
+}
+function gdOpen(){ gdRender(); $('#guideModal').hidden = false; $('#guideModal .body').scrollTop = 0; $('#gdClose').focus(); }
+function gdClose(){ $('#guideModal').hidden = true; $('#guideBtn').focus(); }
+$('#guideBtn').onclick = gdOpen;
+$('#gdClose').onclick = gdClose;
+$('#guideModal').addEventListener('click', e => { if (e.target.id === 'guideModal') gdClose(); });
+
+/* ---------- 品牌位（lib/brand.js → window.SuliuBrand）----------
+   顶栏的名字与副标题读它；contact / site 都为空时底栏整条隐藏，不显示任何「联系我们」内容。
+   全部用 textContent 写入（等同转义）；site 只有以 https:// 开头才做成链接，否则当纯文字。 */
+const BR0 = window.SuliuBrand && typeof window.SuliuBrand === 'object' ? window.SuliuBrand : null;
+function brandRender(){
+  if (!BR0) return;
+  const str = (v, n) => typeof v === 'string' ? v.trim().slice(0, n) : '';
+  const name = str(BR0.name, 60), tag = str(BR0.tagline, 100), contact = str(BR0.contact, 300), site = str(BR0.site, 300), foot = $('#brandFoot');
+  if (name) $('#brandName').textContent = name;
+  if (tag) $('#brandTag').textContent = tag;
+  foot.textContent = '';
+  if (!contact && !site){ foot.hidden = true; return; }
+  foot.appendChild(document.createTextNode('需要人工协助（企业应急、报告人工复核）：' + (contact ? contact + ' ' : '')));
+  if (site){
+    if (/^https:\/\/[^\s"'<>\\]+$/.test(site)){
+      const a = document.createElement('a'); a.href = site; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = site; foot.appendChild(a);
+    } else foot.appendChild(document.createTextNode(site));
+  }
+  foot.appendChild(document.createElement('br'));
+  foot.appendChild(document.createTextNode('溯流不向受害者收取「追回费」，不承诺追回。'));
+  foot.hidden = false;
+}
+
+window.addEventListener('resize', () => { applyT(); });
+
+rpUI();
+gdUI();
+brandRender();
+trUI();
+restoreTraces();
+/* v0.2 的官方实时视图曾把整份名单缓存在 localStorage（suliu.official.*，可能占掉几 MB 配额）；现在不再使用，启动时清掉 */
+try { Object.keys(localStorage).filter(k => k.indexOf('suliu.official.') === 0).forEach(k => localStorage.removeItem(k)); } catch (e) {}
+offInit();
+loadCase(0);
+requestAnimationFrame(initialView);
+})();
+</script>
+
+</body></html>

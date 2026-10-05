@@ -1,0 +1,53 @@
+{
+  "fetched_at": "2026-10-01T13:50:24+08:00",
+  "snap_ts": 1790833816,
+  "label": "2026-10-01 13:50 实时抓取",
+  "frozen": false,
+  "epoch": 0,
+  "source": "https://trace.bgblockchain.xyz",
+  "headers": {
+    "maintenance": {
+      "status": 200,
+      "x-snap-ts": null,
+      "x-maintenance": null,
+      "etag": null,
+      "cache-control": "no-store"
+    },
+    "holdings": {
+      "status": 200,
+      "x-snap-ts": "1790833816",
+      "x-maintenance": null,
+      "etag": "W/\"1790833816-holdings\"",
+      "cache-control": "public, max-age=5, stale-while-revalidate=30"
+    },
+    "victims": {
+      "status": 200,
+      "x-snap-ts": "1790833816",
+      "x-maintenance": null,
+      "etag": "W/\"1790833816-victims\"",
+      "cache-control": "public, max-age=5, stale-while-revalidate=30"
+    },
+    "reviewed": {
+      "status": 200,
+      "x-snap-ts": null,
+      "x-maintenance": null,
+      "etag": "W/\"rv-a992ec91\"",
+      "cache-control": "public, max-age=60, stale-while-revalidate=300"
+    },
+    "chains": {
+      "status": 200,
+      "x-snap-ts": null,
+      "x-maintenance": null,
+      "etag": "W/\"ch-af5c42e1\"",
+      "cache-control": "public, max-age=60, stale-while-revalidate=300"
+    },
+    "corrections": {
+      "status": 200,
+      "x-snap-ts": null,
+      "x-maintenance": null,
+      "etag": null,
+      "cache-control": "public, max-age=300"
+    }
+  },
+  "errors": []
+}

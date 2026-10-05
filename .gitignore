@@ -1,0 +1,14 @@
+# 私有配置与密钥
+.env
+.env.*
+!.env.example
+
+# 依赖与临时文件
+node_modules/
+*.tmp-*
+
+# 本机私有：项目规格（含定价与法律考虑）、本机配置、旧版本存档、商业方案
+CLAUDE.md
+.claude/
+archive/
+链上资金流向可视化中台：方案.md

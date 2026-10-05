@@ -1,0 +1,1340 @@
+{
+  "case": {
+    "id": "trace-0x04065c-26081300",
+    "tab": "追踪 0x0406…e84e",
+    "tabK": "自动追踪",
+    "kind": "real",
+    "unit": "block",
+    "focus": "n0",
+    "title": "地址追踪 · 0x0406…e84e",
+    "short": "追踪 0x0406…e84e",
+    "en": "Auto trace · 0x0406…e84e",
+    "facts": [
+      [
+        "起点",
+        "0x04065ccf52929dce58d9c7659de6ddac2316e84e"
+      ],
+      [
+        "范围",
+        "区块 26081300 – 最新；最多 3 跳，每个节点最多展开 6 个对手方"
+      ],
+      [
+        "数据来源",
+        "Etherscan API V2（chainid 1），抓取时间 2026-10-05T07:19:59.547Z"
+      ],
+      [
+        "API 调用",
+        "70 / 120 次"
+      ],
+      [
+        "是否截断",
+        "否"
+      ],
+      [
+        "金额说明",
+        "美元折算只用于给对手方排序，不是成交价；代币真假只按合约地址判断（白名单：USDT / USDC / DAI / WETH / WBTC / stETH + 原生 ETH）"
+      ]
+    ],
+    "banner": [
+      "<b>自动追踪</b> · 由 Etherscan API 实时拉取",
+      "自动结果可能漏判或误判，提交举报前请人工复核"
+    ],
+    "channels": "受害方官方举报渠道；相关交易所或协议的合规/安全联系人；执法机关",
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "attacker",
+        "label": "0x0406…e84e",
+        "addr": "0x04065ccf52929dce58d9c7659de6ddac2316e84e",
+        "x": 0,
+        "y": 540,
+        "note": "起点（用户输入）；Bitget 官方 holdings：攻击者地址（eth/arb）"
+      },
+      {
+        "id": "n1",
+        "type": "dex",
+        "label": "UniversalRouter",
+        "addr": "0x23617e59a5925b2a4bf75d73ff6711cd0b29de85",
+        "x": 340,
+        "y": 240,
+        "note": "合约：UniversalRouter（getsourcecode）；名字含兑换关键词；按名字推断，非官方标注"
+      },
+      {
+        "id": "n2",
+        "type": "attacker",
+        "label": "0x5889…25df",
+        "addr": "0x5889433b754324089d4b6f168840fe5b13fe25df",
+        "x": 340,
+        "y": 340,
+        "note": "Bitget 官方 holdings：攻击者地址（eth）"
+      },
+      {
+        "id": "n3",
+        "type": "attacker",
+        "label": "0x1264…6bec",
+        "addr": "0x1264c155d11fe0a1b1fdb0c5212ce29a432f6bec",
+        "x": 340,
+        "y": 440,
+        "note": "Bitget 官方 holdings：攻击者地址（eth）"
+      },
+      {
+        "id": "n4",
+        "type": "attacker",
+        "label": "0xe661…a0d9",
+        "addr": "0xe6616fd6b1dfefdf2fbe196af2f26ec26b51a0d9",
+        "x": 340,
+        "y": 540,
+        "note": "Bitget 官方 holdings：攻击者地址（eth）"
+      },
+      {
+        "id": "n5",
+        "type": "attacker",
+        "label": "0x4819…d30c",
+        "addr": "0x48199ebe8300cc588955a198dd907c23b428d30c",
+        "x": 340,
+        "y": 640,
+        "note": "Bitget 官方 holdings：攻击者地址（eth）"
+      },
+      {
+        "id": "n6",
+        "type": "attacker",
+        "label": "0x6101…7126",
+        "addr": "0x6101b936fa0f7ae9a49b7260cb59b56aa31d7126",
+        "x": 340,
+        "y": 740,
+        "note": "Bitget 官方 holdings：攻击者地址（eth）"
+      },
+      {
+        "id": "n7",
+        "type": "attacker",
+        "label": "0x2279…a520",
+        "addr": "0x2279e1a93f66bf97833b76d5897734ff0b0ca520",
+        "x": 340,
+        "y": 840,
+        "note": "Bitget 官方 holdings：攻击者地址（eth）"
+      },
+      {
+        "id": "n8",
+        "type": "bridge",
+        "label": "THORChain_Router",
+        "addr": "0xd37bbe5744d730a1d98d8dc97c42f0ca46ad7146",
+        "x": 680,
+        "y": 40,
+        "note": "合约：THORChain_Router（getsourcecode）；名字含跨链关键词；按名字推断，非官方标注"
+      },
+      {
+        "id": "n9",
+        "type": "relay",
+        "label": "0x225a…dc17",
+        "addr": "0x225a38bc71102999dd13478bfabd7c4d53f2dc17",
+        "x": 680,
+        "y": 140,
+        "note": "合约：未验证合约（getsourcecode）；合约源码未验证（getsourcecode 无合约名）；按名字推断，非官方标注"
+      },
+      {
+        "id": "n10",
+        "type": "attacker",
+        "label": "0x5c76…aea0",
+        "addr": "0x5c768bf29923f221bba75f2f3baab32d793eaea0",
+        "x": 680,
+        "y": 240,
+        "note": "Bitget 官方 holdings：攻击者地址（eth/arb）"
+      },
+      {
+        "id": "n11",
+        "type": "relay",
+        "label": "Deposit",
+        "addr": "0x99a270caf386c49d280edb5c3bd36bccf821abae",
+        "x": 680,
+        "y": 340,
+        "note": "合约：Deposit（getsourcecode）；名字没有可识别的协议关键词，需人工查看；按名字推断，非官方标注；充值通道（推断）：转发合约，历史上 1 个不同来源，100% 转出归集到 Chainflip 以太坊 Vault"
+      },
+      {
+        "id": "n12",
+        "type": "attacker",
+        "label": "0x254d…2e20",
+        "addr": "0x254d2a1652bef135093a21a4131b1f79658e2e20",
+        "x": 680,
+        "y": 440,
+        "note": "Bitget 官方 holdings：攻击者地址（eth）"
+      },
+      {
+        "id": "n13",
+        "type": "attacker",
+        "label": "0xbc62…7204",
+        "addr": "0xbc62af53a78776d18926b67c982a11baa33b7204",
+        "x": 680,
+        "y": 540,
+        "note": "Bitget 官方 holdings：攻击者地址（eth）"
+      },
+      {
+        "id": "n14",
+        "type": "relay",
+        "label": "Deposit",
+        "addr": "0xba0e2410845e5b70796242f85118507515dbfa29",
+        "x": 680,
+        "y": 640,
+        "note": "合约：Deposit（getsourcecode）；名字没有可识别的协议关键词，需人工查看；按名字推断，非官方标注；充值通道（推断）：转发合约，历史上 1 个不同来源，100% 转出归集到 Chainflip 以太坊 Vault"
+      },
+      {
+        "id": "n15",
+        "type": "relay",
+        "label": "Deposit",
+        "addr": "0x9ad3de3b87e6f6c96cef3ef8a424841326c4397b",
+        "x": 680,
+        "y": 740,
+        "note": "合约：Deposit（getsourcecode）；名字没有可识别的协议关键词，需人工查看；按名字推断，非官方标注；充值通道（推断）：转发合约，历史上 2 个不同来源，100% 转出归集到 Chainflip 以太坊 Vault"
+      },
+      {
+        "id": "n16",
+        "type": "relay",
+        "label": "Deposit",
+        "addr": "0x69aa362235e45f7b41d076e1a2b460466ad0e809",
+        "x": 680,
+        "y": 840,
+        "note": "合约：Deposit（getsourcecode）；名字没有可识别的协议关键词，需人工查看；按名字推断，非官方标注；充值通道（推断）：转发合约，历史上 2 个不同来源，100% 转出归集到 Chainflip 以太坊 Vault"
+      },
+      {
+        "id": "n17",
+        "type": "relay",
+        "label": "Deposit",
+        "addr": "0xec008786a6a966f10f0fa01a6511517c4c05e079",
+        "x": 680,
+        "y": 940,
+        "note": "合约：Deposit（getsourcecode）；名字没有可识别的协议关键词，需人工查看；按名字推断，非官方标注；充值通道（推断）：转发合约，历史上 2 个不同来源，100% 转出归集到 Chainflip 以太坊 Vault"
+      },
+      {
+        "id": "n18",
+        "type": "relay",
+        "label": "Deposit",
+        "addr": "0x39ddab7ed57f837e50366f5f6199eba43ba44424",
+        "x": 680,
+        "y": 1040,
+        "note": "合约：Deposit（getsourcecode）；名字没有可识别的协议关键词，需人工查看；按名字推断，非官方标注；充值通道（推断）：转发合约，历史上 2 个不同来源，100% 转出归集到 Chainflip 以太坊 Vault"
+      },
+      {
+        "id": "n19",
+        "type": "attacker",
+        "label": "0xc65f…6ff9",
+        "addr": "0xc65fbc289efdc00147e8706b0c57180f03bd6ff9",
+        "x": 1020,
+        "y": 40,
+        "note": "Bitget 官方 holdings：攻击者地址（eth）"
+      },
+      {
+        "id": "n20",
+        "type": "attacker",
+        "label": "0x0f3f…207b",
+        "addr": "0x0f3fe61108b737a93d40f38f2609c927b359207b",
+        "x": 1020,
+        "y": 140,
+        "note": "Bitget 官方 holdings：攻击者地址（eth）"
+      },
+      {
+        "id": "n21",
+        "type": "attacker",
+        "label": "0xa542…bef0",
+        "addr": "0xa5428c9cf0c0159f3add5d0ae7540c4449f3bef0",
+        "x": 1020,
+        "y": 240,
+        "note": "Bitget 官方 holdings：攻击者地址（eth）"
+      },
+      {
+        "id": "n22",
+        "type": "attacker",
+        "label": "0x3ac2…8b55",
+        "addr": "0x3ac23a26408aa5c3faae6b1c1fc44f2ff6298b55",
+        "x": 1020,
+        "y": 340,
+        "note": "Bitget 官方 holdings：攻击者地址（eth）"
+      },
+      {
+        "id": "n23",
+        "type": "attacker",
+        "label": "0x127f…2d81",
+        "addr": "0x127fe0815c75767b9c1c87e0bce28333b8872d81",
+        "x": 1020,
+        "y": 440,
+        "note": "Bitget 官方 holdings：攻击者地址（eth）"
+      },
+      {
+        "id": "n24",
+        "type": "attacker",
+        "label": "0x424f…8bc1",
+        "addr": "0x424f776bee8eaa4400dc98bddcd664a9c1b78bc1",
+        "x": 1020,
+        "y": 540,
+        "note": "Bitget 官方 holdings：攻击者地址（eth）"
+      },
+      {
+        "id": "n25",
+        "type": "compliant",
+        "label": "Chainflip 以太坊 Vault",
+        "addr": "0xf5e10380213880111522dd0efd3dbb45b9f62bcc",
+        "x": 1020,
+        "y": 640,
+        "note": "Bitget 官方 reviewed：Chainflip 以太坊 Vault（协议金库；官方已核查，非攻击者）",
+        "excluded": true
+      },
+      {
+        "id": "n26",
+        "type": "attacker",
+        "label": "0x757a…7409",
+        "addr": "0x757ae1fe6f6da74e68bf225274b57956962c7409",
+        "x": 1020,
+        "y": 740,
+        "note": "Bitget 官方 holdings：攻击者地址（eth）"
+      },
+      {
+        "id": "n27",
+        "type": "relay",
+        "label": "Deposit",
+        "addr": "0xccfffd34ba781526daab1dfdb428f2b3970e5693",
+        "x": 1020,
+        "y": 840,
+        "note": "合约：Deposit（getsourcecode）；名字没有可识别的协议关键词，需人工查看；按名字推断，非官方标注"
+      },
+      {
+        "id": "n28",
+        "type": "bridge",
+        "label": "THORChain ETH 金库",
+        "addr": "0x328763072e3ce351ec29318df971b534ca45a0f7",
+        "x": 1020,
+        "y": 940,
+        "note": "Bitget 官方 reviewed：THORChain ETH 金库（协议金库；官方已核查，非攻击者）",
+        "excluded": true
+      },
+      {
+        "id": "n29",
+        "type": "relay",
+        "label": "Deposit",
+        "addr": "0xeb1d6f479c1a430c5b8be1a65506756e3a7b7b17",
+        "x": 1020,
+        "y": 1040,
+        "note": "合约：Deposit（getsourcecode）；名字没有可识别的协议关键词，需人工查看；按名字推断，非官方标注"
+      }
+    ],
+    "txs": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "t": 26081319,
+        "ts": 1790663171,
+        "amt": "50 ETH",
+        "eth": 50,
+        "hash": "0xad01f00c1861a1d9f9ad5898fcc67512f816fdb86cd283bd666e7933dc4d4e6b",
+        "flags": []
+      },
+      {
+        "from": "n0",
+        "to": "n1",
+        "t": 26081334,
+        "ts": 1790663351,
+        "amt": "50 ETH",
+        "eth": 50,
+        "hash": "0xff2e5e178050a6e4f7c9948c55845869870cd8bc3c2f941c4391cd931bf1eab4",
+        "flags": []
+      },
+      {
+        "from": "n0",
+        "to": "n1",
+        "t": 26081341,
+        "ts": 1790663435,
+        "amt": "50 ETH",
+        "eth": 50,
+        "hash": "0x76276962a1297b28cdc59354870c21c6b3e772c23fd2a0f8b92ddb2a87336208",
+        "flags": []
+      },
+      {
+        "from": "n0",
+        "to": "n1",
+        "t": 26081358,
+        "ts": 1790663639,
+        "amt": "50 ETH",
+        "eth": 50,
+        "hash": "0x0b740e458c516762dc9ff810b071c870aea49932e4966b8c0c4fe75355a2193c",
+        "flags": []
+      },
+      {
+        "from": "n0",
+        "to": "n1",
+        "t": 26081379,
+        "ts": 1790663891,
+        "amt": "30 ETH",
+        "eth": 30,
+        "hash": "0xaaa2cd5b43059d402b94a6ef186101c5d31a7154ed68de222f73e5af1bbfce71",
+        "flags": []
+      },
+      {
+        "from": "n0",
+        "to": "n1",
+        "t": 26081391,
+        "ts": 1790664035,
+        "amt": "70 ETH",
+        "eth": 70,
+        "hash": "0x7c012f2cab98bdeb18f09572cdebe09b191f4a83f7786ca758689ef64f2a7a1f",
+        "flags": []
+      },
+      {
+        "from": "n0",
+        "to": "n1",
+        "t": 26081407,
+        "ts": 1790664227,
+        "amt": "80 ETH",
+        "eth": 80,
+        "hash": "0xc3fee01d5cfa5b926735b3ce9d3effba4985907baa33bff6b0f10c88a19eda6b",
+        "flags": []
+      },
+      {
+        "from": "n0",
+        "to": "n2",
+        "t": 26081496,
+        "ts": 1790665295,
+        "amt": "425,959.08 USDT",
+        "eth": null,
+        "hash": "0x0786f257eed8a29e45b2d5f310a7f5e57651db13be4106831dd72d1503baf0b2",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n0",
+        "to": "n2",
+        "t": 26081502,
+        "ts": 1790665367,
+        "amt": "120.408 ETH",
+        "eth": 120.408,
+        "hash": "0x1e4d0eb6a4c33fdcd7663b46436a85ca9fea00eb4f3835311d3291b7e9576178",
+        "flags": []
+      },
+      {
+        "from": "n0",
+        "to": "n3",
+        "t": 26081346,
+        "ts": 1790663495,
+        "amt": "300,000 USDT",
+        "eth": null,
+        "hash": "0x1afc4e955f4f07dc276fe939da085b20f8ad27a10a4966c54f3db72e99e0cc10",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n0",
+        "to": "n4",
+        "t": 26081382,
+        "ts": 1790663927,
+        "amt": "300,000 USDT",
+        "eth": null,
+        "hash": "0xa1009ce4fca0ca96416f40bb115aef1707232e5d2d2567d3182ef19a5c6ef2cd",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n0",
+        "to": "n5",
+        "t": 26081396,
+        "ts": 1790664095,
+        "amt": "200,000 USDT",
+        "eth": null,
+        "hash": "0x4b1983caddf7681e8f3005dcf5eb30f2b7b42d3c970dca85e17b8d7d0f5735e4",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n0",
+        "to": "n6",
+        "t": 26081410,
+        "ts": 1790664263,
+        "amt": "200,000 USDT",
+        "eth": null,
+        "hash": "0xa28255f172dbfd4208147be07a79e4cef775c62c565f9a777fcaec7bfc9345fa",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n0",
+        "to": "n7",
+        "t": 26081418,
+        "ts": 1790664359,
+        "amt": "200,000 USDT",
+        "eth": null,
+        "hash": "0x26dbe07ec0c1da81640e76fd0f786d387d6293fc83626dcb245a23f49e7e1c5f",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n2",
+        "to": "n8",
+        "t": 26081899,
+        "ts": 1790670167,
+        "amt": "20 ETH",
+        "eth": 20,
+        "hash": "0x6cafa1416c01b03ee1073a8d3601bf94634af8c9daf33bf3eaeedd6ccb737eb2",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n8",
+        "t": 26081901,
+        "ts": 1790670191,
+        "amt": "20 ETH",
+        "eth": 20,
+        "hash": "0x9d3ccaae5b83cb0af876503fcd6214b2588aac9de142a3e0b94ef6ee5984dc0d",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n8",
+        "t": 26081904,
+        "ts": 1790670227,
+        "amt": "20 ETH",
+        "eth": 20,
+        "hash": "0x03d50a8799d89e269c60ce26a3ee2f531d952f4159e265a9186b6e88c96262a7",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n8",
+        "t": 26081909,
+        "ts": 1790670287,
+        "amt": "20 ETH",
+        "eth": 20,
+        "hash": "0x18abce2d784227bea2b7f1886dd0f3394e2519f95b9203b67c373760211ce0e6",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n8",
+        "t": 26081910,
+        "ts": 1790670299,
+        "amt": "20 ETH",
+        "eth": 20,
+        "hash": "0x12e5acd6f4d3b0b56a2f9307ff41db9aa69f24c0d93f324fa63f2ee05b587446",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n8",
+        "t": 26081912,
+        "ts": 1790670323,
+        "amt": "20 ETH",
+        "eth": 20,
+        "hash": "0x5b5a137a8c8f666f04711038392c521954e3203844497be02dc52c19fca819c5",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n8",
+        "t": 26081913,
+        "ts": 1790670335,
+        "amt": "20 ETH",
+        "eth": 20,
+        "hash": "0xae074a07cdf85d5ee43280c29ddd50b86a68ae42abde846ef070f0e831527620",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n8",
+        "t": 26081918,
+        "ts": 1790670395,
+        "amt": "17 ETH",
+        "eth": 17,
+        "hash": "0xd5e280e73e3c7ee2a0549dfb9da889fbe0ffe9c9b530eb5eac62ff62d4b4ce02",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n8",
+        "t": 26082158,
+        "ts": 1790673275,
+        "amt": "50 ETH",
+        "eth": 50,
+        "hash": "0x9c4f822884d3adcda6e7bd5fc9c22f0ecf4e5580906c60bcec50f8e1b1f031b8",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n8",
+        "t": 26082190,
+        "ts": 1790673659,
+        "amt": "20 ETH",
+        "eth": 20,
+        "hash": "0x9431298798873f37ed862847bc0d3a3f5e4ce42fd10c5b85b4d6738dc6118d39",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n8",
+        "t": 26082198,
+        "ts": 1790673755,
+        "amt": "50 ETH",
+        "eth": 50,
+        "hash": "0xa67d01d44987dca01ba4e1c19630b3dbd8ba2d084f477a97f9c0569779d4fde1",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n8",
+        "t": 26082206,
+        "ts": 1790673851,
+        "amt": "20 ETH",
+        "eth": 20,
+        "hash": "0xd087d80810149873af16527bf92729d6c4307314f50141334f88c44b1d9adeed",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n8",
+        "t": 26082220,
+        "ts": 1790674019,
+        "amt": "30 ETH",
+        "eth": 30,
+        "hash": "0x6620c34ba8076ba39318036b4f3470bb570be17a34460973771c3cc2f2dd308a",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n8",
+        "t": 26082225,
+        "ts": 1790674079,
+        "amt": "33.5 ETH",
+        "eth": 33.5,
+        "hash": "0xa247fff8ce15859358540dfe42fc080816a707c94507fbf0dfe2db7580b5ffe0",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n8",
+        "t": 26082351,
+        "ts": 1790675615,
+        "amt": "50 ETH",
+        "eth": 50,
+        "hash": "0xb2b66ea182fdf764ca21de4287fbce0e64d4296e857c9869838160688242c540",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n8",
+        "t": 26082354,
+        "ts": 1790675651,
+        "amt": "50 ETH",
+        "eth": 50,
+        "hash": "0x9ffaf1780ed52aab5bd97738e74bb9fd0d2c83609d70d7bac8ff851715bea15e",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n8",
+        "t": 26082357,
+        "ts": 1790675687,
+        "amt": "50 ETH",
+        "eth": 50,
+        "hash": "0x746531366f16eecd56dd3b523401f09e99c956d61bd9a6fb145b596fbac62553",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n8",
+        "t": 26082361,
+        "ts": 1790675735,
+        "amt": "50 ETH",
+        "eth": 50,
+        "hash": "0xbb209ce61c901332dd0c17aa934cffd53ce9cf323e3b38416533363e18427889",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n8",
+        "t": 26082363,
+        "ts": 1790675759,
+        "amt": "50 ETH",
+        "eth": 50,
+        "hash": "0x9308211be66ee4f7ee8be1edaca004d41f3583a692fde2e6004630bd08dd5d2e",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n8",
+        "t": 26082365,
+        "ts": 1790675783,
+        "amt": "50 ETH",
+        "eth": 50,
+        "hash": "0x1a368b94cef2d615dc957079661fcda518fa95c9238d9a8f4835911c12b5be95",
+        "flags": [],
+        "note": "同一对地址还有 21 笔 ETH 转账未逐笔列出，合计 1,774.5 ETH"
+      },
+      {
+        "from": "n2",
+        "to": "n9",
+        "t": 26081864,
+        "ts": 1790669747,
+        "amt": "425,959.08 USDT",
+        "eth": null,
+        "hash": "0x9b93409c775aca211ebae31e1f3da4f8870d1a97439c4417908d664ae4fc4208",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n2",
+        "to": "n10",
+        "t": 26081814,
+        "ts": 1790669147,
+        "amt": "120 ETH",
+        "eth": 120,
+        "hash": "0xfc07751ade9917dbf63f922f1b0d69a02d62fcbad5d9fbd456401b3d0365ea61",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n11",
+        "t": 26089424,
+        "ts": 1790760803,
+        "amt": "14.767 ETH",
+        "eth": 14.767,
+        "hash": "0x3dfb21db32de559eb9a0ff5bbe9f21445bd31c523913356c918f839b20e54683",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n12",
+        "t": 26089464,
+        "ts": 1790761283,
+        "amt": "14.7668 ETH",
+        "eth": 14.766846,
+        "hash": "0xae3daa12ac0cbdbe456b2e356231504f01188efbf9dc0f469bfb1f744653c05c",
+        "flags": []
+      },
+      {
+        "from": "n2",
+        "to": "n13",
+        "t": 26089448,
+        "ts": 1790761091,
+        "amt": "14.766 ETH",
+        "eth": 14.766,
+        "hash": "0x03e6969b7c3f38f8b6dd7deffbc5a6d034bc894bc67cafe148ad9c6c4e08eea9",
+        "flags": []
+      },
+      {
+        "from": "n3",
+        "to": "n14",
+        "t": 26081347,
+        "ts": 1790663507,
+        "amt": "300,000 USDT",
+        "eth": null,
+        "hash": "0x959e2241a2372d792a55b1d118ee08a7e7a70a75786192fcb40d3924e5add8f5",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n4",
+        "to": "n15",
+        "t": 26081383,
+        "ts": 1790663939,
+        "amt": "300,000 USDT",
+        "eth": null,
+        "hash": "0x1237bcdb454af835f2af1e44af9aba825aa79e65811f418f077aa9d0a732376d",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n5",
+        "to": "n16",
+        "t": 26081397,
+        "ts": 1790664107,
+        "amt": "200,000 USDT",
+        "eth": null,
+        "hash": "0x967709d7a59510bccc7a7ebb74ac10f035dcfc9cfb876116357cd3bf584b2a5b",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n6",
+        "to": "n17",
+        "t": 26081411,
+        "ts": 1790664275,
+        "amt": "200,000 USDT",
+        "eth": null,
+        "hash": "0x0dc715c3587859215be48b48f153997c214fc8e8766c727f4fd97b3fb4dbc569",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n7",
+        "to": "n18",
+        "t": 26081427,
+        "ts": 1790664467,
+        "amt": "200,000 USDT",
+        "eth": null,
+        "hash": "0x63097baed07012392851662f23622239012b6b573a32f83141233bf8ad405e8a",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n10",
+        "to": "n8",
+        "t": 26081818,
+        "ts": 1790669195,
+        "amt": "10 ETH",
+        "eth": 10,
+        "hash": "0x93f3d6b6f3dd8949fe8de48497897f465533d313a0c0dc3be77a8d878e8dbee3",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n8",
+        "t": 26081830,
+        "ts": 1790669339,
+        "amt": "50 ETH",
+        "eth": 50,
+        "hash": "0x001c76e750e383dd9514acf8b565da769dfe40351338217db19958419b0e17fb",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n8",
+        "t": 26081846,
+        "ts": 1790669531,
+        "amt": "59.998 ETH",
+        "eth": 59.998,
+        "hash": "0x8104deeae052043c98f91fe4bcbee879077186c365b790ae66461d208bf8d1d7",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n8",
+        "t": 26081962,
+        "ts": 1790670923,
+        "amt": "10 ETH",
+        "eth": 10,
+        "hash": "0xb4d7a50f31a7c3314f54b8229870cbf9a1a168ea05a652e26af89345f86aa61b",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n8",
+        "t": 26081985,
+        "ts": 1790671199,
+        "amt": "10 ETH",
+        "eth": 10,
+        "hash": "0x4fa04b031bbb08e12d5138e25faf47e9bc1396c3a3e52874a81123af242dba89",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n8",
+        "t": 26081996,
+        "ts": 1790671331,
+        "amt": "10 ETH",
+        "eth": 10,
+        "hash": "0x08e8b8a59e2d598bf2aadf5fc64497599f2112f36c44abbf45ce32b3fa4c8daf",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n8",
+        "t": 26082033,
+        "ts": 1790671775,
+        "amt": "5 ETH",
+        "eth": 5,
+        "hash": "0x9dbb07c992fd58914fffa054ec5bd1a7e8a2460d73203c1ebf46c334072fbad6",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n8",
+        "t": 26082048,
+        "ts": 1790671955,
+        "amt": "5 ETH",
+        "eth": 5,
+        "hash": "0x28c41d13858c230d4f495a721367a6ad6b927f83b2bde6a045e653bc90ffa3d0",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n8",
+        "t": 26082059,
+        "ts": 1790672087,
+        "amt": "5 ETH",
+        "eth": 5,
+        "hash": "0xc745add291ecfd17590c651fa7a755ce43f9361cf0b98104bae3665e1b124089",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n8",
+        "t": 26082066,
+        "ts": 1790672171,
+        "amt": "5 ETH",
+        "eth": 5,
+        "hash": "0x56b5413387c398888766ba7b37e6617462fd7bbb462ab418b5007b58c3fb40b6",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n8",
+        "t": 26082086,
+        "ts": 1790672411,
+        "amt": "5 ETH",
+        "eth": 5,
+        "hash": "0xc3cd7a0bbc53ffd2cff413748adca76b6081c19c7176268af258902753fc304e",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n8",
+        "t": 26082103,
+        "ts": 1790672615,
+        "amt": "5 ETH",
+        "eth": 5,
+        "hash": "0xdc3c01a2294a161c1efd9b59bab00dbd67359e5d5be6f0f24c50045aa7e60a7d",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n8",
+        "t": 26082119,
+        "ts": 1790672807,
+        "amt": "5 ETH",
+        "eth": 5,
+        "hash": "0x98cf4226680b999e1ecfe7036a23c97e0d3deed3385f61c876b3f7e181a283e7",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n8",
+        "t": 26082152,
+        "ts": 1790673203,
+        "amt": "5 ETH",
+        "eth": 5,
+        "hash": "0xf5cfdb99b4df5b53ba8bd72ce466c5586d0ddf30296a6fb21f38e84e9cb32ee1",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n8",
+        "t": 26082161,
+        "ts": 1790673311,
+        "amt": "5 ETH",
+        "eth": 5,
+        "hash": "0xe908f369b3147e72ad72068940e6c438247d1035befea48a5278bb85aef45f28",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n8",
+        "t": 26082181,
+        "ts": 1790673551,
+        "amt": "5 ETH",
+        "eth": 5,
+        "hash": "0x4f7557fae22dfc7f5b95f1da990d97aef170307d47f608bd776a42034d1a3b3b",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n8",
+        "t": 26082193,
+        "ts": 1790673695,
+        "amt": "5 ETH",
+        "eth": 5,
+        "hash": "0x955ca73ca9d6193d31658d11cc726250be140916324b828ebd0e617381201db7",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n8",
+        "t": 26082205,
+        "ts": 1790673839,
+        "amt": "5 ETH",
+        "eth": 5,
+        "hash": "0x07f7feaf3bcbaf4b0839c427ba2ab8c85153fe4736b53d2eefce7e71a7c7dadc",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n8",
+        "t": 26082225,
+        "ts": 1790674079,
+        "amt": "5 ETH",
+        "eth": 5,
+        "hash": "0xe393fc463b2d30e082b3a839a2f14935ea9ce6a102af2b826823eaa821cce62b",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n8",
+        "t": 26082247,
+        "ts": 1790674343,
+        "amt": "5 ETH",
+        "eth": 5,
+        "hash": "0xfbab59f63bf05d2ec89449be54864161b7ba73a68bdcc765a08e0a9c5e4bd882",
+        "flags": [],
+        "note": "同一对地址还有 63 笔 ETH 转账未逐笔列出，合计 1,205.99 ETH"
+      },
+      {
+        "from": "n10",
+        "to": "n19",
+        "t": 26082636,
+        "ts": 1790679059,
+        "amt": "30 ETH",
+        "eth": 30,
+        "hash": "0xb170a820b7e6610bd9f22b5dfc56e26626113d156f8fd2400f4c8baf3cfb4ce5",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n20",
+        "t": 26082642,
+        "ts": 1790679131,
+        "amt": "30 ETH",
+        "eth": 30,
+        "hash": "0xb0bdfc20eeb771d06f76fdacd0b15d277f73a5303bd39b00e01af9d9a2f5f412",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n2",
+        "t": 26084366,
+        "ts": 1790699855,
+        "amt": "13.1633 ETH",
+        "eth": 13.163318,
+        "hash": "0xb132e336a66737d728dd5bbbbfa6875e4a0df69bfc00249efc580ddcd94b51e4",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n21",
+        "t": 26082544,
+        "ts": 1790677943,
+        "amt": "10 ETH",
+        "eth": 10,
+        "hash": "0x5037eb9c6af505b9b2c2f4347d8e1e0ea7875b0061640af599bb2d398fbe2777",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n22",
+        "t": 26082622,
+        "ts": 1790678891,
+        "amt": "10 ETH",
+        "eth": 10,
+        "hash": "0x4517cfdc27c8159f0d599c0f5e7cd62bef222db525f26520ffb894965fffcbec",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n23",
+        "t": 26082628,
+        "ts": 1790678963,
+        "amt": "10 ETH",
+        "eth": 10,
+        "hash": "0xd62eb08c60a5a1d08dafdcdf53fe3ce22f734a74d16b97c6aa266462df404392",
+        "flags": []
+      },
+      {
+        "from": "n10",
+        "to": "n24",
+        "t": 26082584,
+        "ts": 1790678423,
+        "amt": "9.9996 ETH",
+        "eth": 9.999576,
+        "hash": "0x3f99387766aac4af0549c8632ab86744070ccc3d8767fca1f51c11c65ce1da76",
+        "flags": []
+      },
+      {
+        "from": "n11",
+        "to": "n25",
+        "t": 26089424,
+        "ts": 1790760803,
+        "amt": "14.767 ETH",
+        "eth": 14.767,
+        "hash": "0x3dfb21db32de559eb9a0ff5bbe9f21445bd31c523913356c918f839b20e54683",
+        "flags": []
+      },
+      {
+        "from": "n12",
+        "to": "n26",
+        "t": 26089489,
+        "ts": 1790761583,
+        "amt": "14.7665 ETH",
+        "eth": 14.7665,
+        "hash": "0xb7f8ef4fefea3a1ea2a2a88cace69756b15623f89e183bcc73cb684aeaccf654",
+        "flags": []
+      },
+      {
+        "from": "n12",
+        "to": "n27",
+        "t": 26089468,
+        "ts": 1790761331,
+        "amt": "14.766 ETH",
+        "eth": 14.766,
+        "hash": "0x64d787e1d0a0eecf62afe867bb489218e3cd23a563f18c167a0b92d1f1d652e1",
+        "flags": []
+      },
+      {
+        "from": "n13",
+        "to": "n2",
+        "t": 26089457,
+        "ts": 1790761199,
+        "amt": "14.7659 ETH",
+        "eth": 14.765852,
+        "hash": "0xaed12a0ef0945f137cef5cb9524ee4be99a75e44926b163cef53d42cd5e20365",
+        "flags": []
+      },
+      {
+        "from": "n13",
+        "to": "n28",
+        "t": 26089558,
+        "ts": 1790762423,
+        "amt": "14.7657 ETH",
+        "eth": 14.765749,
+        "hash": "0x62d1a4ea4214266d72f0b184d85afc48d8fd8c6ad55edcccadfd07477364e811",
+        "flags": []
+      },
+      {
+        "from": "n13",
+        "to": "n29",
+        "t": 26089524,
+        "ts": 1790762015,
+        "amt": "14.7642 ETH",
+        "eth": 14.764172,
+        "hash": "0x1df03f3be8b5917aea27e95a6aa04a82aa0cc9fef32e21c8c0a909f633bb1364",
+        "flags": []
+      },
+      {
+        "from": "n14",
+        "to": "n25",
+        "t": 26081356,
+        "ts": 1790663615,
+        "amt": "300,000 USDT",
+        "eth": null,
+        "hash": "0xb1098dfa064a328a61c19c420d54d32bb6d8be7ae92d692e1cab2b4c2d178771",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n15",
+        "to": "n25",
+        "t": 26081392,
+        "ts": 1790664047,
+        "amt": "300,000 USDT",
+        "eth": null,
+        "hash": "0x713e49c1fa8922bbff2551d97f565e7377373cfbb62af9794cf522f30d53f255",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n15",
+        "to": "n25",
+        "t": 26095604,
+        "ts": 1790835251,
+        "amt": "81,030.02 USDC",
+        "eth": null,
+        "hash": "0xd3bedbf3ea0dab9de3547dafac8dbb719cf4e25e39eea6075fd00721b187ecfc",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n16",
+        "to": "n25",
+        "t": 26081412,
+        "ts": 1790664287,
+        "amt": "200,000 USDT",
+        "eth": null,
+        "hash": "0xdd45f611b5d884ec9c6625cb3b2dabc65a75405fd78b16f60c1d9a12dc4155c0",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n16",
+        "to": "n25",
+        "t": 26108131,
+        "ts": 1790986199,
+        "amt": "1.8427 ETH",
+        "eth": 1.84268,
+        "hash": "0x62a550e723ef6fd78dc7ef400f71e5f6aecdf1d7ec7b12fe73bc3ba88f2cd295",
+        "flags": []
+      },
+      {
+        "from": "n17",
+        "to": "n25",
+        "t": 26081427,
+        "ts": 1790664467,
+        "amt": "200,000 USDT",
+        "eth": null,
+        "hash": "0xfcb7dfd6037a7156ad5930fef6e58ac1e5a4b7fd99b72e6986d1fc0cb7673243",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n17",
+        "to": "n25",
+        "t": 26095775,
+        "ts": 1790837303,
+        "amt": "30.3953 ETH",
+        "eth": 30.395309,
+        "hash": "0x3cfb30aefd08dc1eec7c1f6c9e26e9265dfd029d9414bebe3c092cf4dec59cbd",
+        "flags": []
+      },
+      {
+        "from": "n18",
+        "to": "n25",
+        "t": 26081437,
+        "ts": 1790664587,
+        "amt": "200,000 USDT",
+        "eth": null,
+        "hash": "0x53f6ef0332b60f2533e37952e546a580750cb06c5810b63274b9658b129527a5",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n18",
+        "to": "n25",
+        "t": 26096016,
+        "ts": 1790840195,
+        "amt": "2,060.36 USDC",
+        "eth": null,
+        "hash": "0x14194175451fddb18f8903e972e8d8d4ac7f54900b1149a8ba1a62709e43ade1",
+        "flags": [
+          "freeze"
+        ]
+      }
+    ]
+  },
+  "meta": {
+    "start": "0x04065ccf52929dce58d9c7659de6ddac2316e84e",
+    "params": {
+      "startBlock": 26081300,
+      "endBlock": 99999999,
+      "maxHops": 3,
+      "topK": 6,
+      "minValue": {
+        "ETH": 0.05,
+        "WETH": 0.05,
+        "stETH": 0.05,
+        "USDT": 100,
+        "USDC": 100,
+        "DAI": 100,
+        "WBTC": 0.002
+      },
+      "priceHints": {
+        "ETH": 3000,
+        "BTC": 60000
+      }
+    },
+    "calls": 70,
+    "maxCalls": 120,
+    "truncated": false,
+    "truncatedReasons": [],
+    "warnings": [
+      "0x0406…e84e：另有 5 个对手方（按美元折算排序，仅用于排序）排在前 6 个可展开对手方之外，未检查也未展开",
+      "0x5c76…aea0：另有 2 个对手方（按美元折算排序，仅用于排序）排在前 6 个可展开对手方之外，未检查也未展开"
+    ],
+    "stoppedAt": [
+      {
+        "addr": "0x23617e59a5925b2a4bf75d73ff6711cd0b29de85",
+        "reason": "合约：UniversalRouter，名字含兑换关键词，一律为终点。下一步：兑换后的资产通常回到发起地址或指定接收地址，继续看发起地址之后的转出"
+      },
+      {
+        "addr": "0xd37bbe5744d730a1d98d8dc97c42f0ca46ad7146",
+        "reason": "合约：THORChain_Router，名字含跨链关键词，一律为终点。下一步：到目标链继续追踪（按这笔存入交易查跨链后的收款地址）"
+      },
+      {
+        "addr": "0x225a38bc71102999dd13478bfabd7c4d53f2dc17",
+        "reason": "合约：未验证合约，合约源码未验证（getsourcecode 无合约名），一律为终点。下一步：人工查看该合约的用途与资金去向"
+      },
+      {
+        "addr": "0xf5e10380213880111522dd0efd3dbb45b9f62bcc",
+        "reason": "Bitget 官方 reviewed：Chainflip 以太坊 Vault（协议金库）。下一步：向该通道运营方的安全 / 合规联系人报告（附地址、交易哈希、区块、金额），并到其区块浏览器按存入交易查兑换后的目标链与收款地址"
+      },
+      {
+        "addr": "0x99a270caf386c49d280edb5c3bd36bccf821abae",
+        "reason": "充值通道（推断）→ Chainflip 以太坊 Vault（1 个不同来源，100% 转出归集），视为终点。下一步：向该通道运营方的安全 / 合规联系人报告（附地址、交易哈希、区块、金额），并到其区块浏览器按存入交易查兑换后的目标链与收款地址"
+      },
+      {
+        "addr": "0x328763072e3ce351ec29318df971b534ca45a0f7",
+        "reason": "Bitget 官方 reviewed：THORChain ETH 金库（协议金库）。下一步：到目标链继续追踪（按这笔存入交易查跨链后的收款地址）"
+      },
+      {
+        "addr": "0xba0e2410845e5b70796242f85118507515dbfa29",
+        "reason": "充值通道（推断）→ Chainflip 以太坊 Vault（1 个不同来源，100% 转出归集），视为终点。下一步：向该通道运营方的安全 / 合规联系人报告（附地址、交易哈希、区块、金额），并到其区块浏览器按存入交易查兑换后的目标链与收款地址"
+      },
+      {
+        "addr": "0x9ad3de3b87e6f6c96cef3ef8a424841326c4397b",
+        "reason": "充值通道（推断）→ Chainflip 以太坊 Vault（2 个不同来源，100% 转出归集），视为终点。下一步：向该通道运营方的安全 / 合规联系人报告（附地址、交易哈希、区块、金额），并到其区块浏览器按存入交易查兑换后的目标链与收款地址"
+      },
+      {
+        "addr": "0x69aa362235e45f7b41d076e1a2b460466ad0e809",
+        "reason": "充值通道（推断）→ Chainflip 以太坊 Vault（2 个不同来源，100% 转出归集），视为终点。下一步：向该通道运营方的安全 / 合规联系人报告（附地址、交易哈希、区块、金额），并到其区块浏览器按存入交易查兑换后的目标链与收款地址"
+      },
+      {
+        "addr": "0xec008786a6a966f10f0fa01a6511517c4c05e079",
+        "reason": "充值通道（推断）→ Chainflip 以太坊 Vault（2 个不同来源，100% 转出归集），视为终点。下一步：向该通道运营方的安全 / 合规联系人报告（附地址、交易哈希、区块、金额），并到其区块浏览器按存入交易查兑换后的目标链与收款地址"
+      },
+      {
+        "addr": "0x39ddab7ed57f837e50366f5f6199eba43ba44424",
+        "reason": "充值通道（推断）→ Chainflip 以太坊 Vault（2 个不同来源，100% 转出归集），视为终点。下一步：向该通道运营方的安全 / 合规联系人报告（附地址、交易哈希、区块、金额），并到其区块浏览器按存入交易查兑换后的目标链与收款地址"
+      },
+      {
+        "addr": "0xc65fbc289efdc00147e8706b0c57180f03bd6ff9",
+        "reason": "已达最大跳数 3，未继续展开"
+      },
+      {
+        "addr": "0x0f3fe61108b737a93d40f38f2609c927b359207b",
+        "reason": "已达最大跳数 3，未继续展开"
+      },
+      {
+        "addr": "0xa5428c9cf0c0159f3add5d0ae7540c4449f3bef0",
+        "reason": "已达最大跳数 3，未继续展开"
+      },
+      {
+        "addr": "0x3ac23a26408aa5c3faae6b1c1fc44f2ff6298b55",
+        "reason": "已达最大跳数 3，未继续展开"
+      },
+      {
+        "addr": "0x127fe0815c75767b9c1c87e0bce28333b8872d81",
+        "reason": "已达最大跳数 3，未继续展开"
+      },
+      {
+        "addr": "0x424f776bee8eaa4400dc98bddcd664a9c1b78bc1",
+        "reason": "已达最大跳数 3，未继续展开"
+      },
+      {
+        "addr": "0x757ae1fe6f6da74e68bf225274b57956962c7409",
+        "reason": "已达最大跳数 3，未继续展开"
+      },
+      {
+        "addr": "0xccfffd34ba781526daab1dfdb428f2b3970e5693",
+        "reason": "合约：Deposit，名字没有可识别的协议关键词，需人工查看，一律为终点。下一步：人工查看该合约的用途与资金去向；已达最大跳数 3，未追它的归集去向"
+      },
+      {
+        "addr": "0xeb1d6f479c1a430c5b8be1a65506756e3a7b7b17",
+        "reason": "合约：Deposit，名字没有可识别的协议关键词，需人工查看，一律为终点。下一步：人工查看该合约的用途与资金去向；已达最大跳数 3，未追它的归集去向"
+      }
+    ],
+    "ignored": {
+      "fakeToken": 327,
+      "zeroValue": 55,
+      "dust": 11,
+      "poison": 0,
+      "belowTopK": 7
+    },
+    "traced_at": "2026-10-05T07:19:59.547Z"
+  }
+}

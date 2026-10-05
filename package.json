@@ -1,0 +1,10 @@
+{
+  "name": "suliu",
+  "private": true,
+  "version": "0.3.0",
+  "scripts": {
+    "test": "node --test",
+    "trace": "node tools/trace.mjs",
+    "serve": "node tools/serve.mjs 8777"
+  }
+}

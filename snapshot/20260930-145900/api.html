@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#eaeef3">
+<title>API 文档 · Bitget 被盗资金追踪</title>
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<script>
+(function(){try{var t=localStorage.getItem("bgt-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}try{var l=null;try{l=(new URLSearchParams(location.search).get("lang")||"").toLowerCase()}catch(e){}if(l!=="en"&&l!=="zh"){try{l=localStorage.getItem("bgt-lang")}catch(e){}}if(l!=="en"&&l!=="zh")l=/^zh/i.test(navigator.language||(navigator.languages||[])[0]||"")?"zh":"en";window.__LANG=l;if(l==="en"){document.documentElement.lang="en";document.title="API · Bitget Stolen-Funds Tracker"}}catch(e){window.__LANG="zh"}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+
+:root{
+  color-scheme:light dark;
+  --ground:#eaeef3;--surface:#fff;--surface-2:#f3f6fa;--surface-3:#e6ecf4;
+  --line:#ccd5e0;--line-soft:#dde4ec;
+  --ink:#141a22;--ink-2:#2e3947;--muted:#5a6675;--faint:#8794a4;
+  --accent:#0b7285;--accent-soft:#0b728514;
+  --crit:#c8372c;--ok:#2b7d63;--ok-soft:#2b7d6314;
+  --on-accent:#fff;
+  --shadow:0 1px 2px #0f172a0f,0 6px 18px #0f172a0a;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#0d1117;--surface:#151b23;--surface-2:#10151c;--surface-3:#222b36;
+  --line:#2a3543;--line-soft:#222b37;
+  --ink:#dfe6ef;--ink-2:#c3cdd9;--muted:#8593a4;--faint:#6b7889;
+  --accent:#3fb6c8;--accent-soft:#3fb6c81f;
+  --crit:#f0705f;--ok:#4fb894;--ok-soft:#4fb8941f;
+  --on-accent:#06252a;
+  --shadow:0 1px 2px #00000050,0 6px 18px #00000038;
+}}
+:root[data-theme="dark"]{
+  --ground:#0d1117;--surface:#151b23;--surface-2:#10151c;--surface-3:#222b36;
+  --line:#2a3543;--line-soft:#222b37;
+  --ink:#dfe6ef;--ink-2:#c3cdd9;--muted:#8593a4;--faint:#6b7889;
+  --accent:#3fb6c8;--accent-soft:#3fb6c81f;
+  --crit:#f0705f;--ok:#4fb894;--ok-soft:#4fb8941f;
+  --on-accent:#06252a;
+  --shadow:0 1px 2px #00000050,0 6px 18px #00000038;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html[lang="en"] [data-l="zh"],html:not([lang="en"]) [data-l="en"]{display:none!important}
+body{margin:0;background:var(--ground);color:var(--ink);overflow-x:hidden;
+  font-family:"Source Sans 3","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+  font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2{font-family:Archivo,"PingFang SC","Microsoft YaHei",sans-serif;margin:0}
+code,pre{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1440px;margin:0 auto;padding:0 16px}
+
+header.top{background:var(--surface);border-bottom:1px solid var(--line)}
+.top-in{display:flex;gap:9px 14px;align-items:center;flex-wrap:wrap;padding-top:10px;padding-bottom:10px}
+.brand{display:flex;align-items:center;gap:9px;min-width:0;color:var(--ink)}
+.brand:hover{text-decoration:none}
+.brand svg{width:20px;height:20px;fill:var(--crit);flex:none}
+h1{font-size:17px;font-weight:700;letter-spacing:-.015em;white-space:nowrap}
+.actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+.btn{font:inherit;font-size:12.5px;color:var(--muted);background:var(--surface);border:1px solid var(--line);
+  border-radius:6px;padding:3px 10px;cursor:pointer;white-space:nowrap}
+.btn:hover{color:var(--accent);border-color:var(--accent);text-decoration:none}
+.lang{display:inline-flex;border:1px solid var(--line);border-radius:6px;background:var(--surface);overflow:hidden;flex:none}
+.lang button{font:inherit;font-size:12.5px;line-height:1.5;color:var(--muted);background:transparent;border:0;padding:3px 9px;min-width:34px;cursor:pointer}
+.lang button+button{border-left:1px solid var(--line)}
+.lang button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);font-weight:600;cursor:default}
+
+main.wrap{max-width:760px;padding-top:26px;padding-bottom:56px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);padding:18px 18px 20px}
+.card+.card{margin-top:18px}
+h2{font-size:18px;font-weight:700;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+h2 code{font-size:17px;font-weight:500;word-break:break-all}
+.m{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:500;border-radius:4px;padding:1px 6px;background:var(--ok-soft);color:var(--ok);border:1px solid var(--ok)}
+.m.post{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+section[id]{scroll-margin-top:12px}
+p{margin:10px 0 0;color:var(--ink-2)}
+p code,li code{font-size:12.5px;background:var(--surface-3);border-radius:4px;padding:0 4px;color:var(--ink)}
+.lbl{margin:16px 0 6px;font-size:12px;font-weight:600;color:var(--muted)}
+pre{margin:0;background:var(--surface-2);border:1px solid var(--line-soft);border-radius:6px;padding:10px 12px;overflow-x:auto;font-size:12.5px;line-height:1.55;color:var(--ink)}
+ul{margin:8px 0 0;padding-left:20px;color:var(--ink-2)}
+li{margin:3px 0}
+.try{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:18px}
+.go{font:inherit;font-size:13px;font-weight:600;color:var(--on-accent);background:var(--accent);border:0;border-radius:6px;padding:5px 14px;cursor:pointer}
+.go:disabled{opacity:.55;cursor:progress}
+.try .q{font:inherit;font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:5px 9px;width:260px;max-width:100%;min-width:0}
+.try .q:focus{outline:none;border-color:var(--accent)}
+.st{font-size:12px;color:var(--muted)}
+.st.bad{color:var(--crit)}
+.out{margin-top:10px;max-height:340px;overflow:auto}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+ <symbol id="i-alert" viewBox="0 0 16 16"><path d="M8 1.3l7 12.4H1zm-.8 4.3v4h1.6v-4zm0 5.2v1.6h1.6v-1.6z"/></symbol>
+</defs></svg>
+
+<header class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="/v2"><svg><use href="#i-alert"/></svg><h1><span data-l="zh">Bitget 被盗资金追踪</span><span data-l="en">Bitget Stolen-Funds Tracker</span></h1></a>
+    <div class="actions">
+      <a class="btn" href="/v2#explorer"><span data-l="zh">← 返回看板</span><span data-l="en">← Dashboard</span></a>
+      <div class="lang" role="group" aria-label="语言 / Language">
+        <button type="button" data-lang="zh" lang="zh-CN" aria-pressed="true" title="中文">中</button><button type="button" data-lang="en" lang="en" aria-pressed="false" title="English">EN</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+<section class="card" id="holdings">
+  <h2><span class="m">GET</span><code>/api/holdings</code></h2>
+  <p data-l="zh">攻击者控制过的全部地址，按链分组，<b>含已转空的地址</b>，名单只增不减，可直接用于拉黑。链内当前有余额的排前面（按余额降序），已转空的排后面。免登录、免 key，允许跨域。</p>
+  <p data-l="en">Every address the attacker has controlled, grouped by chain, <b>including addresses that have since been emptied</b>. The list only grows, so it can be used as a blocklist. Within each chain, addresses that still hold funds come first (by balance, descending), followed by emptied ones. No sign-in or API key; CORS open.</p>
+
+  <div class="lbl"><span data-l="zh">请求</span><span data-l="en">Request</span></div>
+  <pre>curl -s -A 'my-client/1.0' https://trace.bgblockchain.xyz/api/holdings</pre>
+
+  <div class="lbl"><span data-l="zh">返回</span><span data-l="en">Response</span></div>
+  <pre>{
+  "eth": ["0xd2c2f029eff5cacc686f24377cfddcfc82d9f899", …],
+  "xrp": ["r6NcwN3dR5ciyBv9XsLyMNc9Kg2FBCs7Y", …],
+  "btc": ["bc1q…", …],
+  …
+}</pre>
+
+  <ul data-l="zh">
+    <li>链：<code>eth</code> <code>bsc</code> <code>arb</code> <code>op</code> <code>base</code> <code>avax</code> <code>linea</code> <code>xrp</code> <code>btc</code> <code>tron</code> <code>zec</code> <code>algo</code> <code>tia</code> <code>atom</code> <code>noble</code> <code>hyperliquid</code> <code>sol</code>；EVM 地址为小写（<code>hyperliquid</code> 是 Hyperliquid 账户，地址格式同 EVM）。</li>
+    <li>地址转空后仍留在名单里，不代表解除；经核实不属于攻击者的地址会移除。</li>
+    <li>缓存 5 秒，建议 15–30 秒拉一次；数据时间见响应头 <code>x-snap-ts</code>（Unix 秒）。</li>
+    <li>请带自定义 User-Agent，Python 等默认 UA 会被拦（403）。</li>
+  </ul>
+  <ul data-l="en">
+    <li>Chains: <code>eth</code> <code>bsc</code> <code>arb</code> <code>op</code> <code>base</code> <code>avax</code> <code>linea</code> <code>xrp</code> <code>btc</code> <code>tron</code> <code>zec</code> <code>algo</code> <code>tia</code> <code>atom</code> <code>noble</code> <code>hyperliquid</code> <code>sol</code>; EVM addresses are lower-case (<code>hyperliquid</code> lists Hyperliquid accounts, which use EVM-format addresses).</li>
+    <li>An address stays on the list after it is emptied; that does not mean it is cleared. Addresses verified not to belong to the attacker are removed.</li>
+    <li>Cached for 5 s; polling every 15–30 s is enough. Data time is in the <code>x-snap-ts</code> header (Unix seconds).</li>
+    <li>Send a custom User-Agent; default library UAs such as Python's are blocked (403).</li>
+  </ul>
+
+  <div class="lbl"><span data-l="zh">勘误 2026-09-28</span><span data-l="en">Correction 2026-09-28</span></div>
+  <p data-l="zh"><b>09:46–10:18（UTC+8）期间，本接口的 <code>btc</code> 列表混入了 8,232 个不属于攻击者的交易所地址</b>（自动跟踪把一笔交易所归集交易里的地址整簇误判成攻击者）。10:18–10:49 接口维护下线，10:49 起已恢复并清理干净。这段时间拉取过本接口的，请按清单从黑名单中移除这些地址，并重新拉取一次：<a href="/api/holdings/corrections/20260928-btc.csv"><code>/api/holdings/corrections/20260928-btc.csv</code></a>（字段 address、chain、wrongly_listed_from、wrongly_listed_until、action）或 <a href="/api/holdings/corrections"><code>/api/holdings/corrections</code></a>（JSON，含全部勘误）。以后如再有勘误也会列在这个接口里。</p>
+  <p data-l="en"><b>Between 09:46 and 10:18 UTC+8 the <code>btc</code> list of this endpoint contained 8,232 exchange addresses that are not attacker-controlled</b> (automatic tracing wrongly classified the whole cluster of an exchange consolidation transaction as attacker addresses). The endpoint was taken down for maintenance from 10:18 to 10:49 and has been clean since 10:49. If you pulled this endpoint during that window, remove these addresses from your blocklist using the list and pull again: <a href="/api/holdings/corrections/20260928-btc.csv"><code>/api/holdings/corrections/20260928-btc.csv</code></a> (columns address, chain, wrongly_listed_from, wrongly_listed_until, action) or <a href="/api/holdings/corrections"><code>/api/holdings/corrections</code></a> (JSON, all corrections). Any future correction will be published there too.</p>
+
+  <div class="try"><button class="go" type="button" data-ep="/api/holdings"><span data-l="zh">试一下</span><span data-l="en">Try it</span></button><span class="st"></span></div>
+  <pre class="out" hidden></pre>
+</section>
+
+<section class="card" id="victims">
+  <h2><span class="m">GET</span><code>/api/victims</code></h2>
+  <p data-l="zh">本次事件中资金被盗的 Bitget 钱包地址，按链分组，格式同 <code>/api/holdings</code>。免登录、免 key，允许跨域。</p>
+  <p data-l="en">Bitget wallets that funds were stolen from in this incident, grouped by chain, in the same format as <code>/api/holdings</code>. No sign-in or API key; CORS open.</p>
+
+  <div class="lbl"><span data-l="zh">请求</span><span data-l="en">Request</span></div>
+  <pre>curl -s -A 'my-client/1.0' https://trace.bgblockchain.xyz/api/victims</pre>
+
+  <div class="lbl"><span data-l="zh">返回</span><span data-l="en">Response</span></div>
+  <pre>{
+  "eth": ["0x1ab4973a48dc892cd9971ece8e01dcc7688f8f23", …],
+  "xrp": ["rwTTsHVUDF8Ub2nzV2oAeWxfJzUvobXLEf", …],
+  "tron": ["TJxe1MWrb5ppk3beWArqU2Dwg3jvhGUGx5", …],
+  …
+}</pre>
+
+  <ul data-l="zh">
+    <li>链：<code>eth</code> <code>bsc</code> <code>arb</code> <code>op</code> <code>base</code> <code>avax</code> <code>xrp</code> <code>tron</code> <code>zec</code> <code>algo</code> <code>tia</code> <code>atom</code>；EVM 地址为小写，同一个地址在几条链上被盗，就在这几条链下各列一次。</li>
+    <li>名单核实到新的被盗钱包时会补充；缓存、<code>x-snap-ts</code>、User-Agent 要求同 <code>/api/holdings</code>。</li>
+  </ul>
+  <ul data-l="en">
+    <li>Chains: <code>eth</code> <code>bsc</code> <code>arb</code> <code>op</code> <code>base</code> <code>avax</code> <code>xrp</code> <code>tron</code> <code>zec</code> <code>algo</code> <code>tia</code> <code>atom</code>; EVM addresses are lower-case, and an address drained on several chains is listed under each of them.</li>
+    <li>The list grows if more affected wallets are confirmed. Caching, <code>x-snap-ts</code> and the User-Agent rule are the same as for <code>/api/holdings</code>.</li>
+  </ul>
+
+  <div class="try"><button class="go" type="button" data-ep="/api/victims"><span data-l="zh">试一下</span><span data-l="en">Try it</span></button><span class="st"></span></div>
+  <pre class="out" hidden></pre>
+</section>
+
+<section class="card" id="reviewed">
+  <h2><span class="m">GET</span><code>/api/reviewed</code></h2>
+  <p data-l="zh">安全团队核查过、<b>不是攻击者控制</b>的地址：THORChain / Chainflip 等协议金库、交易所充值地址、THORChain 套利者、无关用户、投毒地址。这些地址常被当成攻击者地址报上来，查到的不用再提交线索。另外列出已核查的<b>攻击者相关</b>地址（<code>verdict</code> 为 <code>attacker_related</code>，只给定性）。免登录、免 key，允许跨域。</p>
+  <p data-l="en">Addresses the security team has reviewed and found <b>not controlled by the attacker</b>: protocol vaults (THORChain, Chainflip, …), exchange deposit addresses, THORChain arbitrageurs, unrelated users and address-poisoning addresses. They are often reported as attacker addresses; no need to submit them again. Reviewed <b>attacker-related</b> addresses are listed too (<code>verdict</code> <code>attacker_related</code>, classification only). No sign-in or API key; CORS open.</p>
+
+  <div class="lbl"><span data-l="zh">请求</span><span data-l="en">Request</span></div>
+  <pre>curl -s -A 'my-client/1.0' https://trace.bgblockchain.xyz/api/reviewed</pre>
+
+  <div class="lbl"><span data-l="zh">返回</span><span data-l="en">Response</span></div>
+  <pre>{
+  "ok": true,
+  "count": 181,
+  "counts": { "vault": 16, "cex": 6, "arb": 15, "user": 6, "poison": 3, "attacker": 135 },
+  "items": [
+    { "address": "r4duMqEXMMmWpaN8LC2URmmVE2JkqTT5ig", "chain": "XRP", "category": "vault", "verdict": "not_attacker",
+      "name": "THORChain XRP 金库", "name_en": "THORChain XRP vault", "note": "…", "note_en": "…", "reviewed_ts": 1790350260 },
+    …
+  ]
+}</pre>
+
+  <ul data-l="zh">
+    <li><code>category</code>：<code>vault</code> 协议金库、<code>cex</code> 交易所地址、<code>arb</code> THORChain 套利者、<code>user</code> 无关用户、<code>poison</code> 投毒地址，这五类 <code>verdict</code> 为 <code>not_attacker</code>；<code>attacker</code> 攻击者相关地址，<code>verdict</code> 为 <code>attacker_related</code>。</li>
+    <li><code>chain</code>：<code>EVM</code>（不分具体链）<code>XRP</code> <code>BTC</code> <code>TRON</code> <code>THOR</code> <code>ALGO</code> 等；EVM、bc1 地址为小写。<code>reviewed_ts</code> 是核查时间（Unix 秒）。</li>
+    <li>名单随核查增加；缓存约 2 分钟，User-Agent 要求同 <code>/api/holdings</code>。</li>
+  </ul>
+  <ul data-l="en">
+    <li><code>category</code>: <code>vault</code> protocol vault, <code>cex</code> exchange address, <code>arb</code> THORChain arbitrageur, <code>user</code> unrelated user, <code>poison</code> address poisoning — these five have <code>verdict</code> <code>not_attacker</code>; <code>attacker</code> attacker-related address, <code>verdict</code> <code>attacker_related</code>.</li>
+    <li><code>chain</code>: <code>EVM</code> (any EVM chain), <code>XRP</code>, <code>BTC</code>, <code>TRON</code>, <code>THOR</code>, <code>ALGO</code>, …; EVM and bc1 addresses are lower-case. <code>reviewed_ts</code> is the review time (Unix seconds).</li>
+    <li>The list grows as reviews are added. Cached for about 2 minutes; the User-Agent rule is the same as for <code>/api/holdings</code>.</li>
+  </ul>
+
+  <div class="try"><button class="go" type="button" data-ep="/api/reviewed"><span data-l="zh">试一下</span><span data-l="en">Try it</span></button><span class="st"></span></div>
+  <pre class="out" hidden></pre>
+</section>
+
+<section class="card" id="chains">
+  <h2><span class="m">GET</span><code>/api/chains</code></h2>
+  <p data-l="zh">每条链上攻击者资金的<b>累计流入 / 流出 / 内部调动</b>（地址浏览器选中一条链时表格上方那一条的数据来源）：按交易缓存里攻击者地址在这条链上的全部转账累计，流入 = 非攻击者地址转给攻击者地址（不含我方被盗钱包的初始转入），流出 = 攻击者地址转给非攻击者地址，内部 = 攻击者地址之间。兑换在同一条链上先流出再流入、两头都算；同一笔钱经过几条链会在每条链各算一次，各链的数不能相加。免登录、免 key，允许跨域。</p>
+  <p data-l="en">Cumulative <b>inflow / outflow / internal moves</b> of attacker funds on each chain (what the summary bar above the address explorer table shows when a chain is selected): every cached transfer of attacker addresses on that chain, where inflow = non-attacker → attacker (excluding the initial transfers out of our victim wallets), outflow = attacker → non-attacker, internal = attacker → attacker. A swap on one chain counts on both sides (out, then back in); money that crosses several chains is counted once per chain, so chains must not be added up. No sign-in or API key; CORS open.</p>
+
+  <div class="lbl"><span data-l="zh">请求</span><span data-l="en">Request</span></div>
+  <pre>curl -s -A 'my-client/1.0' https://trace.bgblockchain.xyz/api/chains</pre>
+
+  <div class="lbl"><span data-l="zh">返回</span><span data-l="en">Response</span></div>
+  <pre>{
+  "ok": true,
+  "generated_ts": 1790535200,
+  "method": "…",
+  "items": [
+    { "chain": "NOBLE", "in_usd": 7137365.2, "out_usd": 7110624.0, "internal_usd": 6406169.0,
+      "n_in": 46, "n_out": 66, "n_internal": 29, "unpriced": 0, "t0": 1790496620, "t1": 1790533550 },
+    …
+  ]
+}</pre>
+
+  <ul data-l="zh">
+    <li><code>items</code> 按 流入 + 流出 从大到小；<code>n_*</code> 是笔数，<code>unpriced</code> 是没能折算成美元、只计了笔数的转账条数，<code>t0</code> / <code>t1</code> 是这条链上最早 / 最近一笔的时间（Unix 秒）。</li>
+    <li>交易缓存比链上晚 1–10 分钟（EVM 1–2 分钟，其余链最多 10 分钟）；缓存约 5 分钟，User-Agent 要求同 <code>/api/holdings</code>。</li>
+  </ul>
+  <ul data-l="en">
+    <li><code>items</code> are sorted by inflow + outflow, descending; <code>n_*</code> are transfer counts, <code>unpriced</code> is the number of transfers that could not be valued in USD (counted only), <code>t0</code> / <code>t1</code> are the earliest / latest transfer on that chain (Unix seconds).</li>
+    <li>The transaction cache lags the chain by 1–10 minutes (1–2 on EVM chains, up to 10 elsewhere); cached for about 5 minutes; the User-Agent rule is the same as for <code>/api/holdings</code>.</li>
+  </ul>
+
+  <div class="try"><button class="go" type="button" data-ep="/api/chains"><span data-l="zh">试一下</span><span data-l="en">Try it</span></button><span class="st"></span></div>
+  <pre class="out" hidden></pre>
+</section>
+
+<section class="card" id="maintenance">
+  <h2><span class="m">GET</span><code>/api/maintenance</code></h2>
+  <p data-l="zh">维护状态。看板修复期间会打开维护开关，两种模式：<b>block</b>：页面和数据接口返回 503（响应头 <code>retry-after</code> 是建议的重试秒数），<b>请沿用上次拉取的名单，不要当成空列表</b>；<b>freeze</b>：接口照常返回，但数据停在冻结那一刻的快照（响应头 <code>x-maintenance: freeze</code>，<code>x-snap-ts</code> 是那份快照的时间），恢复后自动更新。免登录、免 key，允许跨域。</p>
+  <p data-l="en">Maintenance status. While the dashboard is being repaired a maintenance switch is on, in one of two modes. <b>block</b>: pages and data endpoints return 503 (the <code>retry-after</code> header is the suggested wait in seconds); <b>keep the list you last fetched, do not treat it as empty</b>. <b>freeze</b>: endpoints keep answering, but the data stays at the snapshot taken when the freeze began (<code>x-maintenance: freeze</code> header; <code>x-snap-ts</code> is that snapshot's time) and updates again once restored. No login or key, CORS enabled.</p>
+
+  <div class="lbl"><span data-l="zh">请求</span><span data-l="en">Request</span></div>
+  <pre>curl -s -A 'my-client/1.0' https://trace.bgblockchain.xyz/api/maintenance</pre>
+
+  <div class="lbl"><span data-l="zh">返回</span><span data-l="en">Response</span></div>
+  <pre>{"ok": true, "on": false, "mode": null, "since": null, "frozen_ts": null, "msg_zh": "", "msg_en": ""}
+
+{"ok": true, "on": true, "mode": "freeze", "since": 1790560000, "frozen_ts": 1790559900,
+ "msg_zh": "数据核对中", "msg_en": "Data being verified"}</pre>
+  <ul data-l="zh">
+    <li><code>on</code> 开关是否打开；<code>mode</code> <code>block</code> / <code>freeze</code>（关着时为 null）；<code>since</code> 打开时间（Unix 秒）；<code>frozen_ts</code> freeze 时对外那份快照的时间；<code>msg_zh</code> / <code>msg_en</code> 说明。</li>
+  </ul>
+  <ul data-l="en">
+    <li><code>on</code> whether the switch is on; <code>mode</code> <code>block</code> / <code>freeze</code> (null when off); <code>since</code> when it was turned on (Unix seconds); <code>frozen_ts</code> the time of the snapshot being served during a freeze; <code>msg_zh</code> / <code>msg_en</code> a note.</li>
+  </ul>
+
+  <div class="try"><button class="go" type="button" data-ep="/api/maintenance"><span data-l="zh">试一下</span><span data-l="en">Try it</span></button><span class="st"></span></div>
+  <pre class="out" hidden></pre>
+</section>
+
+<section class="card" id="submit">
+  <h2><span class="m post">POST</span><code>/api/report</code></h2>
+  <p data-l="zh">向 Bitget 安全团队提交线索，效果和 <a href="/report">/report</a> 页面提交一样：进入线索库，由安全团队逐条核实，返回线索编号。免登录、免 key。支持 JSON（不带附件）和 <code>multipart/form-data</code>（可带图片附件）。</p>
+  <p data-l="en">Send a lead to the Bitget security team. It is handled exactly like a submission on the <a href="/report">/report</a> page: stored in the lead database for the security team to review, and a lead reference is returned. No sign-in or API key. Accepts JSON (no attachments) or <code>multipart/form-data</code> (with image attachments).</p>
+
+  <div class="lbl"><span data-l="zh">请求（JSON）</span><span data-l="en">Request (JSON)</span></div>
+  <pre>curl -s -A 'my-client/1.0' https://trace.bgblockchain.xyz/api/report \
+  -H 'content-type: application/json' \
+  -d '{"contact": "whitehat@example.com", "kind": "funds", "dest": "cex",
+       "chain": "Bitcoin", "address": "bc1q…", "amount": "3.99", "token": "BTC",
+       "txs": ["0a2468…", "c6a74b…"], "desc": "…"}'</pre>
+
+  <div class="lbl"><span data-l="zh">请求（带附件）</span><span data-l="en">Request (with attachments)</span></div>
+  <pre>curl -s -A 'my-client/1.0' https://trace.bgblockchain.xyz/api/report \
+  -F contact=whitehat@example.com -F chain=Bitcoin -F address=bc1q… -F desc='…' \
+  -F files=@screenshot1.png -F files=@screenshot2.jpg</pre>
+
+  <div class="lbl"><span data-l="zh">返回</span><span data-l="en">Response</span></div>
+  <pre>{
+  "ok": true,
+  "id": "260926-201530-ABCD",
+  "ts": "2026-09-26T12:15:30.123Z",
+  "bj": "2026-09-26 20:15:30"
+}</pre>
+
+  <ul data-l="zh">
+    <li><b>必填</b> <code>contact</code>：联系方式（邮箱 / Telegram 等），只用于核实和发放奖励，不公开。填邮箱的话，之后可以用 <a href="#mine"><code>/api/report/mine</code></a> 查到。</li>
+    <li><b>至少填一项</b>：<code>address</code> 目的地址（≤ 300 字）、<code>txs</code> 交易哈希（每行一个或 JSON 数组，≤ 10,000 字）、<code>desc</code> 描述（≤ 10,000 字）。</li>
+    <li>选填：<code>kind</code> 类型 <code>funds</code> / <code>identity</code> / <code>method</code> / <code>other</code>（默认 <code>other</code>）；<code>dest</code> 资金去向 <code>cex</code> / <code>bridge</code> / <code>dex</code> / <code>otc</code> / <code>mixer</code> / <code>other</code>；<code>chain</code> 链（如 <code>Bitcoin</code>、<code>XRP Ledger</code>、<code>Ethereum</code>）；<code>amount</code>、<code>token</code> 金额和币种；<code>alias</code> 称呼；<code>lang</code> <code>zh</code> / <code>en</code>。</li>
+    <li><code>files</code> 附件（只在 multipart 里）：最多 3 张，每张 ≤ 2 MB，只收 PNG / JPG / WEBP（按文件内容识别）。</li>
+    <li>文字字段（<code>desc</code>、<code>txs</code> 等）要作为普通表单字段发送，不要当文件上传；内容是「[object File]」之类的会被拒收（<code>bad_field</code> / <code>field_is_file</code>），不会存。</li>
+    <li>失败返回 <code>{"ok": false, "error": "…"}</code>：400 <code>missing_contact</code> / <code>missing_content</code> / <code>too_long</code>（<code>detail</code> 是超长的字段）/ <code>too_many_files</code> / <code>file_too_large</code> / <code>bad_file</code> / <code>bad_json</code>；413 请求体过大；415 不支持的 Content-Type；429 <code>rate_limited</code>。</li>
+    <li>不支持跨域，请从服务端或命令行调用。同一条线索请不要重复提交；需要补充时再提交一条，在 <code>desc</code> 里写上原编号。</li>
+  </ul>
+  <ul data-l="en">
+    <li><b>Required</b> <code>contact</code>: how to reach you (email / Telegram etc.), used only to verify the lead and pay rewards, never published. If it is an email, you can later find the lead with <a href="#mine"><code>/api/report/mine</code></a>.</li>
+    <li><b>At least one of</b>: <code>address</code> destination address (≤ 300 chars), <code>txs</code> transaction hashes (one per line or a JSON array, ≤ 10,000 chars), <code>desc</code> description (≤ 10,000 chars).</li>
+    <li>Optional: <code>kind</code> <code>funds</code> / <code>identity</code> / <code>method</code> / <code>other</code> (default <code>other</code>); <code>dest</code> fund destination <code>cex</code> / <code>bridge</code> / <code>dex</code> / <code>otc</code> / <code>mixer</code> / <code>other</code>; <code>chain</code> (e.g. <code>Bitcoin</code>, <code>XRP Ledger</code>, <code>Ethereum</code>); <code>amount</code>, <code>token</code>; <code>alias</code> your name; <code>lang</code> <code>zh</code> / <code>en</code>.</li>
+    <li><code>files</code> attachments (multipart only): up to 3 images, 2 MB each, PNG / JPG / WEBP only (checked by file content).</li>
+    <li>Text fields (<code>desc</code>, <code>txs</code>, …) must be sent as plain form fields, not file uploads. Values like "[object File]" are rejected (<code>bad_field</code> / <code>field_is_file</code>) and nothing is stored.</li>
+    <li>Errors return <code>{"ok": false, "error": "…"}</code>: 400 <code>missing_contact</code> / <code>missing_content</code> / <code>too_long</code> (<code>detail</code> names the field) / <code>too_many_files</code> / <code>file_too_large</code> / <code>bad_file</code> / <code>bad_json</code>; 413 body too large; 415 unsupported Content-Type; 429 <code>rate_limited</code>.</li>
+    <li>No CORS: call it from a server or the command line. Please don't submit the same lead twice; to add details, submit again and quote the original reference in <code>desc</code>.</li>
+  </ul>
+</section>
+
+<section class="card" id="mine">
+  <h2><span class="m">GET</span><code>/api/report/mine?c=</code></h2>
+  <p data-l="zh">按联系方式查询在 <a href="/report">/report</a> 提交过的线索。<code>c</code> 填提交时写的邮箱（或联系方式原文），不区分大小写。为保护隐私，只返回编号、提交时间、类型、链和打码后的地址，邮箱和地址只显示前后几位；不返回描述、金额和核查结果。免登录、免 key。</p>
+  <p data-l="en">Look up leads submitted through <a href="/report">/report</a> by contact. Set <code>c</code> to the email (or the exact contact) given when submitting; case-insensitive. For privacy, only the reference, submission time, type, chain and a partly hidden address are returned, and the email is partly hidden too; descriptions, amounts and review results are never returned. No sign-in or API key.</p>
+
+  <div class="lbl"><span data-l="zh">请求</span><span data-l="en">Request</span></div>
+  <pre>curl -s -A 'my-client/1.0' 'https://trace.bgblockchain.xyz/api/report/mine?c=whitehat@example.com'</pre>
+
+  <div class="lbl"><span data-l="zh">返回</span><span data-l="en">Response</span></div>
+  <pre>{
+  "ok": true,
+  "contact": "whi***at@example.com",
+  "n": 2,
+  "items": [
+    { "id": "260926-183046-LH2I", "ts": "2026-09-26T10:30:46.905Z",
+      "kind": "funds", "chain": "XRP Ledger", "addr": "rU7dx6…UnDF" },
+    …
+  ]
+}</pre>
+
+  <ul data-l="zh">
+    <li><code>id</code> 线索编号；<code>ts</code> 提交时间（UTC）；<code>kind</code> 类型：<code>funds</code> 资金去向、<code>identity</code> 攻击者身份、<code>method</code> 攻击手法、<code>other</code> 其他；<code>chain</code> 链；<code>addr</code> 目的地址，只显示前 6 位和后 4 位，没填为空。</li>
+    <li><code>n</code> 为总条数，<code>items</code> 按时间倒序，最多列最近 100 条。查不到时 <code>n</code> 为 0。</li>
+    <li>每个 IP 每分钟最多查 5 次，超出返回 429；<code>c</code> 少于 3 个字符返回 400。</li>
+  </ul>
+  <ul data-l="en">
+    <li><code>id</code> lead reference; <code>ts</code> submission time (UTC); <code>kind</code> type: <code>funds</code> fund movement, <code>identity</code> attacker identity, <code>method</code> attack method, <code>other</code> other; <code>chain</code> chain; <code>addr</code> destination address showing only the first 6 and last 4 characters, empty if none was given.</li>
+    <li><code>n</code> is the total count; <code>items</code> is newest first, up to the latest 100. <code>n</code> is 0 when nothing is found.</li>
+    <li>Up to 5 lookups per IP per minute, then 429; <code>c</code> shorter than 3 characters returns 400.</li>
+  </ul>
+
+  <div class="try"><input type="text" class="q" maxlength="300" autocomplete="email" spellcheck="false" placeholder="whitehat@example.com" aria-label="email"><button class="go" type="button" data-ep="/api/report/mine?c=" data-kind="mine"><span data-l="zh">试一下</span><span data-l="en">Try it</span></button><span class="st"></span></div>
+  <pre class="out" hidden></pre>
+</section>
+
+<section class="card" id="limits">
+  <h2><span data-l="zh">使用限制</span><span data-l="en">Limits</span></h2>
+  <ul data-l="zh">
+    <li>所有接口都要带自定义 User-Agent，Python 等默认 UA 会被拦（403）。</li>
+    <li><code>/api/holdings</code>、<code>/api/victims</code>：缓存 5 秒；<code>/api/reviewed</code>：缓存约 2 分钟；<code>/api/chains</code>：缓存约 5 分钟；每个 IP 每分钟 1,200 次（只计缓存未命中的请求）。</li>
+    <li><code>POST /api/report</code>：每个 IP 每分钟 5 次、每 10 分钟 6 次、每天 500 次（IPv6 按 /64 网段算）；请求体 ≤ 8 MB，附件最多 3 张、每张 ≤ 2 MB。</li>
+    <li><code>GET /api/report/mine</code>：每个 IP 每分钟 5 次。</li>
+    <li>超出返回 429，响应头 <code>retry-after</code> 是需要等待的秒数；恶意刷量提交线索的 IP 会被封禁（403）。</li>
+    <li>维护期间（状态见 <code>/api/maintenance</code>）数据接口返回 503，响应头 <code>retry-after</code> 是建议的重试秒数；请沿用上次拉取的名单，不要当成空列表。</li>
+  </ul>
+  <ul data-l="en">
+    <li>Every endpoint needs a custom User-Agent; default library UAs such as Python's are blocked (403).</li>
+    <li><code>/api/holdings</code>, <code>/api/victims</code>: cached for 5 s; <code>/api/reviewed</code>: cached for about 2 minutes; <code>/api/chains</code>: about 5 minutes; 1,200 requests per IP per minute (only cache misses count).</li>
+    <li><code>POST /api/report</code>: 5 per IP per minute, 6 per 10 minutes, 500 per day (IPv6 counted per /64); body ≤ 8 MB, up to 3 attachments of ≤ 2 MB each.</li>
+    <li><code>GET /api/report/mine</code>: 5 lookups per IP per minute.</li>
+    <li>Over the limit you get 429, with the wait in seconds in the <code>retry-after</code> header; IPs that abuse lead submission are blocked (403).</li>
+    <li>During maintenance (status at <code>/api/maintenance</code>) data endpoints return 503 with a <code>retry-after</code> header; keep the list you last fetched, do not treat it as empty.</li>
+  </ul>
+</section>
+</main>
+
+<script>
+(function(){var LANG=window.__LANG==="en"?"en":"zh";var TITLE={zh:"API 文档 · Bitget 被盗资金追踪",en:"API · Bitget Stolen-Funds Tracker"};function applyLang(){document.documentElement.lang=LANG==="en"?"en":"zh-CN";document.title=TITLE[LANG];Array.prototype.forEach.call(document.querySelectorAll(".lang [data-lang]"),function(b){b.setAttribute("aria-pressed",b.getAttribute("data-lang")===LANG?"true":"false")})}document.querySelector(".lang").addEventListener("click",function(ev){var b=ev.target.closest("[data-lang]");if(!b)return;LANG=b.getAttribute("data-lang")==="en"?"en":"zh";try{localStorage.setItem("bgt-lang",LANG)}catch(e){}applyLang()});Array.prototype.forEach.call(document.querySelectorAll(".try"),function(box){var go=box.querySelector(".go"),st=box.querySelector(".st"),out=box.nextElementSibling;var q=box.querySelector(".q"),mine=go.getAttribute("data-kind")==="mine";go.addEventListener("click",function(){var ep=go.getAttribute("data-ep");if(q){var c=(q.value||"").trim();if(c.length<3){st.className="st bad";st.textContent=LANG==="en"?"Enter an email":"请输入邮箱";q.focus();return}ep+=encodeURIComponent(c)}go.disabled=true;st.className="st";st.textContent="…";fetch(ep,{cache:"no-store"}).then(function(r){return r.json().then(function(d){out.textContent=JSON.stringify(d,null,2);out.hidden=false;if(mine){st.className=d.ok?"st":"st bad";st.textContent=r.status+" · "+(d.ok?d.n+(LANG==="en"?" lead(s)":" 条线索"):d.error);return}var n=0,u={};for(var k in d)for(var i=0;i<d[k].length;i++){n++;u[d[k][i]]=1}var m=Object.keys(u).length;st.textContent=r.status+" · "+Object.keys(d).length+(LANG==="en"?" chains · ":" 条链 · ")+m+(LANG==="en"?" addresses":" 个地址")+(n>m?LANG==="en"?" ("+n+" chain entries)":"（"+n+" 条）":"");out.textContent=JSON.stringify(d,null,2);out.hidden=false})}).catch(function(e){st.className="st bad";st.textContent=String(e&&e.message||e)}).then(function(){go.disabled=false})})});applyLang()})();
+</script>
+</body>
+</html>
