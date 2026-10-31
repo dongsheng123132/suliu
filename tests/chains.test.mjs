@@ -42,7 +42,7 @@ test('chains：get / resolve 支持 id、别名与 EVM chainid；未知返回 nu
   assert.equal(Chains.get('solana'), null);
   assert.equal(Chains.get(999), null);
   assert.equal(Chains.get(null), null);
-  assert.deepEqual(Chains.ids().sort(), ['bsc', 'btc', 'eth']);
+  assert.deepEqual(Chains.ids().sort(), ['bsc', 'btc', 'eth', 'tron']);
   assert.equal(Chains.isSupported('bsc'), true);
   assert.equal(Chains.isSupported('solana'), false);
 });

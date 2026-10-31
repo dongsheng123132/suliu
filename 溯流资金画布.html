@@ -241,7 +241,7 @@ ul.alerts .a3 .how{font-size:11.5px;color:var(--muted);margin-right:auto}
 </style>
 
 <header class="top">
-  <div class="brand"><span class="mark"><span id="brandName">溯流</span><small>v0.3</small></span><span class="sub" id="brandTag">被盗资金证据报告</span></div>
+  <div class="brand"><span class="mark"><span id="brandName">溯流</span><small>v0.4</small></span><span class="sub" id="brandTag">被盗资金证据报告</span></div>
   <nav class="cases" role="tablist" aria-label="案件" id="cases"></nav>
   <span class="spacer"></span>
   <button class="btn" id="traceBtn" type="button" title="填入自己的 Etherscan API key，输入一个以太坊地址，自动展开几跳画到画布上">追踪地址</button>
@@ -462,6 +462,53 @@ const CASES = [
     T('n4f','across',26081625,'50 ETH',50,{hash:'0x47d81db01f8abee54173aa21c11364446f8a3aee65b0df19188e370dede804e8'}),
     T('n4f','across',26081629,'50 ETH',50,{hash:'0xacbf8b07d0c91751a5cb2fe6deb5bfb13f7ce012e8fe8446ebc5d34edb444d53'}),
     T('ra','rb',26081719,'158.3 ETH',158.3)
+  ]
+},
+{
+  id:'binance', focus:'b1', tab:'币安 ETH 案', tabK:'真实链路·有限覆盖', kind:'real', unit:'block', chain:'eth', official:false,
+  title:'币安热钱包资金流向 · 以太坊部分', short:'币安 ETH 案', en:'Binance hot-wallet outflows (Ethereum)',
+  facts:[
+    ['起点','0x28c6c06298d514db089934071355e5743bf21d60（币安热钱包，Etherscan 标签）'],
+    ['来源','Etherscan API V2（chainid 1 · Ethereum），抓取 2026-10-31；独立于 Bitget 官方名单'],
+    ['范围','区块 26300700 – 26303600；每个节点最多 1 跳，最多展开 3–4 个对手方'],
+    ['数据截止','区块 26303600（追踪范围上限，不是链头）'],
+    ['有限覆盖','受害钱包另有 21 个、主接收方另有 15 个对手方（按美元折算排序）未展开'],
+    ['归因口径','转出是链上事实；热钱包正常流水与盗款不能混为一谈，接收方未确认身份，不当作攻击者定性']
+  ],
+  banner:['<b>币安 ETH 案</b> · 独立来源（Etherscan 实测），非 Bitget 官方名单','转出是链上事实，不等于每笔都是盗款；有限覆盖（1 跳 / 前 3–4 个对手方），提交前人工复核'],
+  channels:'受害方官方举报渠道；币安合规 / 安全团队；执法机关',
+  nodes:[
+    {id:'b0', type:'victim', label:'币安热钱包 0x28c6', addr:'0x28c6c06298d514db089934071355e5743bf21d60', x:0, y:220, note:'Etherscan 标签为币安热钱包；本轮只展示其转出，不推断每笔转出均为盗款。'},
+    {id:'b1', type:'relay', label:'主接收方 0x5227', addr:'0x5227f603c1ee34ce3c06efe6477003bdfccb2f8c', x:280, y:40, note:'普通地址（eth_getCode 为空），自动展开；收到大额 USDT / ETH 后继续转出。'},
+    {id:'b2', type:'relay', label:'0xa97b', addr:'0xa97bf7836f8a08f9ed91d41453d371493fae8d10', x:280, y:140, note:'普通地址（eth_getCode 为空），自动展开。'},
+    {id:'b3', type:'relay', label:'0xe873', addr:'0xe8736af1926e9d8f5a6602fbbb0893b26436d710', x:280, y:240, note:'普通地址（eth_getCode 为空），自动展开。'},
+    {id:'b4', type:'relay', label:'Forwarder', addr:'0xd59d7a9698eff3e68e0af7e803d4ed35e7ed12d2', x:280, y:340, note:'合约：Forwarder；名字没有可识别的协议关键词，需人工查看；按名字推断，非官方标注。'},
+    {id:'b5', type:'relay', label:'0xbd73', addr:'0xbd7320fed822773ea6b8435ca5d6d90173b05b17', x:280, y:440, note:'普通地址（eth_getCode 为空），自动展开。'},
+    {id:'b6', type:'relay', label:'下一跳 0x8532', addr:'0x8532fa14acaf483729c449b8458aeddb900543d4', x:560, y:40, note:'主接收方转出的接收方；普通地址（eth_getCode 为空）。'},
+    {id:'b7', type:'relay', label:'下一跳 0x9749', addr:'0x9749292d74fd460982d0912ea9515ea24736c762', x:560, y:140, note:'主接收方转出的接收方；普通地址（eth_getCode 为空）。'},
+    {id:'b8', type:'relay', label:'下一跳 0x0ddf', addr:'0x0ddf0480016e6bcb2c1f5d190d221fba1320697e', x:560, y:240, note:'主接收方转出的接收方；普通地址（eth_getCode 为空）。'}
+  ],
+  txs:[
+    T('b0','b1',26300770,'1,615,409,498.97 USDT',75,{ts:1793305463,flags:['freeze'],hash:'0x53bd38b816c23e74134786c29a8c18d792777998a3b9326047b583100e88e2f3'}),
+    T('b0','b1',26300968,'3,917,639.77 USDT',75,{ts:1793307863,flags:['freeze'],hash:'0x31c4c9fe287d54fb9d3b79980477a8c793a11f774b98d0a9a92de1dad888a91d'}),
+    T('b0','b1',26301167,'200,397,771.82 USDT',75,{ts:1793310251,flags:['freeze'],hash:'0x55ba4dabc41b468e580751373ad31acdee6f5ba398682df2c93e5a8340870556'}),
+    T('b0','b1',26300770,'167,464.25 ETH',167464.247857,{ts:1793305463,hash:'0x53bd38b816c23e74134786c29a8c18d792777998a3b9326047b583100e88e2f3'}),
+    T('b0','b1',26300968,'1,699.92 ETH',1699.922888,{ts:1793307863,hash:'0x31c4c9fe287d54fb9d3b79980477a8c793a11f774b98d0a9a92de1dad888a91d'}),
+    T('b0','b1',26301167,'369.8319 ETH',369.831857,{ts:1793310251,hash:'0x55ba4dabc41b468e580751373ad31acdee6f5ba398682df2c93e5a8340870556'}),
+    T('b0','b1',26300770,'82.5435 WBTC',null,{ts:1793305463,hash:'0x53bd38b816c23e74134786c29a8c18d792777998a3b9326047b583100e88e2f3'}),
+    T('b0','b1',26300968,'0.10227696 WBTC',null,{ts:1793307863,hash:'0x31c4c9fe287d54fb9d3b79980477a8c793a11f774b98d0a9a92de1dad888a91d'}),
+    T('b0','b1',26300770,'668.1322 WETH',null,{ts:1793305463,hash:'0x53bd38b816c23e74134786c29a8c18d792777998a3b9326047b583100e88e2f3'}),
+    T('b0','b2',26301444,'128.4911 ETH',128.491139,{ts:1793313575,hash:'0x4a4aed833556814c16fe176fc8abc70ce124eadc73da3bcdf42a67ef44f9ad6b'}),
+    T('b0','b2',26301828,'2,961.91 ETH',2961.910821,{ts:1793318207,hash:'0x4395d51dc3f3c51230329efc3548f74edbced353ff3f795c517cc57fa650f89b'}),
+    T('b0','b3',26300729,'449,005.92 USDT',75,{ts:1793304971,flags:['freeze'],hash:'0xad60faf41453e8b9b57848e5d8ab4c4f1631673b2145756144b11f97b7364be8'}),
+    T('b0','b4',26300740,'2.41 WBTC',null,{ts:1793305103,hash:'0x3e0564f63df11b053194339f66436be739ba017b2ecf4e853ac3e98386fd9e3c'}),
+    T('b0','b5',26300764,'29,999.45 USDT',75,{ts:1793305391,flags:['freeze'],hash:'0xca11ebca3ceaf1d1ef52481afb30f118b71accfff91af2148c5fc6ceecfca653'}),
+    T('b1','b6',26300842,'195,460 ETH',195460,{ts:1793306327,hash:'0x551d7961652e6d9835b11988908adf86ebe480badb4ce2d7d52193b2b1b02c76'}),
+    T('b1','b6',26302212,'2,000 ETH',2000,{ts:1793322851,hash:'0x48186565bdd78b13e516cf5deaf8431d839eed211205718aa90cdb44ae64e84a'}),
+    T('b1','b7',26300799,'500,000,000 USDT',75,{ts:1793305811,flags:['freeze'],hash:'0x68d7d69deaeb9750c38020b4f8d3728146ca8d2267eba1e38cf9b56722ad659a'}),
+    T('b1','b7',26300794,'0.5 ETH',0.5,{ts:1793305751,hash:'0x942b702e36b611916e8bc810b75ee16fc3255d253f33a260eeb96e94aca575f5'}),
+    T('b1','b8',26300815,'200,000,000 USDT',75,{ts:1793306003,flags:['freeze'],hash:'0x1fc0ef33a767132edad434834a5555b30fcb5a171206c03b86175ef6dafac81c'}),
+    T('b1','b8',26300806,'0.5 ETH',0.5,{ts:1793305895,hash:'0x5f0a445da1aa1274c79fca844f6cec552c90db5faf40868597e3322429e67100'})
   ]
 }
 ];
@@ -718,7 +765,7 @@ function renderInspector(ctx){
     if (n.sub) h += '<dt>说明</dt><dd>' + esc(n.sub) + '</dd>';
     h += '<dt>流入 / 流出</dt><dd>' + inTx.length + ' 笔 / ' + outTx.length + ' 笔（截至当前时间点）</dd></dl>';
     if (n.note) h += '<p class="note">' + esc(n.note) + '</p>';
-    if (n.addr && isFull(n.addr)) h += '<div><span class="lbl">' + offLabel() + '</span>' + offCard(offNodeRes(n), {links:true, mark:nodeMark(n)}) + '</div>';
+    if (n.addr && isFull(n.addr) && offEnabled()) h += '<div><span class="lbl">' + offLabel() + '</span>' + offCard(offNodeRes(n), {links:true, mark:nodeMark(n)}) + '</div>';
     h += '<div class="row-btns"><button class="btn" type="button" data-act="center" data-id="' + esc(n.id) + '">居中</button></div></div>';
     el.innerHTML = h;
     return;
@@ -929,12 +976,16 @@ function goneInfoOf(addr){ if (!OFF.index) return null; try { return LIB.describ
 function goneNote(res){ if (!res) return ''; const i = goneInfoOf(res.norm != null ? res.norm : res.input); try { return i ? LIB.goneText(i) : ''; } catch (e) { return ''; } }
 /* 节点的官方查表结果缓存在 n._off（索引是静态的，查一次就够；下划线字段导出和存盘时不带） */
 function offNodeRes(n){ if (!OFF.index) return null; if (!('_off' in n)) n._off = offLookup(n.addr); return n._off; }
+/* 官方名单（Bitget 静态快照）只对 Bitget 案适用；其它内置案例（如币安）是独立来源，不套用该名单。
+   内置案例可显式 official:false 关闭核对（不出现「与官方不符」等误导性徽标）；追踪案件（_tr）仍照旧只标命中、不判不符。 */
+function offEnabled(){ return C.official !== false; }
 /* 节点详情里那一行的标题：「官方名单（静态快照 <label>）」；label 来自数据文件，进 HTML 前 esc */
 function offLabel(){ return '官方名单（静态快照 ' + esc(OFF.snap ? (OFF.snap.label || OFF.snap.fetched_at || '时间未记录') : '未加载') + '）'; }
 
 /* 画布节点与官方名单的对照：返回 {txt, cls, tip, card, mismatch} 或 null。
    命中名单只说「在名单里」，不说「已确认 / 通过 / 安全」——官方名单只是官方的判断，画布节点是否正确要另看。cls：mute＝中性，warn＝需要注意 */
 function nodeMark(n){
+  if (!offEnabled()) return null;
   if (!n.addr || !isFull(n.addr)) return null;
   const r = offNodeRes(n); if (!r || r.status === 'invalid') return null;
   const s = r.status, ty = n.type, lab = stInfo(s).s;
@@ -970,6 +1021,7 @@ function nodeMark(n){
 }
 function offCaseLine(){
   const nodes = C.nodes.filter(n => n.addr && isFull(n.addr));
+  if (!offEnabled()) return '<dt>官方名单核对</dt><dd>不适用：本案为独立来源（非 Bitget 官方名单），不做 Bitget 名单核对</dd>';
   if (!OFF.index) return '<dt>官方名单核对</dt><dd>' + esc(LIB ? '官方数据暂不可用' : '官方数据未加载') + '</dd>';
   let hit = 0, bad = 0, filled = 0;   // filled＝补全的地址里同时命中官方名单的个数（补全数与命中数取交集）：这部分地址本来就是照官方名单补全的，命中它们不能算独立印证
   nodes.forEach(n => {
@@ -1339,7 +1391,7 @@ function rpGenerate(){
   const now = new Date();
   try {
     const svgText = rpSvg();
-    html = RPT.build({case:C, meta:C._meta || {}, generatedAt:now.toISOString(), official:OFF.index || null, officialLabel:OFF.snap ? String(OFF.snap.label || OFF.snap.fetched_at || '') : '', svg:svgText, info, guide:GD, brand:BR0});
+    html = RPT.build({case:C, meta:C._meta || {}, generatedAt:now.toISOString(), official:offEnabled() ? (OFF.index || null) : null, officialLabel:OFF.snap ? String(OFF.snap.label || OFF.snap.fetched_at || '') : '', svg:svgText, info, guide:GD, brand:BR0});
   } catch (e) { rpMsg('err', '生成失败：' + scrub(e && e.message ? e.message : e)); return; }
   const pad = n => String(n).padStart(2, '0');
   const name = 'suliu-report-' + String(C.id).replace(/[^A-Za-z0-9._-]/g, '_').slice(0, 60) + '-' + now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate()) + '-' + pad(now.getHours()) + pad(now.getMinutes()) + pad(now.getSeconds()) + '.html';

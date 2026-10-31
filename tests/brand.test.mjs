@@ -4,7 +4,7 @@
 //   - 报告：contact 与 site 都为空（含缺省、全空白）时，报告里不出现任何「联系我们」内容；任一非空时，报告末尾出现一行
 //     「需要人工协助（企业应急、报告人工复核）：<contact> <site>」并紧跟固定说明「溯流不向受害者收取「追回费」，不承诺追回。」；
 //   - 所有字段转义（XSS 字符串只作为文字）；site 只有以 https:// 开头才做成链接，其余（javascript:、http://、大小写变体、带引号 / 空白）只当纯文字；
-//   - 版本：package.json、lib/report.js 的 VERSION、页面品牌角标、报告页脚都是 0.3（0.3.0）；
+//   - 版本：package.json、lib/report.js 的 VERSION、页面品牌角标、报告页脚都是 0.4（0.4.0）；
 //   - 页面：读 window.SuliuBrand，品牌位用 textContent 写入（不用 innerHTML 拼品牌字段）。
 // 运行：node --test（Windows / Node 24 下别写 `node --test tests/`）。
 import test from 'node:test';
@@ -78,8 +78,8 @@ test('非空：contact / site 任一非空，报告末尾出现联系行并紧�
   const s = build({ site: 'https://example.com' });
   assert.ok(s.includes(LINE + '<a href="https://example.com" target="_blank" rel="noopener noreferrer">https://example.com</a><br>' + FIXED));
   // 页脚读 name
-  assert.ok(tail(build({ name: '某应急服务' })).includes('由某应急服务（Suliu）v0.3 根据公开链上数据生成'));
-  assert.ok(tail(build(undefined)).includes('由溯流（Suliu）v0.3 根据公开链上数据生成'));
+  assert.ok(tail(build({ name: '某应急服务' })).includes('由某应急服务（Suliu）v0.4 根据公开链上数据生成'));
+  assert.ok(tail(build(undefined)).includes('由溯流（Suliu）v0.4 根据公开链上数据生成'));
 });
 
 test('XSS：contact / site / name 里的标签、引号、脚本伪协议全部只作为文字；site 只有 https:// 开头才做成链接', () => {
@@ -106,8 +106,8 @@ test('XSS：contact / site / name 里的标签、引号、脚本伪协议全部�
   assert.ok(!build({ contact: 'x'.repeat(5000) }).includes('x'.repeat(301)));
 });
 
-test('版本：package.json、lib/report.js 的 VERSION、页面品牌角标、报告页脚一致，都是 0.3（0.3.0）', () => {
-  assert.equal(PKG.version, '0.3.0');
+test('版本：package.json、lib/report.js 的 VERSION、页面品牌角标、报告页脚一致，都是 0.4（0.4.0）', () => {
+  assert.equal(PKG.version, '0.4.0');
   assert.equal(Report.VERSION, PKG.version);
   const mm = PKG.version.split('.').slice(0, 2).join('.');
   const badge = /<span class="mark"><span id="brandName">[^<]*<\/span><small>v(\d+\.\d+)<\/small><\/span>/.exec(PAGE);

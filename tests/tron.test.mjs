@@ -33,7 +33,7 @@ const res = (status, body) => ({ ok: status >= 200 && status < 300, status, json
 // ======================================================================
 // 按链配置：Tron 与 ETH / BSC 隔离，链接走 tronscan，未知链拒绝
 // ======================================================================
-test('chains（Tron）：配置隔离、tronscan 链接、未知链拒绝；ids() 不混入 account 链', () => {
+test('chains（Tron）：配置隔离、tronscan 链接、未知链拒绝；ids() 列出全部支持链', () => {
   const tron = Chains.get('tron');
   assert.equal(tron.kind, 'account');
   assert.equal(tron.native.symbol, 'TRX');
@@ -48,7 +48,7 @@ test('chains（Tron）：配置隔离、tronscan 链接、未知链拒绝；ids(
   assert.equal(Chains.explorerUrl('tron', 'address', '0x' + '11'.repeat(20)), null);
   assert.equal(Chains.get('solana'), null, '未知链仍拒绝');
   assert.equal(Chains.isSupported('tron'), true);
-  assert.ok(!Chains.ids().includes('tron'), 'ids() 只列 EVM/UTXO 工具链，account 链通过 get() 单独取用');
+  assert.ok(Chains.ids().includes('tron'), 'ids() 应列出全部支持链（含 tron），EVM 子集由调用方按 kind 过滤');
   assert.ok(Chains.ids().includes('btc'));
 });
 

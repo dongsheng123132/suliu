@@ -291,10 +291,10 @@ test('文案：全文（剥注释、解码转义 / 实体之后）不得出现�
   }
 });
 
-test('范围清单：内置案件只有 bitget（Bybit / Harmony / Ronin 回放已删除并存档到 archive/v0.2-full/）', () => {
+test('范围清单：内置案件为 bitget（默认）+ 币安（可切换真实案例）；Bybit / Harmony / Ronin 回放已删除并存档', () => {
   const ids = builtinCaseIds(CLEAN.scripts.join('\n'));   // 用保留字符串内容的版本（CODE 里字符串被清空了）
   assert.ok(ids, '找不到 const CASES = [ … ] 区块');
-  assert.deepEqual(ids, ['bitget'], `内置案件应只有 bitget，实际：${JSON.stringify(ids)}`);
+  assert.deepEqual(ids, ['bitget', 'binance'], `内置案件应为 bitget + binance，实际：${JSON.stringify(ids)}`);
 });
 
 test('范围清单：已删除功能（官方实时视图 / 规则开关 / 推演节点 / 核对地址框 / 事件数据源导出 / 洗钱七阶段）的标识不许再出现', () => {
