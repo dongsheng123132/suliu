@@ -240,3 +240,10 @@ test('BTC / Tron 报告：都能过 lib/report.js，无 script，画布 SVG 被�
     info: {}, guide: null, brand: null });
   assert.ok(!/<script/i.test(evil) && !/onload=/i.test(evil) && !/<foreignobject/i.test(evil) && !/<iframe/i.test(evil), '恶意 SVG 必须被清洗');
 });
+
+test('页面顶栏有开源 GitHub 仓库链接（方便用户直接去仓库），且带 noopener/noreferrer', () => {
+  const m = /<a class="btn" href="https:\/\/github\.com\/dongsheng123132\/suliu"[^>]*>/.exec(HTML);
+  assert.ok(m, '页面顶栏缺少 GitHub 仓库链接');
+  assert.match(m[0], /target="_blank"/);
+  assert.match(m[0], /rel="noopener noreferrer"/);
+});
