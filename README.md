@@ -2,6 +2,8 @@
 
 **钱被盗之后，把一个钱包地址变成一份能直接拿去报案、找交易所冻结的证据报告。**
 
+> Turn one stolen-funds wallet address into an evidence report you can hand to the police or send to an exchange to request a freeze.
+
 开源、免安装、免费：一个 HTML 文件加几个脚本，双击就能用。溯流只把公开链上数据变成你自己拿去用的报告：不常驻盯盘，不经手资金，不替你联系任何人，不承诺追回。
 
 ## 三步用法
