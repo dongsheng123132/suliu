@@ -291,10 +291,21 @@ test('文案：全文（剥注释、解码转义 / 实体之后）不得出现�
   }
 });
 
-test('范围清单：内置案件为 bitget（默认）+ 币安（可切换真实案例）；Bybit / Harmony / Ronin 回放已删除并存档', () => {
+/** data/map-cases.js 里的内置案例 id（BTC / Tron 由 tools/make-map-cases.mjs 生成，页面加载时并入 CASES） */
+function mapCaseIds() {
+  const f = path.join(ROOT, 'data/map-cases.js');
+  if (!fs.existsSync(f)) return [];
+  const sandbox = { window: {} };
+  vm.runInNewContext(fs.readFileSync(f, 'utf8'), sandbox, { filename: 'data/map-cases.js' });
+  const list = sandbox.window && sandbox.window.SULIU_MAP_CASES;
+  return Array.isArray(list) ? list.map(c => String(c && c.id)) : [];
+}
+
+test('范围清单：内置案件为 bitget（默认）+ 币安 + BTC + Tron（可切换案例）；Bybit / Harmony / Ronin 回放已删除并存档', () => {
   const ids = builtinCaseIds(CLEAN.scripts.join('\n'));   // 用保留字符串内容的版本（CODE 里字符串被清空了）
   assert.ok(ids, '找不到 const CASES = [ … ] 区块');
-  assert.deepEqual(ids, ['bitget', 'binance'], `内置案件应为 bitget + binance，实际：${JSON.stringify(ids)}`);
+  const all = ids.concat(mapCaseIds());
+  assert.deepEqual(all, ['bitget', 'binance', 'btc', 'tron'], `内置案件应为 bitget + binance + btc + tron，实际：${JSON.stringify(all)}`);
 });
 
 test('范围清单：已删除功能（官方实时视图 / 规则开关 / 推演节点 / 核对地址框 / 事件数据源导出 / 洗钱七阶段）的标识不许再出现', () => {

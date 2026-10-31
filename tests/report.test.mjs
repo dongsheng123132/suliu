@@ -673,7 +673,11 @@ test('RULES / SEV / 类型名：与迁移前页面一致；页面 TYPES 与 lib 
   const m = /const TYPES = (\{[\s\S]*?\n\});/.exec(HTML_TEXT);
   assert.ok(m, '页面里找不到 const TYPES');
   const pageTypes = vm.runInNewContext('(' + m[1] + ')', {});
-  assert.deepEqual(Object.fromEntries(Object.entries(pageTypes).map(([k, v]) => [k, v.name])), JSON.parse(JSON.stringify(Report.TYPE_NAMES)));
+  const pageNames = Object.fromEntries(Object.entries(pageTypes).map(([k, v]) => [k, v.name]));
+  // 页面是 report.js 类型名的超集：report.js（本轮冻结）不认识的 'tx'（BTC 二部图的交易节点）只在页面里保留一份
+  for (const [k, v] of Object.entries(Report.TYPE_NAMES)) assert.equal(pageNames[k], v, '页面 TYPES 必须包含 lib 的全部类型名：' + k);
+  assert.equal(pageNames.tx, '交易', '页面新增 type:tx（BTC 交易节点）');
+  assert.deepEqual(Object.keys(pageNames).filter(k => !(k in Report.TYPE_NAMES)), ['tx'], '页面比 lib 多出的类型只有 tx');
   assert.throws(() => { 'use strict'; Report.RULES.push({}); }, TypeError, 'RULES 是冻结的');
   assert.throws(() => { 'use strict'; Report.ACTION.cex = 'x'; }, TypeError, 'ACTION 是冻结的');
 });

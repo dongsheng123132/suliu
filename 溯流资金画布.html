@@ -10,7 +10,7 @@
   --bg:#eef1f0; --surface:#ffffff; --surface-2:#f5f7f6; --ink:#16201d; --muted:#5a6662; --line:#d2dad7; --grid:#d9e0dd; --edge:#97a39f;
   --accent:#2552c4; --accent-soft:rgba(37,82,196,.10); --on-accent:#ffffff; --scrim:rgba(12,18,16,.45);
   --t-victim:#56708f; --t-attacker:#c2362b; --t-relay:#6a7672; --t-dex:#2d6fd3; --t-bridge:#7a4ec6; --t-compliant:#a8558f;
-  --t-cex:#d27a14; --t-mixer:#3b4341; --t-otc:#8c9290; --t-frozen:#2b8a55; --t-hypo:#9a7412; --t-dust:#a3aaa7;
+  --t-cex:#d27a14; --t-mixer:#3b4341; --t-otc:#8c9290; --t-frozen:#2b8a55; --t-hypo:#9a7412; --t-dust:#a3aaa7; --t-tx:#3f6b8a;
   --sev-urgent:#c62828; --sev-high:#b46400; --sev-mid:#50629a; --sev-info:#7a8481;
   --font-ui:"IBM Plex Sans","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
   --font-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
@@ -19,14 +19,14 @@
   --bg:#101615; --surface:#182120; --surface-2:#141b1a; --ink:#e2eae7; --muted:#93a19c; --line:#2b3735; --grid:#26322f; --edge:#62706c;
   --accent:#86a8ff; --accent-soft:rgba(134,168,255,.14); --on-accent:#0c1422; --scrim:rgba(0,0,0,.6);
   --t-victim:#8aa3c4; --t-attacker:#ff6b5e; --t-relay:#9aa7a3; --t-dex:#6ea4ff; --t-bridge:#b28cff; --t-compliant:#e08cc4;
-  --t-cex:#f0a24a; --t-mixer:#c3cbc8; --t-otc:#8d9794; --t-frozen:#52c285; --t-hypo:#d9b04a; --t-dust:#5d6865;
+  --t-cex:#f0a24a; --t-mixer:#c3cbc8; --t-otc:#8d9794; --t-frozen:#52c285; --t-hypo:#d9b04a; --t-dust:#5d6865; --t-tx:#7f97b8;
   --sev-urgent:#ff6b6b; --sev-high:#f0a24a; --sev-mid:#93a6e0; --sev-info:#8d9794; color-scheme:dark;
 }}
 :root[data-theme="dark"]{
   --bg:#101615; --surface:#182120; --surface-2:#141b1a; --ink:#e2eae7; --muted:#93a19c; --line:#2b3735; --grid:#26322f; --edge:#62706c;
   --accent:#86a8ff; --accent-soft:rgba(134,168,255,.14); --on-accent:#0c1422; --scrim:rgba(0,0,0,.6);
   --t-victim:#8aa3c4; --t-attacker:#ff6b5e; --t-relay:#9aa7a3; --t-dex:#6ea4ff; --t-bridge:#b28cff; --t-compliant:#e08cc4;
-  --t-cex:#f0a24a; --t-mixer:#c3cbc8; --t-otc:#8d9794; --t-frozen:#52c285; --t-hypo:#d9b04a; --t-dust:#5d6865;
+  --t-cex:#f0a24a; --t-mixer:#c3cbc8; --t-otc:#8d9794; --t-frozen:#52c285; --t-hypo:#d9b04a; --t-dust:#5d6865; --t-tx:#7f97b8;
   --sev-urgent:#ff6b6b; --sev-high:#f0a24a; --sev-mid:#93a6e0; --sev-info:#8d9794; color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -86,12 +86,13 @@ button,input,select{font:inherit;color:inherit}
 /* SVG */
 .t-victim{--c:var(--t-victim)} .t-attacker{--c:var(--t-attacker)} .t-relay{--c:var(--t-relay)} .t-dex{--c:var(--t-dex)} .t-bridge{--c:var(--t-bridge)}
 .t-compliant{--c:var(--t-compliant)} .t-cex{--c:var(--t-cex)} .t-mixer{--c:var(--t-mixer)} .t-otc{--c:var(--t-otc)} .t-frozen{--c:var(--t-frozen)}
-.t-hypo{--c:var(--t-hypo)} .t-dust{--c:var(--t-dust)}
+.t-hypo{--c:var(--t-hypo)} .t-dust{--c:var(--t-dust)} .t-tx{--c:var(--t-tx)}
 .nd{cursor:pointer}
 .nd .box{fill:var(--surface);stroke:var(--c);stroke-width:1.4}
 .nd .stk{fill:var(--surface);stroke:var(--line);stroke-width:1}
 .nd.hypo .box{stroke-dasharray:6 4;fill:var(--surface-2)}
 .nd.dust .box{stroke-dasharray:2 3}
+.nd.t-tx .box{fill:var(--surface-2)}
 .nd.inferred .box{stroke-dasharray:6 4;fill:var(--surface-2)}
 .nd.sel .box{stroke:var(--accent);stroke-width:2.6}
 .nd .dot{fill:var(--c)}
@@ -123,6 +124,7 @@ button,input,select{font:inherit;color:inherit}
 .case-card .title{font-size:16px;font-weight:600;text-wrap:balance;margin:0}
 .case-card .kind{display:inline-block;margin:6px 0 10px;font-size:11.5px;padding:1px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
 .case-card .kind.real{color:var(--t-attacker);border-color:currentColor}
+.case-card .kind.demo{color:var(--sev-high);border-color:currentColor;border-style:dashed}
 dl.facts{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:13px}
 dl.facts dt{color:var(--muted);font-size:12px;padding-top:1px}
 dl.facts dd{margin:0;min-width:0}
@@ -361,6 +363,8 @@ ul.alerts .a3 .how{font-size:11.5px;color:var(--muted);margin-right:auto}
 <script src="lib/report.js"></script>
 <script src="lib/guide.js"></script>
 <script src="lib/brand.js"></script>
+<script src="lib/chains.js"></script>
+<script src="data/map-cases.js"></script>
 <script>
 (function(){
 'use strict';
@@ -371,7 +375,8 @@ const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp
 const TYPES = {
   victim:{name:'受害方'}, attacker:{name:'攻击者'}, relay:{name:'中转'}, dex:{name:'DEX 兑换'},
   bridge:{name:'跨链 / 兑换服务'}, compliant:{name:'可拦截通道'}, cex:{name:'中心化交易所'}, mixer:{name:'混币器'},
-  otc:{name:'OTC / 失去踪迹'}, frozen:{name:'已冻结'}, hypo:{name:'推演节点'}, dust:{name:'投毒粉尘'}
+  otc:{name:'OTC / 失去踪迹'}, frozen:{name:'已冻结'}, hypo:{name:'推演节点'}, dust:{name:'投毒粉尘'},
+  tx:{name:'交易'}
 };
 /* 卡点规则（RULES）、严重程度（SEV）、卡点判定（rulesOf）、卡点文案（HEADLINE / ACTION）的唯一来源是 lib/report.js（window.SuliuReport），页面只调用、不再各写一份。
    缺这个文件时页面照常显示地址与转账，但不标卡点、不能生成报告，并在卡点栏明确提示（不会悄悄当成「没有卡点」）。 */
@@ -512,6 +517,9 @@ const CASES = [
   ]
 }
 ];
+/* 追加 BTC（币安侧真实，二部图）与 Tron（合成演示）内置案例：Bitget 仍是 CASES[0] 默认；数据在 data/map-cases.js */
+const MAP0 = typeof window !== 'undefined' ? window.SULIU_MAP_CASES : null;
+if (Array.isArray(MAP0)) MAP0.forEach(c => { if (c && Array.isArray(c.nodes) && Array.isArray(c.txs) && !CASES.some(x => x.id === c.id)) CASES.push(c); });
 
 CASES.forEach(c => c.nodes.forEach(n => { n.x = Math.round(n.x / 280) * COL; }));
 
@@ -531,10 +539,28 @@ const cur = () => TIMES[S.ti];
 /* ---------- 工具函数 ---------- */
 function textW(s, size){ let w = 0; for (const ch of String(s)) w += /[⺀-鿿＀-￯　-〿]/.test(ch) ? size : size * 0.6; return w; }
 function clip(s, maxW, size){ s = String(s || ''); if (textW(s, size) <= maxW) return s; let out = ''; for (const ch of s){ if (textW(out + ch + '…', size) > maxW) break; out += ch; } return out + '…'; }
-const isFull = a => /^0x[0-9a-fA-F]{40}$/.test(a || '');
-const isHash = h => /^0x[0-9a-fA-F]{64}$/.test(h || '');
-function shortA(a){ if (!a) return ''; return isFull(a) ? a.slice(0, 8) + '…' + a.slice(-6) : a; }
-function fmtT(t){ return t == null ? '—' : '区块 ' + t; }
+const isFull = a => /^0x[0-9a-fA-F]{40}$/.test(a || '');   // 仅以太坊地址格式（追踪面板 / 报告被盗哈希校验仍用）
+const isHash = h => /^0x[0-9a-fA-F]{64}$/.test(h || '');   // 仅以太坊交易哈希格式
+/* 按链生成链接与时间轴标签：lib/chains.js（window.SuliuChains）是每条链浏览器的唯一来源。
+   ETH→etherscan、BTC→mempool.space、Tron→tronscan；地址 / 交易哈希先按格式校验再拼。 */
+const CHAINS0 = window.SuliuChains || null;
+function caseChain(){ const id = C && C.chain ? C.chain : 'eth'; return CHAINS0 && typeof CHAINS0.get === 'function' ? (CHAINS0.get(id) || null) : null; }
+function linkOf(kind, value){
+  if (!CHAINS0 || typeof CHAINS0.explorerUrl !== 'function') return null;
+  const cc = caseChain(); if (!cc) return null;
+  try { return CHAINS0.explorerUrl(cc.id, kind, value) || null; } catch (e) { return null; }
+}
+function shortA(a){ if (!a) return ''; const s = String(a); return isFull(s) ? s.slice(0, 8) + '…' + s.slice(-6) : (s.length > 16 ? s.slice(0, 8) + '…' + s.slice(-6) : s); }
+function txShort(h){ const s = String(h == null ? '' : h); return s.length > 16 ? s.slice(0, 10) + '…' : s; }
+const unitOf = () => (C && C.unit === 'time') ? 'time' : 'block';
+function fmtTime(ts){
+  const n = Number(ts);
+  if (!isFinite(n)) return '—';
+  const d = new Date(n * 1000 + 8 * 3600 * 1000);
+  const p = x => String(x).padStart(2, '0');
+  return d.getUTCFullYear() + '-' + p(d.getUTCMonth() + 1) + '-' + p(d.getUTCDate()) + ' ' + p(d.getUTCHours()) + ':' + p(d.getUTCMinutes());
+}
+function fmtT(t){ if (t == null) return '—'; return unitOf() === 'time' ? '时间 ' + fmtTime(t) : '区块 ' + t; }
 function fmtNum(n){ return n.toLocaleString('en-US', {maximumFractionDigits:2}); }
 /* 多条消息合并显示（不互相覆盖）：还没过期的消息用「 · 」连在一起，新消息追加在后；同一条文字重复出现只刷新它的过期时间 */
 const TOASTS = [];
@@ -679,7 +705,7 @@ function renderCanvas(ctx){
     else if (n.excluded) rt = '已排除';
     if (rt) s += '<text class="rt ' + rc + '" x="' + (W - 12) + '" y="21" text-anchor="end">' + esc(clip(rt, 110, 10.5)) + '</text>';
     s += '<text class="lb" x="12" y="41">' + esc(clip(n.label, W - 24, 13.5)) + '</text>';
-    const l3 = n.addr ? shortA(n.addr) : (n.sub || '');
+    const l3 = n.addr ? (n.type === 'tx' ? (n.sub || txShort(n.addr)) : shortA(n.addr)) : (n.sub || '');
     const mk = nodeMark(n);
     if (l3) s += '<text class="ad" x="12" y="58">' + esc(clip(l3, W - 24 - (mk ? textW(mk.txt, 10) + 8 : 0), 11)) + '</text>';
     if (mk) s += '<text class="of ' + mk.cls + '" x="' + (W - 10) + '" y="58" text-anchor="end">' + esc(mk.txt) + '<title>' + esc(mk.tip) + '</title></text>';
@@ -703,9 +729,9 @@ function renderCases(){
 function renderCaseCard(ctx){
   const prio = ctx.alerts.filter(a => SEV[a.sev].prio).length;
   const trunc = C._tr ? truncText(C._meta) : null;
-  $('#caseCard').innerHTML = '<p class="title">' + esc(C.title) + '</p><span class="kind real">真实链路</span>' +
+  $('#caseCard').innerHTML = '<p class="title">' + esc(C.title) + '</p>' + (C.demo ? '<span class="kind demo">演示（合成数据）</span>' : '<span class="kind real">真实链路</span>') +
     '<dl class="facts">' + C.facts.map(f => '<dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd>').join('') + offCaseLine() + '</dl>' +
-    '<div class="counts"><div><b>' + ctx.vnodes.length + '</b><span>可见地址</span></div><div><b>' + ctx.alerts.length + '</b><span>卡点</span></div><div class="prio"><b>' + prio + '</b><span>紧急 / 高</span></div></div>' +
+    '<div class="counts"><div><b>' + ctx.vnodes.length + '</b><span>' + (C.nodes.some(n => n.type === 'tx') ? '可见节点' : '可见地址') + '</span></div><div><b>' + ctx.alerts.length + '</b><span>卡点</span></div><div class="prio"><b>' + prio + '</b><span>紧急 / 高</span></div></div>' +
     (trunc ? '<div class="warnbox inline">结果被截断：' + esc(trunc) + '</div>' : '');
   /* 只有页面内置案件的 banner 允许带 <b>；追踪 / 载入的案件（_tr）一律当纯文本 */
   $('#banner').innerHTML = C.banner.map(b => '<span>' + (C._tr ? esc(b) : b) + '</span>').join('') + (trunc ? '<span class="trunc">结果被截断：' + esc(trunc) + '</span>' : '');
@@ -719,7 +745,7 @@ function renderLegend(vnodes){
 }
 function renderTimeline(){
   const r = $('#range'); r.max = TIMES.length - 1; r.value = S.ti;
-  $('#nowLbl').innerHTML = esc(fmtT(cur())) + '<small>第 ' + (S.ti + 1) + ' / ' + TIMES.length + ' 步</small>';
+  $('#nowLbl').innerHTML = esc(fmtT(cur())) + '<small>' + (unitOf() === 'time' ? '第 ' + (S.ti + 1) + ' / ' + TIMES.length + ' 个时间点' : '第 ' + (S.ti + 1) + ' / ' + TIMES.length + ' 步') + '</small>';
   $('#playBtn').textContent = S.timer ? '❚❚ 暂停' : '▶ 回放';
 }
 function nodeRef(id){ const n = N[id]; return esc(n.label); }
@@ -753,7 +779,10 @@ function renderInspector(ctx){
     let h = '<h3>节点详情</h3><div class="insp"><div class="head"><span class="tchip t-' + n.type + '">' + esc(TYPES[n.type].name) + '</span>' + (n.excluded ? '<span class="pill sev-info">已核查 · 非攻击者</span>' : '') + '</div>';
     h += '<div class="nm" style="font-weight:600;font-size:15px">' + esc(n.label) + '</div>';
     if (n.addr){
-      h += '<div class="addr">' + esc(n.addr) + '</div><div class="row-btns">' + (isFull(n.addr) ? '<button class="btn" type="button" data-act="copy" data-text="' + esc(n.addr) + '">复制地址</button><a class="btn" href="https://etherscan.io/address/' + esc(n.addr) + '" target="_blank" rel="noopener">在 Etherscan 查看</a>' : '<span class="note">地址未完整抓取</span>') + '</div>';
+      const isTx = n.type === 'tx';
+      const url = isTx ? linkOf('tx', n.addr) : linkOf('address', n.addr);
+      const what = isTx ? '交易哈希' : '地址';
+      h += '<div class="addr">' + esc(n.addr) + '</div><div class="row-btns">' + (url ? '<button class="btn" type="button" data-act="copy" data-text="' + esc(n.addr) + '">复制' + what + '</button><a class="btn" href="' + esc(url) + '" target="_blank" rel="noopener">在区块浏览器查看</a>' : '<span class="note">' + (isTx ? '交易哈希格式不对，无法生成链接' : '地址格式不受支持，或未完整抓取') + '</span>') + '</div>';
     }
     if (n.type === 'dust' && n.mimic && N[n.mimic]){
       const m = N[n.mimic];
@@ -777,7 +806,7 @@ function renderInspector(ctx){
   const rules = [...new Set(txs.flatMap(tx => txRules(tx, N[from], N[to])))];
   let h = '<h3>转账详情</h3><div class="insp"><div class="nm" style="font-weight:600">' + nodeRef(from) + ' → ' + nodeRef(to) + '</div>';
   if (rules.length) h += '<div class="row-btns">' + rules.map(r => '<span class="pill sev-' + RULE[r].sev + '">' + esc(RULE[r].name) + '</span>').join('') + '</div>';
-  h += '<div class="txwrap"><table class="txs"><thead><tr><th>时间</th><th>金额</th><th>交易</th></tr></thead><tbody>' + txs.map(tx => '<tr><td class="mono">' + esc(fmtT(tx.t)) + (tx.approx ? '（约）' : '') + '</td><td>' + esc(tx.amt || (tx.approx ? '未核对' : '未抓取')) + (tx.note ? '<div class="note">' + esc(tx.note) + '</div>' : '') + '</td><td class="mono">' + (isHash(tx.hash) ? '<a href="https://etherscan.io/tx/' + tx.hash + '" target="_blank" rel="noopener">' + tx.hash.slice(0, 10) + '…</a>' : '—') + '</td></tr>').join('') + '</tbody></table></div></div>';
+  h += '<div class="txwrap"><table class="txs"><thead><tr><th>时间</th><th>金额</th><th>交易</th></tr></thead><tbody>' + txs.map(tx => { const u = tx.hash ? linkOf('tx', tx.hash) : null; return '<tr><td class="mono">' + esc(fmtT(tx.t)) + (tx.approx ? '（约）' : '') + '</td><td>' + esc(tx.amt || (tx.approx ? '未核对' : '未抓取')) + (tx.note ? '<div class="note">' + esc(tx.note) + '</div>' : '') + '</td><td class="mono">' + (u ? '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(txShort(tx.hash)) + '</a>' : (tx.hash ? '<span class="note">' + esc(txShort(tx.hash)) + '</span>' : '—')) + '</td></tr>'; }).join('') + '</tbody></table></div></div>';
   el.innerHTML = h;
 }
 function renderAll(){
@@ -904,7 +933,7 @@ function openModal(title, note, text){
 function openReportText(key){
   const a = computeAlerts(visTx()).find(x => x.key === key); if (!a) return;
   const f = N[a.from], to = N[a.to], r = RULE[a.rule], sv = SEV[a.sev];
-  const hashes = a.txs.filter(x => isHash(x.hash)).map(x => x.hash);
+  const hashes = a.txs.filter(x => x.hash).map(x => x.hash);
   const amounts = a.txs.map(x => '  ' + fmtT(x.t) + '：' + (x.amt || '金额未核对')).join('\n');
   let t = '主题：【' + sv.name + '】' + C.short + '：' + r.name + ' · ' + to.label + ' · ' + fmtT(a.t) + '\n\n';
   t += RPT.HEADLINE[a.rule] + '\n\n';
@@ -913,8 +942,10 @@ function openReportText(key){
   t += '金额：\n' + amounts + '\n';
   t += '交易哈希：\n' + (hashes.length ? hashes.map(h => '  ' + h).join('\n') : '  （本笔哈希未抓取，请到接收方地址页核对）') + '\n\n';
   t += '下一步：' + RPT.ACTION[a.rule] + '\n报告渠道：' + C.channels + '\n';
+  const whenEn = unitOf() === 'time' ? ('at ' + fmtTime(a.t) + ' (UTC+8)') : ('at block ' + a.t);
+  const srcEn = (function(){ const id = C && C.chain ? C.chain : 'eth'; return id === 'btc' ? 'mempool.space / Esplora' : id === 'tron' ? 'TronGrid' : 'Etherscan'; })();
   t += '\n可直接粘贴的举报文本（英文）：\n';
-  t += 'Funds linked to the ' + C.en + ' moved from ' + (f.addr || 'an attacker-controlled address') + ' to ' + (to.addr || 'a recipient not yet identified') + ' (' + a.txs.map(x => (x.amt && /^[\x20-\x7E→]+$/.test(x.amt)) ? x.amt.replace('→', 'to') : 'amount unverified').join('; ') + ') at block ' + a.t + '. Tx: ' + (hashes.join(', ') || 'see recipient address page') + '. Source: public on-chain data (Etherscan). Please review and consider a freeze.\n';
+  t += 'Funds linked to the ' + C.en + ' moved from ' + (f.addr || 'an attacker-controlled address') + ' to ' + (to.addr || 'a recipient not yet identified') + ' (' + a.txs.map(x => (x.amt && /^[\x20-\x7E→]+$/.test(x.amt)) ? x.amt.replace('→', 'to') : 'amount unverified').join('; ') + ') ' + whenEn + '. Tx: ' + (hashes.join(', ') || 'see recipient address page') + '. Source: public on-chain data (' + srcEn + '). Please review and consider a freeze.\n';
   t += '\n合规提示：只向受害方官方渠道、交易所合规团队和执法机关报告；不联系、不付费给洗钱方。归因以执法机关结论为准。';
   openModal('举报文本预览', '这只是一份文本草稿，页面不会替你发送任何东西。提交前请人工核对地址、哈希和金额，只向官方渠道报告。', t);
 }
