@@ -1,0 +1,203 @@
+{
+  "case": {
+    "id": "trace-0x5227f6-26300700",
+    "tab": "追踪 0x5227…2f8c",
+    "tabK": "自动追踪",
+    "kind": "real",
+    "unit": "block",
+    "focus": "n0",
+    "chain": "eth",
+    "chainid": 1,
+    "title": "地址追踪 · 0x5227…2f8c",
+    "short": "追踪 0x5227…2f8c",
+    "en": "Auto trace · 0x5227…2f8c",
+    "facts": [
+      [
+        "起点",
+        "0x5227f603c1ee34ce3c06efe6477003bdfccb2f8c"
+      ],
+      [
+        "范围",
+        "区块 26300700 – 26303600；最多 1 跳，每个节点最多展开 3 个对手方"
+      ],
+      [
+        "数据来源",
+        "Etherscan API V2（chainid 1 · Ethereum），抓取时间 2026-10-31T12:53:55.821Z"
+      ],
+      [
+        "API 调用",
+        "6 / 40 次"
+      ],
+      [
+        "是否截断",
+        "否"
+      ],
+      [
+        "金额说明",
+        "美元折算只用于给对手方排序，不是成交价；代币真假只按合约地址判断（白名单：USDT / USDC / DAI / WETH / WBTC / stETH + 原生 ETH）"
+      ]
+    ],
+    "banner": [
+      "<b>自动追踪</b> · 由 Etherscan API 实时拉取（Ethereum）",
+      "自动结果可能漏判或误判，提交举报前请人工复核"
+    ],
+    "channels": "受害方官方举报渠道；相关交易所或协议的合规/安全联系人；执法机关",
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "relay",
+        "label": "0x5227…2f8c",
+        "addr": "0x5227f603c1ee34ce3c06efe6477003bdfccb2f8c",
+        "x": 0,
+        "y": 140,
+        "note": "起点（用户输入）"
+      },
+      {
+        "id": "n1",
+        "type": "relay",
+        "label": "0x8532…43d4",
+        "addr": "0x8532fa14acaf483729c449b8458aeddb900543d4",
+        "x": 340,
+        "y": 40,
+        "note": "普通地址（eth_getCode 为空），自动展开"
+      },
+      {
+        "id": "n2",
+        "type": "relay",
+        "label": "0x9749…c762",
+        "addr": "0x9749292d74fd460982d0912ea9515ea24736c762",
+        "x": 340,
+        "y": 140,
+        "note": "普通地址（eth_getCode 为空），自动展开"
+      },
+      {
+        "id": "n3",
+        "type": "relay",
+        "label": "0x0ddf…697e",
+        "addr": "0x0ddf0480016e6bcb2c1f5d190d221fba1320697e",
+        "x": 340,
+        "y": 240,
+        "note": "普通地址（eth_getCode 为空），自动展开"
+      }
+    ],
+    "txs": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "t": 26300842,
+        "ts": 1793306327,
+        "amt": "195,460 ETH",
+        "eth": 195460,
+        "hash": "0x551d7961652e6d9835b11988908adf86ebe480badb4ce2d7d52193b2b1b02c76",
+        "flags": []
+      },
+      {
+        "from": "n0",
+        "to": "n1",
+        "t": 26302212,
+        "ts": 1793322851,
+        "amt": "2,000 ETH",
+        "eth": 2000,
+        "hash": "0x48186565bdd78b13e516cf5deaf8431d839eed211205718aa90cdb44ae64e84a",
+        "flags": []
+      },
+      {
+        "from": "n0",
+        "to": "n2",
+        "t": 26300799,
+        "ts": 1793305811,
+        "amt": "500,000,000 USDT",
+        "eth": null,
+        "hash": "0x68d7d69deaeb9750c38020b4f8d3728146ca8d2267eba1e38cf9b56722ad659a",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n0",
+        "to": "n2",
+        "t": 26300794,
+        "ts": 1793305751,
+        "amt": "0.5 ETH",
+        "eth": 0.5,
+        "hash": "0x942b702e36b611916e8bc810b75ee16fc3255d253f33a260eeb96e94aca575f5",
+        "flags": []
+      },
+      {
+        "from": "n0",
+        "to": "n3",
+        "t": 26300815,
+        "ts": 1793306003,
+        "amt": "200,000,000 USDT",
+        "eth": null,
+        "hash": "0x1fc0ef33a767132edad434834a5555b30fcb5a171206c03b86175ef6dafac81c",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n0",
+        "to": "n3",
+        "t": 26300806,
+        "ts": 1793305895,
+        "amt": "0.5 ETH",
+        "eth": 0.5,
+        "hash": "0x5f0a445da1aa1274c79fca844f6cec552c90db5faf40868597e3322429e67100",
+        "flags": []
+      }
+    ]
+  },
+  "meta": {
+    "start": "0x5227f603c1ee34ce3c06efe6477003bdfccb2f8c",
+    "chain": "eth",
+    "chainid": 1,
+    "params": {
+      "startBlock": 26300700,
+      "endBlock": 26303600,
+      "maxHops": 1,
+      "topK": 3,
+      "minValue": {
+        "ETH": 0.05,
+        "WETH": 0.05,
+        "stETH": 0.05,
+        "USDT": 100,
+        "USDC": 100,
+        "DAI": 100,
+        "WBTC": 0.002
+      },
+      "priceHints": {
+        "ETH": 3000,
+        "BTC": 60000
+      }
+    },
+    "calls": 6,
+    "maxCalls": 40,
+    "truncated": false,
+    "truncatedReasons": [],
+    "warnings": [
+      "0x5227…2f8c：另有 15 个对手方（按美元折算排序，仅用于排序）排在前 3 个可展开对手方之外，未检查也未展开"
+    ],
+    "stoppedAt": [
+      {
+        "addr": "0x8532fa14acaf483729c449b8458aeddb900543d4",
+        "reason": "已达最大跳数 1，未继续展开"
+      },
+      {
+        "addr": "0x9749292d74fd460982d0912ea9515ea24736c762",
+        "reason": "已达最大跳数 1，未继续展开"
+      },
+      {
+        "addr": "0x0ddf0480016e6bcb2c1f5d190d221fba1320697e",
+        "reason": "已达最大跳数 1，未继续展开"
+      }
+    ],
+    "ignored": {
+      "fakeToken": 652,
+      "zeroValue": 2,
+      "dust": 0,
+      "poison": 0,
+      "belowTopK": 15
+    },
+    "traced_at": "2026-10-31T12:53:55.821Z"
+  }
+}

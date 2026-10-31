@@ -1,0 +1,316 @@
+{
+  "case": {
+    "id": "trace-0x28c6c0-26300700",
+    "tab": "追踪 0x28c6…1d60",
+    "tabK": "自动追踪",
+    "kind": "real",
+    "unit": "block",
+    "focus": "n0",
+    "chain": "eth",
+    "chainid": 1,
+    "title": "地址追踪 · 0x28c6…1d60",
+    "short": "追踪 0x28c6…1d60",
+    "en": "Auto trace · 0x28c6…1d60",
+    "facts": [
+      [
+        "起点",
+        "0x28c6c06298d514db089934071355e5743bf21d60"
+      ],
+      [
+        "范围",
+        "区块 26300700 – 26303600；最多 1 跳，每个节点最多展开 4 个对手方"
+      ],
+      [
+        "数据来源",
+        "Etherscan API V2（chainid 1 · Ethereum），抓取时间 2026-10-31T12:53:46.416Z"
+      ],
+      [
+        "API 调用",
+        "9 / 40 次"
+      ],
+      [
+        "是否截断",
+        "否"
+      ],
+      [
+        "金额说明",
+        "美元折算只用于给对手方排序，不是成交价；代币真假只按合约地址判断（白名单：USDT / USDC / DAI / WETH / WBTC / stETH + 原生 ETH）"
+      ]
+    ],
+    "banner": [
+      "<b>自动追踪</b> · 由 Etherscan API 实时拉取（Ethereum）",
+      "自动结果可能漏判或误判，提交举报前请人工复核"
+    ],
+    "channels": "受害方官方举报渠道；相关交易所或协议的合规/安全联系人；执法机关",
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "relay",
+        "label": "0x28c6…1d60",
+        "addr": "0x28c6c06298d514db089934071355e5743bf21d60",
+        "x": 0,
+        "y": 240,
+        "note": "起点（用户输入）"
+      },
+      {
+        "id": "n1",
+        "type": "relay",
+        "label": "0x5227…2f8c",
+        "addr": "0x5227f603c1ee34ce3c06efe6477003bdfccb2f8c",
+        "x": 340,
+        "y": 40,
+        "note": "普通地址（eth_getCode 为空），自动展开"
+      },
+      {
+        "id": "n2",
+        "type": "relay",
+        "label": "0xa97b…8d10",
+        "addr": "0xa97bf7836f8a08f9ed91d41453d371493fae8d10",
+        "x": 340,
+        "y": 140,
+        "note": "普通地址（eth_getCode 为空），自动展开"
+      },
+      {
+        "id": "n3",
+        "type": "relay",
+        "label": "0xe873…d710",
+        "addr": "0xe8736af1926e9d8f5a6602fbbb0893b26436d710",
+        "x": 340,
+        "y": 240,
+        "note": "普通地址（eth_getCode 为空），自动展开"
+      },
+      {
+        "id": "n4",
+        "type": "relay",
+        "label": "Forwarder",
+        "addr": "0xd59d7a9698eff3e68e0af7e803d4ed35e7ed12d2",
+        "x": 340,
+        "y": 340,
+        "note": "合约：Forwarder（getsourcecode）；名字没有可识别的协议关键词，需人工查看；按名字推断，非官方标注"
+      },
+      {
+        "id": "n5",
+        "type": "relay",
+        "label": "0xbd73…5b17",
+        "addr": "0xbd7320fed822773ea6b8435ca5d6d90173b05b17",
+        "x": 340,
+        "y": 440,
+        "note": "普通地址（eth_getCode 为空），自动展开"
+      }
+    ],
+    "txs": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "t": 26300770,
+        "ts": 1793305463,
+        "amt": "1,615,409,498.97 USDT",
+        "eth": null,
+        "hash": "0x53bd38b816c23e74134786c29a8c18d792777998a3b9326047b583100e88e2f3",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n0",
+        "to": "n1",
+        "t": 26300968,
+        "ts": 1793307863,
+        "amt": "3,917,639.77 USDT",
+        "eth": null,
+        "hash": "0x31c4c9fe287d54fb9d3b79980477a8c793a11f774b98d0a9a92de1dad888a91d",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n0",
+        "to": "n1",
+        "t": 26301167,
+        "ts": 1793310251,
+        "amt": "200,397,771.82 USDT",
+        "eth": null,
+        "hash": "0x55ba4dabc41b468e580751373ad31acdee6f5ba398682df2c93e5a8340870556",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n0",
+        "to": "n1",
+        "t": 26300770,
+        "ts": 1793305463,
+        "amt": "167,464.25 ETH",
+        "eth": 167464.247857,
+        "hash": "0x53bd38b816c23e74134786c29a8c18d792777998a3b9326047b583100e88e2f3",
+        "flags": []
+      },
+      {
+        "from": "n0",
+        "to": "n1",
+        "t": 26300968,
+        "ts": 1793307863,
+        "amt": "1,699.92 ETH",
+        "eth": 1699.922888,
+        "hash": "0x31c4c9fe287d54fb9d3b79980477a8c793a11f774b98d0a9a92de1dad888a91d",
+        "flags": []
+      },
+      {
+        "from": "n0",
+        "to": "n1",
+        "t": 26301167,
+        "ts": 1793310251,
+        "amt": "369.8319 ETH",
+        "eth": 369.831857,
+        "hash": "0x55ba4dabc41b468e580751373ad31acdee6f5ba398682df2c93e5a8340870556",
+        "flags": []
+      },
+      {
+        "from": "n0",
+        "to": "n1",
+        "t": 26300770,
+        "ts": 1793305463,
+        "amt": "82.5435 WBTC",
+        "eth": null,
+        "hash": "0x53bd38b816c23e74134786c29a8c18d792777998a3b9326047b583100e88e2f3",
+        "flags": []
+      },
+      {
+        "from": "n0",
+        "to": "n1",
+        "t": 26300968,
+        "ts": 1793307863,
+        "amt": "0.10227696 WBTC",
+        "eth": null,
+        "hash": "0x31c4c9fe287d54fb9d3b79980477a8c793a11f774b98d0a9a92de1dad888a91d",
+        "flags": []
+      },
+      {
+        "from": "n0",
+        "to": "n1",
+        "t": 26300770,
+        "ts": 1793305463,
+        "amt": "668.1322 WETH",
+        "eth": 668.132228,
+        "hash": "0x53bd38b816c23e74134786c29a8c18d792777998a3b9326047b583100e88e2f3",
+        "flags": []
+      },
+      {
+        "from": "n0",
+        "to": "n2",
+        "t": 26301444,
+        "ts": 1793313575,
+        "amt": "128.4911 ETH",
+        "eth": 128.491139,
+        "hash": "0x4a4aed833556814c16fe176fc8abc70ce124eadc73da3bcdf42a67ef44f9ad6b",
+        "flags": []
+      },
+      {
+        "from": "n0",
+        "to": "n2",
+        "t": 26301828,
+        "ts": 1793318207,
+        "amt": "2,961.91 ETH",
+        "eth": 2961.910821,
+        "hash": "0x4395d51dc3f3c51230329efc3548f74edbced353ff3f795c517cc57fa650f89b",
+        "flags": []
+      },
+      {
+        "from": "n0",
+        "to": "n3",
+        "t": 26300729,
+        "ts": 1793304971,
+        "amt": "449,005.92 USDT",
+        "eth": null,
+        "hash": "0xad60faf41453e8b9b57848e5d8ab4c4f1631673b2145756144b11f97b7364be8",
+        "flags": [
+          "freeze"
+        ]
+      },
+      {
+        "from": "n0",
+        "to": "n4",
+        "t": 26300740,
+        "ts": 1793305103,
+        "amt": "2.41 WBTC",
+        "eth": null,
+        "hash": "0x3e0564f63df11b053194339f66436be739ba017b2ecf4e853ac3e98386fd9e3c",
+        "flags": []
+      },
+      {
+        "from": "n0",
+        "to": "n5",
+        "t": 26300764,
+        "ts": 1793305391,
+        "amt": "29,999.45 USDT",
+        "eth": null,
+        "hash": "0xca11ebca3ceaf1d1ef52481afb30f118b71accfff91af2148c5fc6ceecfca653",
+        "flags": [
+          "freeze"
+        ]
+      }
+    ]
+  },
+  "meta": {
+    "start": "0x28c6c06298d514db089934071355e5743bf21d60",
+    "chain": "eth",
+    "chainid": 1,
+    "params": {
+      "startBlock": 26300700,
+      "endBlock": 26303600,
+      "maxHops": 1,
+      "topK": 4,
+      "minValue": {
+        "ETH": 0.05,
+        "WETH": 0.05,
+        "stETH": 0.05,
+        "USDT": 100,
+        "USDC": 100,
+        "DAI": 100,
+        "WBTC": 0.002
+      },
+      "priceHints": {
+        "ETH": 3000,
+        "BTC": 60000
+      }
+    },
+    "calls": 9,
+    "maxCalls": 40,
+    "truncated": false,
+    "truncatedReasons": [],
+    "warnings": [
+      "0x28c6…1d60 的 tokentx 返回 1000 行，达到单页上限 1000，更晚的转账可能没有覆盖",
+      "0x28c6…1d60：另有 21 个对手方（按美元折算排序，仅用于排序）排在前 4 个可展开对手方之外，未检查也未展开"
+    ],
+    "stoppedAt": [
+      {
+        "addr": "0x5227f603c1ee34ce3c06efe6477003bdfccb2f8c",
+        "reason": "已达最大跳数 1，未继续展开"
+      },
+      {
+        "addr": "0xa97bf7836f8a08f9ed91d41453d371493fae8d10",
+        "reason": "已达最大跳数 1，未继续展开"
+      },
+      {
+        "addr": "0xe8736af1926e9d8f5a6602fbbb0893b26436d710",
+        "reason": "已达最大跳数 1，未继续展开"
+      },
+      {
+        "addr": "0xd59d7a9698eff3e68e0af7e803d4ed35e7ed12d2",
+        "reason": "合约：Forwarder，名字没有可识别的协议关键词，需人工查看，一律为终点。下一步：人工查看该合约的用途与资金去向；已达最大跳数 1，未追它的归集去向"
+      },
+      {
+        "addr": "0xbd7320fed822773ea6b8435ca5d6d90173b05b17",
+        "reason": "已达最大跳数 1，未继续展开"
+      }
+    ],
+    "ignored": {
+      "fakeToken": 158,
+      "zeroValue": 1,
+      "dust": 30,
+      "poison": 0,
+      "belowTopK": 21
+    },
+    "traced_at": "2026-10-31T12:53:46.416Z"
+  }
+}

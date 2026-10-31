@@ -1,0 +1,96 @@
+{
+  "case": {
+    "id": "trace-0x7c8601-26300600",
+    "tab": "追踪 0x7c86…5ca0",
+    "tabK": "自动追踪",
+    "kind": "real",
+    "unit": "block",
+    "focus": "n0",
+    "chain": "eth",
+    "chainid": 1,
+    "title": "地址追踪 · 0x7c86…5ca0",
+    "short": "追踪 0x7c86…5ca0",
+    "en": "Auto trace · 0x7c86…5ca0",
+    "facts": [
+      [
+        "起点",
+        "0x7c8601d4645b93cea45f71e118a729332e6b5ca0"
+      ],
+      [
+        "范围",
+        "区块 26300600 – 26303600；最多 2 跳，每个节点最多展开 4 个对手方"
+      ],
+      [
+        "数据来源",
+        "Etherscan API V2（chainid 1 · Ethereum），抓取时间 2026-10-31T12:53:34.178Z"
+      ],
+      [
+        "API 调用",
+        "3 / 60 次"
+      ],
+      [
+        "是否截断",
+        "否"
+      ],
+      [
+        "金额说明",
+        "美元折算只用于给对手方排序，不是成交价；代币真假只按合约地址判断（白名单：USDT / USDC / DAI / WETH / WBTC / stETH + 原生 ETH）"
+      ]
+    ],
+    "banner": [
+      "<b>自动追踪</b> · 由 Etherscan API 实时拉取（Ethereum）",
+      "自动结果可能漏判或误判，提交举报前请人工复核"
+    ],
+    "channels": "受害方官方举报渠道；相关交易所或协议的合规/安全联系人；执法机关",
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "relay",
+        "label": "0x7c86…5ca0",
+        "addr": "0x7c8601d4645b93cea45f71e118a729332e6b5ca0",
+        "x": 0,
+        "y": 40,
+        "note": "起点（用户输入）"
+      }
+    ],
+    "txs": []
+  },
+  "meta": {
+    "start": "0x7c8601d4645b93cea45f71e118a729332e6b5ca0",
+    "chain": "eth",
+    "chainid": 1,
+    "params": {
+      "startBlock": 26300600,
+      "endBlock": 26303600,
+      "maxHops": 2,
+      "topK": 4,
+      "minValue": {
+        "ETH": 0.05,
+        "WETH": 0.05,
+        "stETH": 0.05,
+        "USDT": 100,
+        "USDC": 100,
+        "DAI": 100,
+        "WBTC": 0.002
+      },
+      "priceHints": {
+        "ETH": 3000,
+        "BTC": 60000
+      }
+    },
+    "calls": 3,
+    "maxCalls": 60,
+    "truncated": false,
+    "truncatedReasons": [],
+    "warnings": [],
+    "stoppedAt": [],
+    "ignored": {
+      "fakeToken": 0,
+      "zeroValue": 1,
+      "dust": 0,
+      "poison": 0,
+      "belowTopK": 0
+    },
+    "traced_at": "2026-10-31T12:53:34.178Z"
+  }
+}

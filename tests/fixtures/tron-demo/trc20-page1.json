@@ -1,0 +1,40 @@
+{
+  "key": "/v1/accounts/TBXSw8fM4jpQkGc6zZjsVABFpVN7UvXPdV/transactions/trc20?limit=200&only_confirmed=true",
+  "response": {
+    "data": [
+      {
+        "transaction_id": "b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1",
+        "token_info": {
+          "symbol": "USDT",
+          "address": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+          "decimals": 6,
+          "name": "Tether USD"
+        },
+        "block_timestamp": 1700000500000,
+        "from": "TBXSw8fM4jpQkGc6zZjsVABFpVN7UvXPdV",
+        "to": "TGCAjMXComunWZEXCT1LPBdcYbDVuyexBv",
+        "type": "Transfer",
+        "value": "308700000"
+      },
+      {
+        "transaction_id": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2",
+        "token_info": {
+          "symbol": "USDT",
+          "address": "THkQfRopincF6emzbk6VMC7jTHqJ8MP8g7",
+          "decimals": 6,
+          "name": "Fake USD"
+        },
+        "block_timestamp": 1700000600000,
+        "from": "TD5gsCwxykWsLN9aPrq2TAfNjByuZKYp4E",
+        "to": "TBXSw8fM4jpQkGc6zZjsVABFpVN7UvXPdV",
+        "type": "Transfer",
+        "value": "999999"
+      }
+    ],
+    "success": true,
+    "meta": {
+      "at": 1700000500000,
+      "page_size": 200
+    }
+  }
+}

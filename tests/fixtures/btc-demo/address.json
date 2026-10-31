@@ -1,0 +1,20 @@
+{
+  "key": "/api/address/bc1qcqvt5cfefnq2f3ykhm8pz07msv54azcn02g5rz",
+  "response": {
+    "address": "bc1qcqvt5cfefnq2f3ykhm8pz07msv54azcn02g5rz",
+    "chain_stats": {
+      "tx_count": 5,
+      "funded_txo_count": 3,
+      "funded_txo_sum": 330000,
+      "spent_txo_count": 2,
+      "spent_txo_sum": 210000
+    },
+    "mempool_stats": {
+      "tx_count": 1,
+      "funded_txo_count": 1,
+      "funded_txo_sum": 10000,
+      "spent_txo_count": 0,
+      "spent_txo_sum": 0
+    }
+  }
+}

@@ -5,6 +5,9 @@
  * 选项：
  *   --from-block N   起始区块（默认 0）          --to-block N    结束区块（默认 99999999 = 最新）
  *   --hops N         最多追几跳（默认 3）        --top N         每个节点最多展开几个对手方（默认 5）
+ *   --chain CHAIN    链：eth / bsc（默认 eth；代币白名单、原生币、浏览器链接按链隔离）
+ *   --base URL       覆盖该链的列表数据源（例：免 key 用 https://eth.blockscout.com/api）
+ *   --rpc URL        eth_getCode 改走 JSON-RPC（例：https://ethereum.publicnode.com；配合 --base 可完全免 key）
  *   --max-calls N    API 调用预算（默认 80）     --out FILE      结果 JSON（默认 cases/trace-<地址前10>-<起始区块>.json）
  *   --record DIR     联网追踪，同时把每个 API 响应按"去掉 apikey 后的参数"为键存进 DIR（做夹具）
  *   --replay DIR     不联网，从 DIR 读响应（夹具回放，不需要 key）
@@ -29,6 +32,7 @@ const SELF = fileURLToPath(import.meta.url);
 const ROOT = dirname(dirname(SELF));
 const Trace = require('../lib/trace-eth.js');
 const Official = require('../lib/official-data.js');
+const Chains = require('../lib/chains.js');
 
 const TYPE_NAME = {
   victim: '受害方', attacker: '攻击者', relay: '中转', dex: 'DEX 兑换', bridge: '跨链 / 兑换服务', compliant: '可拦截通道',
@@ -38,7 +42,7 @@ const TYPE_NAME = {
 class UsageError extends Error {}
 
 function parseArgs(argv) {
-  const o = { hops: 3, top: 5, maxCalls: 80, fromBlock: 0, toBlock: 99999999, official: true, quiet: false, help: false };
+  const o = { hops: 3, top: 5, maxCalls: 80, fromBlock: 0, toBlock: 99999999, official: true, quiet: false, help: false, chain: 'eth', base: '', rpc: '' };
   const needVal = (a, i) => {
     if (i + 1 >= argv.length || (argv[i + 1].startsWith('--') && argv[i + 1].length > 2)) throw new UsageError(a + ' 需要一个值');
     return argv[i + 1];
@@ -57,6 +61,9 @@ function parseArgs(argv) {
     else if (a === '--top') { o.top = needInt(a, i, 1); i++; }
     else if (a === '--max-calls') { o.maxCalls = needInt(a, i, 1); i++; }
     else if (a === '--interval') { o.interval = needInt(a, i, 0); i++; }
+    else if (a === '--chain') { o.chain = needVal(a, i); i++; }
+    else if (a === '--base') { o.base = needVal(a, i); i++; }
+    else if (a === '--rpc') { o.rpc = needVal(a, i); i++; }
     else if (a === '--out') { o.out = needVal(a, i); i++; }
     else if (a === '--record') { o.record = needVal(a, i); i++; }
     else if (a === '--replay') { o.replay = needVal(a, i); i++; }
@@ -69,11 +76,16 @@ function parseArgs(argv) {
   if (!o.help) {
     if (!o.address) throw new UsageError('缺少地址。用法：node tools/trace.mjs <地址> [选项]（--help 看全部选项）');
     if (!/^0x[0-9a-fA-F]{40}$/.test(o.address)) throw new UsageError('不是合法的以太坊地址（0x + 40 位十六进制）：' + o.address);
+    const chainCfg = Chains.get(o.chain);
+    if (!chainCfg || chainCfg.kind !== 'evm') throw new UsageError('未知链：' + o.chain + '（支持：' + Chains.ids().filter(id => Chains.get(id).kind === 'evm').join(' / ') + '）');
     if (o.record && o.replay) throw new UsageError('--record 与 --replay 不能同时用');
     if (o.fromBlock > o.toBlock) throw new UsageError('--from-block 大于 --to-block');
   }
   return o;
 }
+
+/** key 为空（免 key 数据源）时不能用 split 脱敏，否则每个字符之间都会被插 *** */
+const scrubKey = (text, key) => (key ? String(text).split(String(key)).join('***') : String(text));
 
 function readKey() {
   if (process.env.ETHERSCAN_API_KEY && process.env.ETHERSCAN_API_KEY.trim()) return process.env.ETHERSCAN_API_KEY.trim();
@@ -227,20 +239,25 @@ async function main() {
       fetchImpl = makeReplayFetch(resolve(args.replay));
     } else {
       key = readKey();
-      if (!key) { process.stderr.write('缺少 Etherscan key：在环境变量或项目根 .env 里设置 ETHERSCAN_API_KEY（免费申请：https://etherscan.io/myapikey）\n'); return 1; }
+      if (!key && !args.base) { process.stderr.write('缺少 Etherscan key：在环境变量或项目根 .env 里设置 ETHERSCAN_API_KEY（免费申请：https://etherscan.io/myapikey）；或改用免 key 数据源：--base https://eth.blockscout.com/api --rpc https://ethereum.publicnode.com\n'); return 1; }
+      if (!key) process.stderr.write('提示：没有 Etherscan key，使用 --base 指定的免 key 数据源（调用预算仍生效）\n');
       fetchImpl = args.record ? makeRecordFetch(resolve(args.record), globalThis.fetch, key) : globalThis.fetch;
     }
-  } catch (e) { process.stderr.write('错误：' + String(e.message).split(key).join('***') + '\n'); return 1; }
+  } catch (e) { process.stderr.write('错误：' + scrubKey(e.message, key) + '\n'); return 1; }
 
+  const chainCfg = Chains.get(args.chain);
   const client = Trace.createClient({
     key, fetchImpl, maxCalls: args.maxCalls,
+    chainid: chainCfg.chainid,
+    base: args.base || (chainCfg.api && chainCfg.api.base ? chainCfg.api.base : undefined),
+    rpcBase: args.rpc || undefined,
     minIntervalMs: args.interval != null ? args.interval : (args.replay ? 0 : 350),
     backoffMs: args.replay ? 0 : 1200,
     onCall: args.quiet ? null : info => process.stderr.write('[' + info.n + '/' + info.maxCalls + '] ' + info.module + '.' + info.action + (info.address ? ' ' + info.address : '') + '\n')
   });
 
   let official = null;
-  if (args.official) {
+  if (args.official && chainCfg.official !== false) {
     try { official = loadOfficial(); } catch (e) { process.stderr.write('警告：官方快照读取失败，跳过官方核对：' + e.message + '\n'); }
     if (!official) process.stderr.write('警告：没有官方快照（data/official-snapshot.js），跳过官方核对\n');
   }
@@ -252,10 +269,10 @@ async function main() {
   try {
     result = await Trace.trace({
       client, start: args.address, startBlock: args.fromBlock, endBlock: args.toBlock, maxHops: args.hops, topK: args.top,
-      official, officialLib: Official, signal: ac.signal
+      chain: args.chain, official, officialLib: Official, signal: ac.signal
     });
   } catch (e) {
-    process.stderr.write('追踪失败：' + String(e && e.message ? e.message : e).split(key).join('***') + '\n');
+    process.stderr.write('追踪失败：' + scrubKey(e && e.message ? e.message : e, key) + '\n');
     return 1;
   }
 
@@ -271,7 +288,7 @@ async function main() {
 }
 
 // 只在被直接运行时才执行；被测试 import 时只导出下面这些函数
-export { parseArgs, makeRecordFetch, makeReplayFetch, renderTree, summary, fixtureName, UsageError };
+export { parseArgs, makeRecordFetch, makeReplayFetch, renderTree, summary, fixtureName, UsageError, scrubKey };
 if (process.argv[1] && resolve(process.argv[1]).toLowerCase() === SELF.toLowerCase()) {
   main().then(code => { process.exitCode = code; }, e => {
     process.stderr.write('未预期的错误：' + (e && e.stack ? e.stack : e) + '\n');

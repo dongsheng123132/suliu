@@ -1,0 +1,35 @@
+{
+  "key": "/api/deposit?depositId=demo-7654321&originChainId=1",
+  "response": {
+    "deposit": {
+      "depositAddress": null,
+      "sweepTxnRef": null,
+      "depositRefundAddress": null,
+      "id": 73606,
+      "depositId": "demo-7654321",
+      "originChainId": 1,
+      "destinationChainId": 8453,
+      "depositor": "0x095d79620f94fcd9a1c8e2929944ad2452a96dc1",
+      "recipient": "0x51a17c41816418b3a58f8eee6ea258bb6587a752",
+      "inputToken": "0xe962dc7323407026d74f1f3e0cee560a8870141a",
+      "inputAmount": "200000000",
+      "outputToken": "0xac1da1462eec8f93c3ee240b49af2d8bc0731bfe",
+      "outputAmount": "199000000",
+      "status": "filled",
+      "depositTxHash": "0x4deb1c07aeb73f84bd67049a1406778f731f6cfd49618d5b7453447516a63cc6",
+      "depositBlockNumber": 24785853,
+      "depositBlockTimestamp": "2026-04-01T16:10:35.000Z",
+      "depositRefundTxHash": null,
+      "fillTx": "0xda50650682c36231fbf92ca43f0ef083e573dd152b45d4102c68a00fd6879107",
+      "fillBlockNumber": 44135258,
+      "fillBlockTimestamp": "2026-04-01T16:11:03.000Z",
+      "depositTxnRef": "0x4deb1c07aeb73f84bd67049a1406778f731f6cfd49618d5b7453447516a63cc6",
+      "fillTxnRef": "0xda50650682c36231fbf92ca43f0ef083e573dd152b45d4102c68a00fd6879107",
+      "depositRefundTxnRef": null
+    },
+    "pagination": {
+      "currentIndex": 0,
+      "maxIndex": 0
+    }
+  }
+}
